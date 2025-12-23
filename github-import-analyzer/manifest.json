@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Python Import Analyzer",
+  "version": "0.1.0",
+  "description": "Analyze Python imports in GitHub repositories and generate requirements.txt",
+  "permissions": ["activeTab", "scripting", "clipboardWrite", "tabs"],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://raw.githubusercontent.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
