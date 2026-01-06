@@ -1,0 +1,231 @@
+[
+  {
+    "full_name": "xingyizhou/CenterNet",
+    "repo_updated_at": "2026-01-05T07:41:00+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2022-11-11T04:54:48+00:00",
+        "days_behind_repo": 1151,
+        "days_behind_now": 1151
+      }
+    },
+    "max_staleness_vs_repo_days": 1151,
+    "max_staleness_vs_now_days": 1151
+  },
+  {
+    "full_name": "huggingface/sentence-transformers",
+    "repo_updated_at": "2026-01-05T13:47:13+00:00",
+    "dependency_files": {
+      "pyproject.toml": {
+        "last_modified": "2025-12-22T08:48:08+00:00",
+        "days_behind_repo": 14,
+        "days_behind_now": 14
+      }
+    },
+    "max_staleness_vs_repo_days": 14,
+    "max_staleness_vs_now_days": 14
+  },
+  {
+    "full_name": "sfyc23/EverydayWechat",
+    "repo_updated_at": "2026-01-05T02:47:08+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2020-01-10T09:50:10+00:00",
+        "days_behind_repo": 2186,
+        "days_behind_now": 2187
+      }
+    },
+    "max_staleness_vs_repo_days": 2186,
+    "max_staleness_vs_now_days": 2187
+  },
+  {
+    "full_name": "reactive-python/reactpy",
+    "repo_updated_at": "2026-01-05T15:05:27+00:00",
+    "dependency_files": {
+      "pyproject.toml": {
+        "last_modified": "2025-12-22T05:08:42+00:00",
+        "days_behind_repo": 14,
+        "days_behind_now": 14
+      }
+    },
+    "max_staleness_vs_repo_days": 14,
+    "max_staleness_vs_now_days": 14
+  },
+  {
+    "full_name": "facebookresearch/detectron2",
+    "repo_updated_at": "2026-01-05T15:13:26+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "facebookresearch/pifuhd",
+    "repo_updated_at": "2025-12-29T03:54:43+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2023-03-26T15:06:03+00:00",
+        "days_behind_repo": 1008,
+        "days_behind_now": 1016
+      }
+    },
+    "max_staleness_vs_repo_days": 1008,
+    "max_staleness_vs_now_days": 1016
+  },
+  {
+    "full_name": "9001/copyparty",
+    "repo_updated_at": "2026-01-05T17:45:12+00:00",
+    "dependency_files": {
+      "pyproject.toml": {
+        "last_modified": "2026-01-04T18:56:52+00:00",
+        "days_behind_repo": 0,
+        "days_behind_now": 0
+      }
+    },
+    "max_staleness_vs_repo_days": 0,
+    "max_staleness_vs_now_days": 0
+  },
+  {
+    "full_name": "simple-login/app",
+    "repo_updated_at": "2026-01-05T08:38:53+00:00",
+    "dependency_files": {
+      "pyproject.toml": {
+        "last_modified": "2025-12-23T22:27:01+00:00",
+        "days_behind_repo": 12,
+        "days_behind_now": 12
+      }
+    },
+    "max_staleness_vs_repo_days": 12,
+    "max_staleness_vs_now_days": 12
+  },
+  {
+    "full_name": "ymcui/Chinese-BERT-wwm",
+    "repo_updated_at": "2026-01-04T09:11:42+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "autogluon/autogluon",
+    "repo_updated_at": "2026-01-05T14:44:32+00:00",
+    "dependency_files": {
+      "pyproject.toml": {
+        "last_modified": "2026-01-04T19:52:33+00:00",
+        "days_behind_repo": 0,
+        "days_behind_now": 0
+      }
+    },
+    "max_staleness_vs_repo_days": 0,
+    "max_staleness_vs_now_days": 0
+  },
+  {
+    "full_name": "Project-MONAI/MONAI",
+    "repo_updated_at": "2026-01-05T17:00:28+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2026-01-05T17:00:22+00:00",
+        "days_behind_repo": 0,
+        "days_behind_now": 0
+      },
+      "pyproject.toml": {
+        "last_modified": "2026-01-05T17:00:22+00:00",
+        "days_behind_repo": 0,
+        "days_behind_now": 0
+      }
+    },
+    "max_staleness_vs_repo_days": 0,
+    "max_staleness_vs_now_days": 0
+  },
+  {
+    "full_name": "TheKingOfDuck/fuzzDicts",
+    "repo_updated_at": "2026-01-03T12:49:10+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "KevinMusgrave/pytorch-metric-learning",
+    "repo_updated_at": "2026-01-05T01:39:10+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "Asabeneh/30-Days-Of-Python",
+    "repo_updated_at": "2026-01-05T17:29:55+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "Morizeyao/GPT2-Chinese",
+    "repo_updated_at": "2026-01-05T06:59:58+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2024-04-11T01:41:58+00:00",
+        "days_behind_repo": 634,
+        "days_behind_now": 634
+      }
+    },
+    "max_staleness_vs_repo_days": 634,
+    "max_staleness_vs_now_days": 634
+  },
+  {
+    "full_name": "PaddlePaddle/PaddleSeg",
+    "repo_updated_at": "2026-01-05T11:22:45+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2025-11-21T03:16:06+00:00",
+        "days_behind_repo": 45,
+        "days_behind_now": 45
+      }
+    },
+    "max_staleness_vs_repo_days": 45,
+    "max_staleness_vs_now_days": 45
+  },
+  {
+    "full_name": "firmai/financial-machine-learning",
+    "repo_updated_at": "2026-01-05T10:33:25+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2025-01-03T01:27:50+00:00",
+        "days_behind_repo": 367,
+        "days_behind_now": 367
+      }
+    },
+    "max_staleness_vs_repo_days": 367,
+    "max_staleness_vs_now_days": 367
+  },
+  {
+    "full_name": "wbt5/real-url",
+    "repo_updated_at": "2026-01-03T16:26:12+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2022-07-23T07:51:53+00:00",
+        "days_behind_repo": 1260,
+        "days_behind_now": 1262
+      }
+    },
+    "max_staleness_vs_repo_days": 1260,
+    "max_staleness_vs_now_days": 1262
+  },
+  {
+    "full_name": "lukemelas/EfficientNet-PyTorch",
+    "repo_updated_at": "2026-01-05T07:55:25+00:00",
+    "dependency_files": {},
+    "max_staleness_vs_repo_days": null,
+    "max_staleness_vs_now_days": null
+  },
+  {
+    "full_name": "ddbourgin/numpy-ml",
+    "repo_updated_at": "2026-01-05T17:11:38+00:00",
+    "dependency_files": {
+      "requirements.txt": {
+        "last_modified": "2022-01-08T22:00:20+00:00",
+        "days_behind_repo": 1457,
+        "days_behind_now": 1457
+      }
+    },
+    "max_staleness_vs_repo_days": 1457,
+    "max_staleness_vs_now_days": 1457
+  }
+]

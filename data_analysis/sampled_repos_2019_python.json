@@ -1,0 +1,182 @@
+[
+  {
+    "full_name": "xingyizhou/CenterNet",
+    "html_url": "https://github.com/xingyizhou/CenterNet",
+    "stars": 7533,
+    "forks": 1938,
+    "created_at": "2019-04-16T18:39:13Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "huggingface/sentence-transformers",
+    "html_url": "https://github.com/huggingface/sentence-transformers",
+    "stars": 18068,
+    "forks": 2725,
+    "created_at": "2019-07-24T10:53:51Z",
+    "language": "Python",
+    "default_branch": "main"
+  },
+  {
+    "full_name": "sfyc23/EverydayWechat",
+    "html_url": "https://github.com/sfyc23/EverydayWechat",
+    "stars": 10268,
+    "forks": 2312,
+    "created_at": "2019-03-11T17:38:45Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "reactive-python/reactpy",
+    "html_url": "https://github.com/reactive-python/reactpy",
+    "stars": 8149,
+    "forks": 332,
+    "created_at": "2019-02-19T05:25:54Z",
+    "language": "Python",
+    "default_branch": "main"
+  },
+  {
+    "full_name": "facebookresearch/detectron2",
+    "html_url": "https://github.com/facebookresearch/detectron2",
+    "stars": 33904,
+    "forks": 7880,
+    "created_at": "2019-09-05T21:30:20Z",
+    "language": "Python",
+    "default_branch": "main"
+  },
+  {
+    "full_name": "facebookresearch/pifuhd",
+    "html_url": "https://github.com/facebookresearch/pifuhd",
+    "stars": 9761,
+    "forks": 1482,
+    "created_at": "2019-09-04T19:28:03Z",
+    "language": "Python",
+    "default_branch": "main"
+  },
+  {
+    "full_name": "9001/copyparty",
+    "html_url": "https://github.com/9001/copyparty",
+    "stars": 40189,
+    "forks": 1655,
+    "created_at": "2019-05-26T15:28:33Z",
+    "language": "Python",
+    "default_branch": "hovudstraum"
+  },
+  {
+    "full_name": "simple-login/app",
+    "html_url": "https://github.com/simple-login/app",
+    "stars": 6315,
+    "forks": 552,
+    "created_at": "2019-12-18T16:14:58Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "ymcui/Chinese-BERT-wwm",
+    "html_url": "https://github.com/ymcui/Chinese-BERT-wwm",
+    "stars": 10161,
+    "forks": 1394,
+    "created_at": "2019-06-19T22:55:01Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "autogluon/autogluon",
+    "html_url": "https://github.com/autogluon/autogluon",
+    "stars": 9746,
+    "forks": 1102,
+    "created_at": "2019-07-29T18:51:24Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "Project-MONAI/MONAI",
+    "html_url": "https://github.com/Project-MONAI/MONAI",
+    "stars": 7705,
+    "forks": 1391,
+    "created_at": "2019-10-11T16:41:38Z",
+    "language": "Python",
+    "default_branch": "dev"
+  },
+  {
+    "full_name": "TheKingOfDuck/fuzzDicts",
+    "html_url": "https://github.com/TheKingOfDuck/fuzzDicts",
+    "stars": 8203,
+    "forks": 2481,
+    "created_at": "2019-05-18T04:21:48Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "KevinMusgrave/pytorch-metric-learning",
+    "html_url": "https://github.com/KevinMusgrave/pytorch-metric-learning",
+    "stars": 6290,
+    "forks": 665,
+    "created_at": "2019-10-23T17:20:35Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "Asabeneh/30-Days-Of-Python",
+    "html_url": "https://github.com/Asabeneh/30-Days-Of-Python",
+    "stars": 54899,
+    "forks": 10575,
+    "created_at": "2019-11-19T17:24:16Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "Morizeyao/GPT2-Chinese",
+    "html_url": "https://github.com/Morizeyao/GPT2-Chinese",
+    "stars": 7608,
+    "forks": 1699,
+    "created_at": "2019-05-31T02:07:50Z",
+    "language": "Python",
+    "default_branch": "old_gpt_2_chinese_before_2021_4_22"
+  },
+  {
+    "full_name": "PaddlePaddle/PaddleSeg",
+    "html_url": "https://github.com/PaddlePaddle/PaddleSeg",
+    "stars": 9265,
+    "forks": 1707,
+    "created_at": "2019-08-26T02:32:22Z",
+    "language": "Python",
+    "default_branch": "release/2.10"
+  },
+  {
+    "full_name": "firmai/financial-machine-learning",
+    "html_url": "https://github.com/firmai/financial-machine-learning",
+    "stars": 8342,
+    "forks": 1387,
+    "created_at": "2019-03-21T21:00:35Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "wbt5/real-url",
+    "html_url": "https://github.com/wbt5/real-url",
+    "stars": 7770,
+    "forks": 1568,
+    "created_at": "2019-09-18T17:26:42Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "lukemelas/EfficientNet-PyTorch",
+    "html_url": "https://github.com/lukemelas/EfficientNet-PyTorch",
+    "stars": 8212,
+    "forks": 1540,
+    "created_at": "2019-05-30T05:24:11Z",
+    "language": "Python",
+    "default_branch": "master"
+  },
+  {
+    "full_name": "ddbourgin/numpy-ml",
+    "html_url": "https://github.com/ddbourgin/numpy-ml",
+    "stars": 16220,
+    "forks": 3789,
+    "created_at": "2019-04-06T22:29:49Z",
+    "language": "Python",
+    "default_branch": "master"
+  }
+]

@@ -1,0 +1,204 @@
+[
+  {
+    "full_name": "xingyizhou/CenterNet",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.0196078431372549,
+    "readme_total_lines": 153,
+    "readme_env_lines": 3
+  },
+  {
+    "full_name": "huggingface/sentence-transformers",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.04406779661016949,
+    "readme_total_lines": 295,
+    "readme_env_lines": 13
+  },
+  {
+    "full_name": "sfyc23/EverydayWechat",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt",
+      "Dockerfile"
+    ],
+    "readme_env_ratio": 0.01804123711340206,
+    "readme_total_lines": 388,
+    "readme_env_lines": 7
+  },
+  {
+    "full_name": "reactive-python/reactpy",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.014084507042253521,
+    "readme_total_lines": 71,
+    "readme_env_lines": 1
+  },
+  {
+    "full_name": "facebookresearch/detectron2",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py"
+    ],
+    "readme_env_ratio": 0.03333333333333333,
+    "readme_total_lines": 60,
+    "readme_env_lines": 2
+  },
+  {
+    "full_name": "facebookresearch/pifuhd",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.03731343283582089,
+    "readme_total_lines": 134,
+    "readme_env_lines": 5
+  },
+  {
+    "full_name": "9001/copyparty",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py",
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.028011204481792718,
+    "readme_total_lines": 3213,
+    "readme_env_lines": 90
+  },
+  {
+    "full_name": "simple-login/app",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "Dockerfile",
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.0547945205479452,
+    "readme_total_lines": 584,
+    "readme_env_lines": 32
+  },
+  {
+    "full_name": "ymcui/Chinese-BERT-wwm",
+    "has_dependency_file": false,
+    "dependency_files": [],
+    "readme_env_ratio": 0.0,
+    "readme_total_lines": 540,
+    "readme_env_lines": 0
+  },
+  {
+    "full_name": "autogluon/autogluon",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.06862745098039216,
+    "readme_total_lines": 102,
+    "readme_env_lines": 7
+  },
+  {
+    "full_name": "Project-MONAI/MONAI",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py",
+      "requirements.txt",
+      "Dockerfile",
+      "pyproject.toml"
+    ],
+    "readme_env_ratio": 0.14583333333333334,
+    "readme_total_lines": 96,
+    "readme_env_lines": 14
+  },
+  {
+    "full_name": "TheKingOfDuck/fuzzDicts",
+    "has_dependency_file": false,
+    "dependency_files": [],
+    "readme_env_ratio": 0.0,
+    "readme_total_lines": 254,
+    "readme_env_lines": 0
+  },
+  {
+    "full_name": "KevinMusgrave/pytorch-metric-learning",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py"
+    ],
+    "readme_env_ratio": 0.06885245901639345,
+    "readme_total_lines": 305,
+    "readme_env_lines": 21
+  },
+  {
+    "full_name": "Asabeneh/30-Days-Of-Python",
+    "has_dependency_file": false,
+    "dependency_files": [],
+    "readme_env_ratio": 0.02857142857142857,
+    "readme_total_lines": 525,
+    "readme_env_lines": 15
+  },
+  {
+    "full_name": "Morizeyao/GPT2-Chinese",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.0,
+    "readme_total_lines": 169,
+    "readme_env_lines": 0
+  },
+  {
+    "full_name": "PaddlePaddle/PaddleSeg",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py",
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.0,
+    "readme_total_lines": 1,
+    "readme_env_lines": 0
+  },
+  {
+    "full_name": "firmai/financial-machine-learning",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.008849557522123894,
+    "readme_total_lines": 339,
+    "readme_env_lines": 3
+  },
+  {
+    "full_name": "wbt5/real-url",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.013333333333333334,
+    "readme_total_lines": 150,
+    "readme_env_lines": 2
+  },
+  {
+    "full_name": "lukemelas/EfficientNet-PyTorch",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py"
+    ],
+    "readme_env_ratio": 0.02973977695167286,
+    "readme_total_lines": 269,
+    "readme_env_lines": 8
+  },
+  {
+    "full_name": "ddbourgin/numpy-ml",
+    "has_dependency_file": true,
+    "dependency_files": [
+      "setup.py",
+      "requirements.txt"
+    ],
+    "readme_env_ratio": 0.04639175257731959,
+    "readme_total_lines": 194,
+    "readme_env_lines": 9
+  }
+]
