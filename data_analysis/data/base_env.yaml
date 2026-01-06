@@ -1,0 +1,26 @@
+# 最广泛支持的基线环境
+Python: 3.10 - 3.11  # 平衡兼容性和新特性
+
+# 核心科学计算
+numpy: 1.24.x - 1.26.x
+scipy: 1.11.x - 1.13.x
+pandas: 2.0.x - 2.2.x
+matplotlib: 3.7.x - 3.9.x
+
+# 机器学习
+scikit-learn: 1.3.x - 1.5.x
+torch: 2.1.x - 2.4.x
+tensorflow: 2.15.x - 2.17.x
+
+# 深度学习辅助
+transformers: 4.35.x+
+pillow: 10.0.x+
+
+# Web框架
+requests: 2.31.x
+flask: 3.0.x
+django: 4.2.x (LTS) 或 5.0.x
+
+# 数据处理
+pytz: 2024.x
+python-dateutil: 2.8.x
