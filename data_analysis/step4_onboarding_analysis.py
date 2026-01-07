@@ -17,8 +17,8 @@ from urllib3.util.retry import Retry
 # 基本配置
 # =========================
 TOKEN_FILE = "github_token.txt"
-REPO_LIST_FILE = "sampled_repos_2019_python.json"
-OUTPUT_FILE = "repo_onboarding_stats.json"
+REPO_LIST_FILE = "sampled_repos_buckets.json"
+OUTPUT_FILE = "sampled_repo_onboarding_stats.json"
 
 ISSUES_PER_REPO_LIMIT = 200
 PRS_PER_REPO_LIMIT = 200

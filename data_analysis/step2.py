@@ -2,7 +2,7 @@ import ast
 import json
 import time
 import requests
-import tomllib
+import tomli as tomllib
 from typing import Set, Dict, List
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -11,8 +11,8 @@ from urllib3.util.retry import Retry
 # 基本配置
 # =========================
 TOKEN_FILE = "github_token.txt"
-REPO_LIST_FILE = "sampled_repos_2019_python.json"
-OUTPUT_FILE = "repo_import_vs_requirements.json"
+REPO_LIST_FILE = "sampled_repos_buckets.json"
+OUTPUT_FILE = "sampled_repo_import_vs_requirements.json"
 
 REQUIREMENT_FILES = [
     "requirements.txt",

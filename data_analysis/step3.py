@@ -10,8 +10,8 @@ from urllib3.util.retry import Retry
 # 基本配置
 # =========================
 TOKEN_FILE = "github_token.txt"
-REPO_LIST_FILE = "sampled_repos_2019_python.json"
-OUTPUT_FILE = "repo_dependency_staleness.json"
+REPO_LIST_FILE = "sampled_repos_buckets.json"
+OUTPUT_FILE = "sampled_repo_dependency_staleness.json"
 
 DEPENDENCY_FILES = [
     "requirements.txt",

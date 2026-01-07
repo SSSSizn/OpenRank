@@ -10,8 +10,8 @@ from urllib3.util.retry import Retry
 # 基本配置
 # =========================
 TOKEN_FILE = "github_token.txt"
-REPO_LIST_FILE = "sampled_repos_2019_python.json"
-OUTPUT_FILE = "repo_issue_env_stats.json"
+REPO_LIST_FILE = "sampled_repos_buckets.json"
+OUTPUT_FILE = "sampled_repo_issue_env_stats.json"
 
 ISSUES_PER_REPO_LIMIT = 200   # 每个仓库最多分析多少条 issue
 SLEEP_PER_REQUEST = 0.4
