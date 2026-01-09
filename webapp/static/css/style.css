@@ -1,321 +1,245 @@
-/* 整体样式 */
+/* --- 基础设置 --- */
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --border-color: rgba(148, 163, 184, 0.1);
+    --primary-glow: #38bdf8;
+    --accent-color: #a855f7;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --font-heading: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
 body {
-	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	min-height: 100vh;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-.container-fluid {
-	max-width: 1400px;
+/* 动态背景光效 */
+.bg-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background:
+        radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.08), transparent 25%);
+    z-index: -1;
+    pointer-events: none;
 }
 
-/* 头部 */
-.d-flex.justify-content-between {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	margin-bottom: 1.5rem;
+/* --- 滚动条美化 --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
 }
 
-h1 {
-	color: #2c3e50;
-	font-weight: 600;
-	margin: 0;
-	font-size: 1.8rem;
+/* --- 头部样式 --- */
+.header-glass {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-h4 {
-	color: #34495e;
-	font-weight: 600;
-	margin-top: 1.5rem;
-	margin-bottom: 1rem;
-	padding-bottom: 0.75rem;
-	border-bottom: 2px solid #3498db;
-	display: inline-block;
+.logo-box {
+    background: linear-gradient(135deg, var(--primary-glow), var(--accent-color));
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
 }
 
-/* 搜索框容器 */
-#searchForm {
-	gap: 0.5rem;
+.text-gradient {
+    background: linear-gradient(to right, #e2e8f0, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-#searchInput {
-	border: 1px solid #ddd;
-	padding: 0.5rem 1rem;
-	border-radius: 6px;
-	font-size: 0.95rem;
-	transition: all 0.3s ease;
+/* --- 搜索框 --- */
+.search-wrapper {
+    width: 400px;
 }
-
-#searchInput:focus {
-	border-color: #3498db;
-	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-	outline: none;
+.search-wrapper .input-group {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
-
-#searchBtn {
-	border-radius: 6px;
-	padding: 0.5rem 1.5rem;
-	font-weight: 500;
-	transition: all 0.3s ease;
+.search-wrapper .input-group:focus-within {
+    border-color: var(--primary-glow);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
 }
-
-#searchBtn:hover {
-	background-color: #27ae60;
-	border-color: #27ae60;
-	box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+.search-wrapper input {
+    background: transparent !important;
+    color: white !important;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
 }
-
-/* 仓库列表下拉菜单 */
+.search-wrapper input::placeholder {
+    color: rgba(148, 163, 184, 0.5);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
 #reposList {
-	background: white;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-	z-index: 1000;
-	animation: slideDown 0.2s ease;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 5px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1050;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
-
-@keyframes slideDown {
-	from {
-		opacity: 0;
-		transform: translateY(-10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
 #reposList div {
-	border-bottom: 1px solid #f0f0f0;
-	transition: all 0.2s ease;
+    padding: 10px 15px;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-
-#reposList div:last-child {
-	border-bottom: none;
-}
-
 #reposList div:hover {
-	background-color: #e8f4f8 !important;
-	padding-left: 12px;
+    background: #334155;
+    color: var(--primary-glow);
+    padding-left: 20px; /* Slide effect */
 }
 
-/* 卡片容器 */
+/* --- 卡片 (Dashboard Widgets) --- */
 .card {
-	border: 1px solid #e0e0e0;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	transition: all 0.3s ease;
-	overflow: hidden;
-	background: white;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-	box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-	transform: translateY(-2px);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 0 10px rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.card-title {
+    color: var(--primary-glow);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 10px;
 }
 
 .card-body {
-	padding: 1.5rem;
-	overflow-y: auto;
-	max-height: 650px;
+    padding: 1.25rem;
 }
 
-.card-body h6 {
-	color: #2c3e50;
-	font-weight: 600;
-	font-size: 1.1rem;
-	margin-bottom: 1rem;
-	padding-bottom: 0.75rem;
-	border-bottom: 2px solid #e8e8e8;
+/* --- 图表与可视化 --- */
+.label-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+.label-text::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 5px var(--accent-color);
 }
 
-/* 图表容器 */
-/* 修正：移除 !important，允许 JS 动态控制高度，否则图表会变形严重 */
-canvas {
-	width: 100% !important;
-	max-height: 400px;
-	margin-bottom: 0.5rem;
-	border-radius: 4px;
-}
-
-.card-body > br {
-	display: block;
-	height: 0.5rem;
-	background: none;
-	border: none;
-}
-
-/* 图表标签 */
-.card-body > * {
-	display: block;
-	margin: 0.75rem 0;
-}
-
-.card-body > br + * {
-	margin-top: 0.5rem;
-}
-
-/* 词云容器 */
+/* 词云 */
 .wordcloud-container {
     width: 100%;
-    height: 250px; /* 必须有高度 */
+    height: 220px;
     position: relative;
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-.wordcloud-label {
-	font-size: 0.9rem;
-	font-weight: 600;
-	color: #555;
-	margin-bottom: 0.5rem;
-	display: inline-block;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.2); /* 轻微深色背景 */
+    border: 1px dashed rgba(255,255,255,0.1);
+    margin-top: 10px;
 }
 
-.wordcloud-label::before {
-	content: '';
-	display: inline-block;
-	width: 4px;
-	height: 4px;
-	background: #3498db;
-	border-radius: 50%;
-	margin-right: 0.5rem;
+/* --- AI 分析区域 (Terminal Style) --- */
+#repoAiBox {
+    background: #000;
+    border: 1px solid #333;
+    color: #00ff00;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: 20px;
+    border-radius: 6px;
+    position: relative;
+    min-height: 100px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+}
+#repoAiBox::before {
+    content: '> SYSTEM ANALYSIS OUTPUT';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #111;
+    color: #666;
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-bottom: 1px solid #333;
+}
+#repoAiBox strong {
+    color: white;
 }
 
-/* 仓库详情部分 */
-#repoDetail {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+/* --- 按钮美化 --- */
+.btn-primary {
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    border: none;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+.btn-primary:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
 }
 
-#repoDetail h5 {
-	color: #2c3e50;
-	font-weight: 600;
-	margin-top: 1.5rem;
-	margin-bottom: 1rem;
-	padding-bottom: 0.75rem;
-	border-bottom: 2px solid #3498db;
-	font-size: 1.2rem;
-}
-
-#repoDetail h5:first-child {
-	margin-top: 0;
-}
-
-.repo-section {
-	margin-bottom: 2rem;
-	padding: 1rem;
-	background: #f9f9f9;
-	border-left: 3px solid #3498db;
-	border-radius: 4px;
-}
-
-.repo-section h6 {
-	color: #34495e;
-	font-weight: 600;
-	margin-bottom: 1rem;
-	font-size: 1rem;
-}
-
-/* 行按钮容器 */
-.row.mb-4 {
-	gap: 1rem;
-}
-
-/* Bootstrap 响应式改进 */
+/* --- 响应式调整 --- */
 @media (max-width: 768px) {
-	.d-flex.justify-content-between {
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	#searchForm {
-		width: 100% !important;
-	}
-
-	.card-body {
-		max-height: 500px;
-	}
-
-	h1 {
-		font-size: 1.5rem;
-	}
-}
-
-@media (max-width: 576px) {
-	.container-fluid {
-		padding: 0.5rem;
-	}
-
-	.card-body {
-		padding: 1rem;
-	}
-
-	h1 {
-		font-size: 1.3rem;
-	}
-}
-
-/* 滚动条美化 */
-.card-body::-webkit-scrollbar {
-	width: 6px;
-}
-
-.card-body::-webkit-scrollbar-track {
-	background: #f1f1f1;
-	border-radius: 3px;
-}
-
-.card-body::-webkit-scrollbar-thumb {
-	background: #bbb;
-	border-radius: 3px;
-}
-
-.card-body::-webkit-scrollbar-thumb:hover {
-	background: #999;
-}
-
-/* 工具提示 */
-.tooltip-inner {
-	border-radius: 4px;
-	font-size: 0.85rem;
-}
-
-/* 文字标签 */
-.label-text {
-	font-size: 0.85rem;
-	font-weight: 500;
-	color: #666;
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
-	display: block;
-}
-
-/* 动画 */
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.card {
-	animation: fadeIn 0.3s ease;
-}
-
-#repoDetail {
-	animation: fadeIn 0.3s ease;
-}
-
-/* 代码块样式 */
-.card pre {
-    max-height: 240px;
-    overflow: auto;
+    .header-glass {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .search-wrapper {
+        width: 100%;
+    }
 }
