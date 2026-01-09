@@ -16,55 +16,42 @@
 
     <div class="container-fluid dashboard-container">
 
-      <!-- 顶部导航栏 -->
+      <!-- 顶部导航栏 (简化版，仅保留 Logo) -->
       <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom border-secondary header-glass">
         <div class="d-flex align-items-center">
           <div class="logo-box me-3">OR</div>
           <h1 class="h4 m-0 fw-bold text-gradient">OpenRank Visualization <span class="badge bg-primary ms-2" style="font-size: 0.6em; vertical-align: middle;">PRO</span></h1>
         </div>
-
-        <div class="search-wrapper position-relative">
-          <form id="searchForm" class="d-flex" onsubmit="return false;">
-            <div class="input-group">
-              <span class="input-group-text bg-transparent border-end-0 text-info">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
-              </span>
-              <input id="searchInput" class="form-control border-start-0 ps-0 text-white" placeholder="SEARCH REPOSITORIES..." autocomplete="off">
-              <button id="searchBtn" class="btn btn-outline-info fw-bold">EXECUTE</button>
-            </div>
-          </form>
-          <!-- 搜索下拉结果容器 -->
-          <div id="reposList" class="dropdown-menu-dark"></div>
+        <!-- 搜索框已移至下方 Dashboard Grid 中 -->
+        <div class="d-flex align-items-center">
+             <span id="systemStatusBadge" class="badge bg-success bg-opacity-10 text-success border border-success status-pulse">SYSTEM ONLINE</span>
         </div>
       </header>
 
       <!-- 主要内容区 -->
       <div class="row g-4">
 
-        <!-- 左侧/顶部：数据概览 (Summary) -->
+        <!-- 数据概览 Grid (包含 5个数据卡片 + 1个搜索控制卡片) -->
         <div class="col-12">
           <div class="section-header mb-3">
-            <h5 class="text-uppercase text-secondary ls-1"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Global Metrics</h5>
+            <h5 class="text-uppercase text-secondary ls-1"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Mission Control</h5>
           </div>
           <div id="fileSummaries" class="row g-3">
-            <!-- 动态生成 -->
+            <!-- JS 将在此处生成 5 个数据卡片 -->
+            <!-- JS 将在此处生成第 6 个 Search Card -->
           </div>
         </div>
 
-        <!-- 底部/详情：仓库详情 (Detail) -->
+        <!-- 底部/详情：仓库详情 (Detail) - 初始隐藏或为空 -->
         <div class="col-12">
-          <div class="section-header mt-4 mb-3 d-flex align-items-center justify-content-between">
-            <h5 class="text-uppercase text-secondary ls-1"><i class="bi bi-cpu-fill me-2"></i>Repository Analysis</h5>
-            <span id="currentRepoBadge" class="badge bg-dark border border-secondary text-secondary d-none">NO REPO SELECTED</span>
+          <div id="repoDetailSectionTitle" class="section-header mt-4 mb-3 d-flex align-items-center justify-content-between" style="opacity: 0.5;">
+            <h5 class="text-uppercase text-secondary ls-1"><i class="bi bi-cpu-fill me-2"></i>Analysis Output</h5>
+            <span id="currentRepoBadge" class="badge bg-dark border border-secondary text-secondary d-none">NO TARGET</span>
           </div>
 
           <!-- 详情渲染区 -->
           <div id="repoDetail" class="repo-detail-wrapper row g-4">
-             <div class="text-center text-muted py-5 empty-state col-12">
-                <div class="spinner-border text-dark mb-3" role="status" style="width: 3rem; height: 3rem; opacity: 0.3;"></div>
-                <p>等待查询指令...</p>
-                <small>请在右上方搜索框输入仓库名称</small>
-             </div>
+             <!-- 内容将由 JS 动态填充 -->
           </div>
         </div>
 
