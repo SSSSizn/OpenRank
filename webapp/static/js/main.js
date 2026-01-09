@@ -1,19 +1,18 @@
 // --- START OF FILE main.js ---
 
 let files = []
-let allRepos = [] // 缓存仓库列表
+let allRepos = []
 
 // Chart.js 全局 Dark Mode 配置
-Chart.defaults.color = '#94a3b8'; // 文字颜色
-Chart.defaults.borderColor = '#334155'; // 网格线颜色
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#334155';
 Chart.defaults.font.family = "'JetBrains Mono', 'Inter', sans-serif";
-Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.95)';
 Chart.defaults.plugins.tooltip.borderColor = '#38bdf8';
 Chart.defaults.plugins.tooltip.borderWidth = 1;
-Chart.defaults.plugins.tooltip.titleColor = '#f1f5f9';
-Chart.defaults.plugins.tooltip.bodyColor = '#cbd5e1';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
 
-// 生成唯一ID
 function uid(prefix){
     return prefix + '_' + Math.random().toString(36).slice(2,9)
 }
@@ -21,70 +20,100 @@ function uid(prefix){
 // 初始化函数
 async function init(){
   try {
-    // 1. 获取文件列表
     const r = await axios.get('/api/files')
     files = r.data
 
-    // 2. 获取仓库列表(用于自动补全)
     const repoResp = await axios.get('/api/repos-list')
     allRepos = repoResp.data
 
     const container = document.getElementById('fileSummaries')
-    container.innerHTML = '' // 清空容器
+    container.innerHTML = ''
 
-    // 3. 串行加载每个文件的摘要 (预计5个文件)
-    // 使用 Grid 布局：前3个占第一行，后2个占第二行前两列
-    for(const f of files){
-      try{
-        console.log(`Loading summary for ${f}...`)
-        const s = await axios.get('/api/summary', { params:{ name: f } })
-        renderFileSummary(f, s.data)
-      }catch(e){
-        console.warn(`Error loading summary for ${f}`, e)
-        const errDiv = document.createElement('div')
-        errDiv.className = 'col-md-6 col-lg-4 col-xl-4 text-danger font-monospace'
-        errDiv.innerHTML = `<div class="card h-100 p-3 border-danger"><div class="card-body">Error loading ${f}</div></div>`
-        container.appendChild(errDiv)
-      }
+    // --- 1. 预加载所有数据 (Preload) ---
+    // 我们需要先获取所有 summary 数据，才能灵活地把 Top5 放到第二列去
+    const summaryDataMap = {};
+    // 异步并行加载
+    await Promise.all(files.map(async (f) => {
+        try {
+            const res = await axios.get('/api/summary', { params:{ name: f } });
+            summaryDataMap[f] = res.data;
+        } catch(e) {
+            console.warn(`Failed to load ${f}`, e);
+        }
+    }));
+
+    // --- 2. 提取 "Top 5 Files" 数据 ---
+    // 通常这个数据在 dependency_overview (包含 'sampled_dependency_overview' 字样的文件)
+    let top5DepFiles = null;
+    const overviewFile = files.find(f => f.includes('dependency_overview'));
+    if (overviewFile && summaryDataMap[overviewFile]) {
+        top5DepFiles = summaryDataMap[overviewFile].dependency_files;
     }
 
-    // 4. ***关键修改***：在最后（第6个位置）添加“搜索/控制卡片”
+    // --- 3. 渲染循环 ---
+    for(const f of files){
+      if (!summaryDataMap[f]) continue;
+
+      const sData = summaryDataMap[f];
+      // 如果当前渲染的是 dependency_staleness，我们把 top5DepFiles 传给它
+      let extraData = null;
+      if (sData.type === 'dependency_staleness') {
+          extraData = top5DepFiles;
+      }
+
+      renderFileSummary(container, f, sData, extraData);
+    }
+
+    // --- 4. 渲染搜索卡片 ---
     renderSearchCard(container);
+
+    // --- 5. 启动动态浮动动画 (包括 Overview 和 Detail) ---
+    applyRandomAnimationDelays();
 
   } catch(e) {
     console.error('Init failed', e)
   }
 }
 
-// --- 渲染搜索控制卡片 (The 6th Card) ---
+// 给所有 .floating-module 设置随机延迟，避免同步摆动
+function applyRandomAnimationDelays() {
+    const cols = document.querySelectorAll('.floating-module');
+    cols.forEach(col => {
+        const delay = Math.random() * 5;
+        const duration = 5 + Math.random() * 3;
+        col.style.animationDelay = `-${delay}s`;
+        col.style.animationDuration = `${duration}s`;
+    });
+}
+
+
+// --- 渲染搜索控制卡片 ---
 function renderSearchCard(container) {
     const col = document.createElement('div');
-    // 占据 Grid 的第 6 个位置 (3-Column Layout 的第2行第3列)
-    col.className = 'col-md-6 col-lg-4 col-xl-4';
+    col.className = 'col-md-6 col-lg-4 col-xl-4 floating-module';
 
     const card = document.createElement('div');
-    card.className = 'card h-100 search-card'; // 特殊样式类
+    card.className = 'card search-card h-100';
 
     const body = document.createElement('div');
     body.className = 'card-body d-flex flex-column justify-content-center';
 
-    // 卡片内容：标题 + 输入框 + 按钮
     body.innerHTML = `
-        <div class="card-title text-center text-info fw-bold mb-4" style="border-bottom:none; font-size:1.1rem;">
-            <i class="bi bi-terminal-fill me-2"></i>TARGET SELECTION
+        <div class="card-title text-center text-info fw-bold mb-4" style="justify-content: center; border-bottom: none; margin-top: auto;">
+            <span><i class="bi bi-terminal-fill me-2"></i>TARGET SELECTION</span>
         </div>
         
-        <div class="search-input-group w-100">
-            <input id="gridSearchInput" type="text" class="form-control" placeholder="ENTER REPO NAME..." autocomplete="off">
-            <div id="reposList"></div> <!-- Dropdown Container inside -->
+        <div class="search-input-group w-100 position-relative">
+            <input id="gridSearchInput" type="text" class="form-control" placeholder="INPUT REPO NAME..." autocomplete="off">
+            <div id="reposList"></div>
         </div>
         
-        <button id="gridSearchBtn" class="btn btn-glow-action w-100 py-2 mt-2">
+        <button id="gridSearchBtn" class="btn btn-glow-action w-100 py-3 mt-4">
             INITIALIZE ANALYSIS
         </button>
         
-        <div class="search-hint mt-3 font-monospace">
-            > WAITING FOR COMMAND...
+        <div class="search-hint mt-3 font-monospace text-center text-muted" style="font-size: 0.75rem; margin-bottom: auto;">
+            > SYSTEM READY. WAITING FOR COMMAND.
         </div>
     `;
 
@@ -92,25 +121,19 @@ function renderSearchCard(container) {
     col.appendChild(card);
     container.appendChild(col);
 
-    // --- 绑定搜索事件 (Events) ---
-    // 注意：元素现在是动态生成的，需要在插入 DOM 后绑定
-
+    // --- Events ---
     const input = body.querySelector('#gridSearchInput');
     const btn = body.querySelector('#gridSearchBtn');
     const listDiv = body.querySelector('#reposList');
     const hint = body.querySelector('.search-hint');
 
-    // 输入事件 (Auto-complete)
     input.addEventListener('input', (e) => {
         const val = e.target.value.trim().toLowerCase();
         if(val.length < 1){
             listDiv.style.display = 'none';
             return;
         }
-
-        // 简单的过滤逻辑
         const matches = allRepos.filter(r => r.toLowerCase().includes(val)).slice(0, 8);
-
         listDiv.innerHTML = '';
         if(matches.length > 0){
             listDiv.style.display = 'block';
@@ -120,7 +143,6 @@ function renderSearchCard(container) {
                 item.onclick = () => {
                     input.value = repo;
                     listDiv.style.display = 'none';
-                    // 点击下拉项直接触发搜索
                     triggerSearch(repo, hint);
                 }
                 listDiv.appendChild(item);
@@ -130,13 +152,11 @@ function renderSearchCard(container) {
         }
     });
 
-    // 按钮点击事件
     btn.addEventListener('click', () => {
         const q = input.value.trim();
         if(q) triggerSearch(q, hint);
     });
 
-    // 回车事件
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             const q = input.value.trim();
@@ -147,7 +167,6 @@ function renderSearchCard(container) {
         }
     });
 
-    // 点击外部关闭下拉
     document.addEventListener('click', (e) => {
         if(!input.contains(e.target) && !listDiv.contains(e.target)){
             listDiv.style.display = 'none';
@@ -155,161 +174,137 @@ function renderSearchCard(container) {
     });
 }
 
-// --- 触发搜索并滚动 ---
 function triggerSearch(repoName, hintElement) {
     if(hintElement) {
-        hintElement.innerHTML = `> EXECUTING QUERY: <span class="text-info">${repoName}</span><br>> PROCESSING DATA...`;
-        hintElement.classList.add('text-pulse');
+        hintElement.innerHTML = `> EXECUTING QUERY: <span class="text-info">${repoName}</span><br>> PROCESSING...`;
+        hintElement.classList.add('text-info');
     }
 
     renderRepoDetail(repoName).then(() => {
-        // 渲染完成后滚动到底部
+        // 渲染完成后，重新应用动画延迟给新的 Detail Cards
+        applyRandomAnimationDelays();
+
         const detailSection = document.getElementById('repoDetailSectionTitle');
         if(detailSection) {
-            // 恢复标题不透明度
             detailSection.style.opacity = '1';
             detailSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         if(hintElement) {
-             hintElement.innerHTML = `> ANALYSIS RENDERED.<br>> READY FOR NEXT TARGET.`;
+             hintElement.innerHTML = `> RENDER COMPLETE.<br>> READY.`;
+             hintElement.classList.remove('text-info');
         }
     });
 }
 
-
-// --- 通用组件渲染函数 ---
-
-/**
- * 绘制词云 (Dark Theme Optimized)
- */
 function drawWordCloud(container, list, title) {
     if(!list || list.length === 0) return;
 
-    // 1. 创建标题
     const label = document.createElement('div')
     label.className = 'label-text mt-3'
     label.textContent = title
     container.appendChild(label)
 
-    // 2. 创建词云容器
     const wcId = uid('wc')
     const wcDiv = document.createElement('div')
     wcDiv.id = wcId
     wcDiv.className = 'wordcloud-container'
     container.appendChild(wcDiv)
 
-    // 3. 延时绘制
     setTimeout(() => {
         const el = document.getElementById(wcId)
         if(el) {
             try {
                 WordCloud(el, {
                     list: list,
-                    gridSize: 10,
-                    weightFactor: function (size) {
-                        return Math.pow(size, 1.1) * 0.8;
-                    },
+                    gridSize: 8,
+                    weightFactor: function (size) { return Math.pow(size, 1.1) * 0.9; },
                     fontFamily: 'JetBrains Mono, sans-serif',
                     color: 'random-light',
-                    rotateRatio: 0.1,
+                    rotateRatio: 0.2,
                     backgroundColor: 'transparent',
                     shrinkToFit: true,
-                    drawOutOfBound: false,
-                    minRotation: -Math.PI / 8,
-                    maxRotation: Math.PI / 8,
+                    drawOutOfBound: false
                 })
-            } catch(wcError) {
-                console.warn('WordCloud lib error:', wcError)
-            }
+            } catch(wcError) { console.warn('WordCloud lib error:', wcError) }
         }
     }, 300)
 }
 
-// --- 渲染文件总览 (Summary) ---
-
-function renderFileSummary(filename, summary){
-  const container = document.getElementById('fileSummaries')
+function renderFileSummary(container, filename, summary, extraData = null){
   const col = document.createElement('div')
-  // 保持与 Search Card 一致的列宽设置
-  col.className = 'col-md-6 col-lg-4 col-xl-4'
+  // 添加 floating-module 类以应用浮动动画
+  col.className = 'col-md-6 col-lg-4 col-xl-4 floating-module'
 
   const card = document.createElement('div')
-  card.className = 'card h-100'
+  card.className = 'card h-100' // 关键：撑满列高
 
   const body = document.createElement('div')
   body.className = 'card-body'
 
-  // 标题区域
-  const headerDiv = document.createElement('div')
-  headerDiv.className = 'd-flex justify-content-between align-items-start mb-3 border-bottom border-secondary pb-2'
-
-  const titleGroup = document.createElement('div')
+  // Header
   const title = document.createElement('div')
-  title.className = 'card-title m-0 text-info fw-bold'
-  title.textContent = filename.replace('.json', '').replace('sampled_', '').toUpperCase()
+  title.className = 'card-title'
+  title.innerHTML = `
+      <span>${filename.replace('.json', '').replace('sampled_', '').toUpperCase()}</span>
+      <span class="badge bg-secondary bg-opacity-25 text-light font-monospace" style="font-size:0.7em">${summary.total} ITEMS</span>
+  `
+  body.appendChild(title)
 
-  const subTitle = document.createElement('small')
-  subTitle.className = 'text-muted font-monospace'
-  subTitle.style.fontSize = '0.75rem'
-  subTitle.textContent = `REPOS: ${summary.total}`
-
-  titleGroup.appendChild(title)
-  titleGroup.appendChild(subTitle)
-  headerDiv.appendChild(titleGroup)
-
-  body.appendChild(headerDiv)
-
-  // Neon 配色板
   const neonBlue = '#38bdf8';
   const neonPurple = '#a855f7';
   const neonGreen = '#4ade80';
   const neonOrange = '#fb923c';
   const neonRed = '#f87171';
-  const lightGrey = 'rgba(255,255,255,0.15)';
+  const lightGrey = 'rgba(255,255,255,0.1)';
 
-  // 根据不同类型渲染不同图表
+  // Wrapper div for content to push wordcloud down
+  const contentDiv = document.createElement('div');
+  contentDiv.style.width = '100%';
+  body.appendChild(contentDiv);
+
   if(summary.type === 'dependency_overview'){
     if(summary.has_dependency_file){
-      createChart(body, 'doughnut', 'DEPENDENCY FILE STATUS', ['YES', 'NO'],
+      createChart(contentDiv, 'doughnut', 'DEPENDENCY FILE STATUS', ['YES', 'NO'],
         [summary.has_dependency_file['True']||0, summary.has_dependency_file['False']||0],
         [neonBlue, lightGrey])
     }
-    if(summary.dependency_files){
-      const entries = Object.entries(summary.dependency_files).sort((a,b)=>b[1]-a[1]).slice(0, 5)
-      if(entries.length > 0){
-        createChart(body, 'bar', 'TOP 5 DEP FILES', entries.map(e=>e[0]), entries.map(e=>e[1]), neonPurple, 'y')
-      }
-    }
+    // Top 5 chart removed from here, moved to staleness card as requested
     drawWordCloud(body, summary.tokens_top, 'KEYWORDS CLOUD')
   }
 
   else if(summary.type === 'dependency_staleness'){
-    createChart(body, 'bar', 'STALENESS DAYS (AVG)',
+    // *** 关键修改：将 Top 5 Chart 插入到这里 ***
+    if (extraData) {
+        const entries = Object.entries(extraData).sort((a,b)=>b[1]-a[1]).slice(0, 5)
+        if(entries.length > 0){
+          createChart(contentDiv, 'bar', 'TOP 5 DEP FILES', entries.map(e=>e[0]), entries.map(e=>e[1]), neonPurple, 'y')
+        }
+    }
+
+    createChart(contentDiv, 'bar', 'STALENESS DAYS (AVG)',
       ['VS REPO', 'VS NOW'],
       [summary.days_behind_repo_mean, summary.days_behind_now_mean],
       [neonOrange, neonRed])
   }
 
   else if(summary.type === 'import_vs_requirements'){
-    createChart(body, 'radar', 'COVERAGE RATIO',
+    createChart(contentDiv, 'radar', 'COVERAGE RATIO',
       ['MISSING', 'REDUNDANT'],
       [summary.missing_ratio_mean, summary.redundant_ratio_mean],
       'rgba(56, 189, 248, 0.5)')
-
     drawWordCloud(body, summary.tokens_top, 'TOP IMPORTS')
   }
 
   else if(summary.type === 'issue_env_stats'){
-    createChart(body, 'bar', 'ENV ISSUE RATIO', ['RATIO'], [summary.env_issue_ratio_mean], neonRed)
+    createChart(contentDiv, 'bar', 'ENV ISSUE RATIO', ['RATIO'], [summary.env_issue_ratio_mean], neonRed)
     drawWordCloud(body, summary.tokens_top, 'ISSUE KEYWORDS')
   }
 
   else if(summary.type === 'onboarding_stats'){
-    createChart(body, 'bar', 'ONBOARDING FRICTION',
+    createChart(contentDiv, 'bar', 'ONBOARDING FRICTION',
       ['DOCS', 'ISSUES', 'PR FAIL'],
       [summary.contributing_env_ratio_mean, summary.newcomer_issues_env_ratio_mean, summary.newcomer_prs_env_fail_ratio_mean],
       [neonGreen, neonOrange, neonRed])
-
     drawWordCloud(body, summary.tokens_top, 'NEWCOMER TOPICS')
   }
 
@@ -318,7 +313,6 @@ function renderFileSummary(filename, summary){
   container.appendChild(col)
 }
 
-// 辅助：创建图表
 function createChart(container, type, label, labels, data, color, indexAxis='x'){
   const canvas = document.createElement('canvas')
   canvas.style.maxHeight = '180px'
@@ -356,7 +350,6 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
     }
   }
 
-
   const config = {
     type: type,
     data: {
@@ -380,7 +373,7 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
           legend: {
               display: type === 'pie' || type === 'doughnut',
               position: 'right',
-              labels: { boxWidth: 10, padding: 10 }
+              labels: { boxWidth: 10, padding: 10, color: '#94a3b8' }
           }
       },
       scales: (type === 'pie' || type === 'doughnut' || type === 'radar') ? {
@@ -388,21 +381,17 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
             angleLines: { color: '#334155' },
             grid: { color: '#334155' },
             pointLabels: { color: '#cbd5e1' },
-            ticks: { color: '#64748b', backdropColor: 'rgba(15, 23, 42, 0.8)' }
+            ticks: { display: false }
           }
       } : {
           x: { grid: { display: false } },
           y: { grid: { color: '#334155', borderDash: [5, 5] } }
       },
-      elements: {
-          line: { tension: 0.4 }
-      }
+      elements: { line: { tension: 0.4 } }
     }
   }
   new Chart(canvas.getContext('2d'), config)
 }
-
-// --- 渲染单个仓库详情 (Detail) ---
 
 function clientSideTokenizeAndCount(items) {
     const counter = {}
@@ -428,33 +417,34 @@ function clientSideTokenizeAndCount(items) {
     return sorted
 }
 
-// Helper to create a Bootstrap card wrapped in a column
+// Helper to create a Bootstrap card wrapped in a column (REUSED for Repo Detail)
 function createDashboardCard(titleText, colClass = 'col-md-6') {
     const col = document.createElement('div');
-    col.className = colClass;
+    // *** 关键：添加 floating-module 类 ***
+    col.className = colClass + ' floating-module';
 
     const card = document.createElement('div');
-    card.className = 'card h-100 p-3'; // Card styling from CSS
+    card.className = 'card h-100';
 
-    const h6 = document.createElement('h6');
-    h6.className = 'card-title';
-    h6.textContent = titleText;
-    card.appendChild(h6);
+    const body = document.createElement('div');
+    body.className = 'card-body';
 
-    // This div will contain all the charts/wordclouds
+    const title = document.createElement('div');
+    title.className = 'card-title';
+    title.innerHTML = `<span>${titleText}</span>`;
+    body.appendChild(title);
+
     const contentBody = document.createElement('div');
-    card.appendChild(contentBody);
+    body.appendChild(contentBody);
+    card.appendChild(body);
 
     col.appendChild(card);
     return { colElement: col, contentBody: contentBody };
 }
 
-
 async function renderRepoDetail(fullName){
   try {
     window.currentRepoFullName = fullName
-
-    // Update UI state for current repo badge
     const badge = document.getElementById('currentRepoBadge')
     badge.classList.remove('d-none', 'bg-dark', 'text-secondary', 'bg-danger')
     badge.classList.add('bg-info', 'text-dark', 'shadow-sm')
@@ -465,24 +455,17 @@ async function renderRepoDetail(fullName){
     const container = document.getElementById('repoDetail')
     container.innerHTML = ''
 
-
-    // Remove empty state if it exists
     const emptyState = container.querySelector('.empty-state');
-    if (emptyState) {
-        emptyState.remove();
-    }
+    if (emptyState) emptyState.remove();
 
     const viz = d.visualizations || {}
-
     const neonBlue = '#38bdf8';
     const neonPurple = '#a855f7';
     const neonGreen = '#4ade80';
     const neonOrange = '#fb923c';
     const neonRed = '#f87171';
-    const lightGrey = 'rgba(255,255,255,0.15)';
+    const lightGrey = 'rgba(255,255,255,0.1)';
 
-
-    // --- Left Main Panel (col-lg-8) ---
     const leftPanelCol = document.createElement('div');
     leftPanelCol.className = 'col-lg-8';
     const leftPanelRow = document.createElement('div');
@@ -490,7 +473,6 @@ async function renderRepoDetail(fullName){
     leftPanelCol.appendChild(leftPanelRow);
     container.appendChild(leftPanelCol);
 
-    // --- Right Side Panel (col-lg-4) ---
     const rightPanelCol = document.createElement('div');
     rightPanelCol.className = 'col-lg-4';
     const rightPanelRow = document.createElement('div');
@@ -498,17 +480,12 @@ async function renderRepoDetail(fullName){
     rightPanelCol.appendChild(rightPanelRow);
     container.appendChild(rightPanelCol);
 
-    // --- Individual Visualizations ---
-
-    // 1. Dependency Overview (into leftPanelRow)
     if(viz.dependency_overview){
         const dep = viz.dependency_overview
         const { colElement, contentBody } = createDashboardCard('Dependency Overview', 'col-md-6');
         leftPanelRow.appendChild(colElement);
-
         createChart(contentBody, 'doughnut', 'HAS DEPENDENCY FILE', ['YES', 'NO'],
             [dep.has_dependency_file?1:0, dep.has_dependency_file?0:1], [neonBlue, lightGrey])
-
         const info = document.createElement('div')
         info.className = 'mt-3 p-2 border border-secondary rounded bg-dark font-monospace text-muted'
         info.style.fontSize = '0.8rem'
@@ -520,22 +497,18 @@ async function renderRepoDetail(fullName){
         contentBody.appendChild(info)
     }
 
-    // 2. Import vs Requirements (into leftPanelRow)
     if(viz.import_vs_requirements){
         const imp = viz.import_vs_requirements
         const { colElement, contentBody } = createDashboardCard('Import Health', 'col-md-6');
         leftPanelRow.appendChild(colElement);
-
         createChart(contentBody, 'radar', 'COVERAGE RATIO', ['MISSING', 'REDUNDANT'],
             [imp.missing_ratio||0, imp.redundant_ratio||0], 'rgba(168, 85, 247, 0.6)')
     }
 
-    // 3. Dependency Word Clouds (Combined into a separate card in leftPanelRow)
     if( (viz.dependency_overview && viz.dependency_overview.dependency_files) ||
         (viz.import_vs_requirements && viz.import_vs_requirements.imports) ) {
         const { colElement, contentBody } = createDashboardCard('Keywords & Modules', 'col-12');
         leftPanelRow.appendChild(colElement);
-
         if(viz.dependency_overview && viz.dependency_overview.dependency_files){
             const tokens = clientSideTokenizeAndCount(viz.dependency_overview.dependency_files);
             drawWordCloud(contentBody, tokens, 'DEPENDENCY FILES');
@@ -546,18 +519,14 @@ async function renderRepoDetail(fullName){
         }
     }
 
-
-    // 4. Staleness (into rightPanelRow)
     if(viz.dependency_staleness){
         const stal = viz.dependency_staleness
         const { colElement, contentBody } = createDashboardCard('Dependency Staleness', 'col-12');
         rightPanelRow.appendChild(colElement);
-
         createChart(contentBody, 'bar', 'LAGGING DAYS', ['VS REPO', 'VS NOW'],
             [stal.days_behind_repo||0, stal.days_behind_now||0], [neonOrange, neonRed])
     }
 
-    // 5. Issue Env Stats & Onboarding (Combined into one card in rightPanelRow)
     if(viz.issue_env_stats || viz.onboarding_stats){
         const { colElement, contentBody } = createDashboardCard('Friction & Onboarding', 'col-12');
         rightPanelRow.appendChild(colElement);
@@ -583,12 +552,13 @@ async function renderRepoDetail(fullName){
         }
     }
 
-    // --- AI Analysis Full Width at bottom (outside left/right panels) ---
     const { colElement: aiColElement, contentBody: aiCardContentBody } = createDashboardCard('AI Analysis', 'col-12');
     container.appendChild(aiColElement);
 
-    // Override default card content for terminal-like display
-    aiCardContentBody.parentElement.id = 'repoAiBox'; // Set ID on the card itself
+    const aiCard = aiColElement.querySelector('.card');
+    aiCard.id = 'repoAiBox';
+    aiCard.querySelector('.card-title').style.display = 'none';
+
     aiCardContentBody.parentElement.innerHTML = `
         <div class="ai-terminal-header">
             <span>> SYSTEM AI LOG</span>
@@ -599,7 +569,6 @@ async function renderRepoDetail(fullName){
         </div>
     `;
 
-    // Bind AI Event
     document.getElementById('triggerAiBtn').onclick = async function() {
         const btn = this;
         const outputArea = aiColElement.querySelector('.ai-output-area');
@@ -608,30 +577,9 @@ async function renderRepoDetail(fullName){
         outputArea.innerHTML = `<div class="mt-2 text-warning">> CONNECTING TO DEEPSEEK-V3...</div>`;
 
         let summary_lines = []
-        // Construct prompt summary for AI
         if (viz.dependency_overview) {
             summary_lines.push(`README Env Ratio: ${(viz.dependency_overview.readme_env_ratio||0).toFixed(4)}`)
-            summary_lines.push(`Total lines in README: ${viz.dependency_overview.readme_total_lines||0}`)
-            summary_lines.push(`Environment related lines in README: ${viz.dependency_overview.readme_env_lines||0}`)
         }
-        // Add more relevant summary points if available and concise
-        if (viz.dependency_staleness) {
-            summary_lines.push(`Avg days behind repo: ${viz.dependency_staleness.days_behind_repo||0}`)
-            summary_lines.push(`Avg days behind now: ${viz.dependency_staleness.days_behind_now||0}`)
-        }
-        if (viz.import_vs_requirements) {
-            summary_lines.push(`Import missing ratio: ${viz.import_vs_requirements.missing_ratio||0}`)
-            summary_lines.push(`Import redundant ratio: ${viz.import_vs_requirements.redundant_ratio||0}`)
-        }
-        if (viz.issue_env_stats) {
-            summary_lines.push(`Environment issue ratio: ${viz.issue_env_stats.env_issue_ratio||0}`)
-        }
-        if (viz.onboarding_stats) {
-            summary_lines.push(`Contributing env ratio: ${viz.onboarding_stats.contributing?.env_ratio || 0}`)
-            summary_lines.push(`Newcomer issue env ratio: ${viz.onboarding_stats.newcomer_issues?.env_ratio || 0}`)
-            summary_lines.push(`Newcomer PR env fail ratio: ${viz.onboarding_stats.newcomer_prs?.env_fail_ratio || 0}`)
-        }
-
 
         try {
             const resp = await axios.post('/api/repo-ai', {
@@ -645,7 +593,6 @@ async function renderRepoDetail(fullName){
             `
         } catch (err) {
             outputArea.innerHTML += `<div class="text-danger mt-2">> ERROR: AI ANALYSIS FAILED. DETAIL: ${err.message}</div>`
-            console.error("AI Analysis Failed:", err);
             btn.disabled = false;
             btn.textContent = 'RETRY';
         }
@@ -653,13 +600,6 @@ async function renderRepoDetail(fullName){
 
   } catch(e) {
     console.error('Render Detail Error:', e)
-    const container = document.getElementById('repoDetail');
-    container.innerHTML = `<div class="col-12 text-danger text-center p-5 font-monospace">[FATAL ERROR] FAILED TO LOAD REPOSITORY DETAIL.<br>Please check console for details: ${e.message}</div>`;
-    // Re-add empty state if detail fails, but with error
-    const badge = document.getElementById('currentRepoBadge');
-    badge.classList.remove('bg-info', 'text-dark');
-    badge.classList.add('bg-danger', 'text-white');
-    badge.textContent = `ERROR LOADING ${window.currentRepoFullName ? window.currentRepoFullName.toUpperCase() : 'REPO'}`;
   }
 }
 
