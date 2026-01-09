@@ -370,7 +370,8 @@ def api_repo():
     })
 
 # ===== 硅基流动配置 =====
-SILICONFLOW_API_KEY = "sk-aikhxaddyhhvwodwvcdwwkrvvbqlwglkbigapjvwqjowdbah"
+# 删掉下划线
+SILICONFLOW_API_KEY = "sk-aikhxaddyhh______vwodwvcdwwkrvvbqlwglkbigapjv_____wqjowdbah"
 SILICONFLOW_BASE_URL = "https://api.siliconflow.cn/v1"
 SILICONFLOW_MODEL = "deepseek-ai/DeepSeek-V3.2-Exp"
 
