@@ -6,6 +6,10 @@ import statistics
 import re
 from collections import Counter
 import threading
+import requests
+from flask import request, jsonify
+from openai import OpenAI
+
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / 'data_analysis'
@@ -231,10 +235,14 @@ def load_and_cache_data():
                     if isinstance(item, dict):
                         full = item.get('full_name') or item.get('repository') or item.get('fullName')
                         if full:
-                            new_index[str(full).lower()] = {
+                            full = str(full).lower()
+                            if full not in new_index:
+                                new_index[full] = []
+                            new_index[full].append({
                                 'file': fname,
                                 'record': item
-                            }
+                            })
+
             REPO_INDEX = new_index
 
 
@@ -277,15 +285,19 @@ def api_search():
     results = []
     limit = 20
     count = 0
-    for full_name, info in REPO_INDEX.items():
+    for full_name, infos in REPO_INDEX.items():
         if q in full_name:
-            results.append({
-                'file': info['file'],
-                'record': info['record'],
-                'full_name': info['record'].get('full_name')
-            })
-            count += 1
-            if count >= limit: break
+            for info in infos:  # 遍历该仓库的所有文件
+                results.append({
+                    'file': info.get('file', '未知文件'),
+                    'record': info.get('record', {}),
+                    'full_name': info.get('record', {}).get('full_name')
+                })
+                count += 1
+                if count >= limit:
+                    break
+            if count >= limit:
+                break
     return jsonify(results)
 
 
@@ -297,16 +309,24 @@ def api_repos_list():
 @app.route('/api/repo')
 def api_repo():
     full = request.args.get('full_name', '').strip().lower()
-    if full in REPO_INDEX:
-        info = REPO_INDEX[full]
-        matches = [{'file': info['file'], 'record': info['record']}]
-        rec = info['record']
-        fname = info['file']
-        viz = {}
-        # ... (此处可视化数据提取逻辑与之前相同，省略以节省空间，直接用之前代码的即可) ...
-        # 如果需要我完整列出这部分请告诉我，通常只需要替换上面 data loading 部分即可
 
-        # 补全 Visualizations 构建逻辑:
+    if full not in REPO_INDEX:
+        return jsonify({'matches': [], 'visualizations': {}})
+
+    infos = REPO_INDEX[full]   # 多个统计文件
+    matches = []
+    viz = {}
+
+    for info in infos:
+        fname = info.get('file', '')
+        rec = info.get('record', {})
+
+        matches.append({
+            'file': fname or '未知文件',
+            'record': rec
+        })
+
+        # ===== 逐文件补全 visualization =====
         if 'dependency_overview' in fname:
             viz['dependency_overview'] = {
                 'has_dependency_file': rec.get('has_dependency_file', False),
@@ -315,33 +335,84 @@ def api_repo():
                 'readme_env_lines': rec.get('readme_env_lines', 0),
                 'dependency_files': rec.get('dependency_files', [])
             }
-        elif 'dependency_staleness' in fname:
+
+        if 'dependency_staleness' in fname:
             viz['dependency_staleness'] = {
-                'days_behind_repo': rec.get('max_staleness_vs_repo_days'),
-                'days_behind_now': rec.get('max_staleness_vs_now_days')
+                'days_behind_repo': rec.get('max_staleness_vs_repo_days', 0),
+                'days_behind_now': rec.get('max_staleness_vs_now_days', 0)
             }
-        elif 'import_vs_requirements' in fname:
+
+        if 'import_vs_requirements' in fname:
             viz['import_vs_requirements'] = {
                 'missing_ratio': rec.get('missing_ratio', 0),
                 'redundant_ratio': rec.get('redundant_ratio', 0),
                 'imports': rec.get('imports', [])
             }
-        elif 'issue_env_stats' in fname:
+
+        if 'issue_env_stats' in fname:
             viz['issue_env_stats'] = {
                 'env_issue_ratio': rec.get('env_issue_ratio', 0),
                 'keyword_hits': rec.get('keyword_hits', {})
             }
-        elif 'onboarding_stats' in fname:
+
+        if 'onboarding_stats' in fname:
             viz['onboarding_stats'] = {
                 'contributing': rec.get('contributing', {}),
                 'newcomer_issues': rec.get('newcomer_issues', {}),
                 'newcomer_prs': rec.get('newcomer_prs', {})
             }
 
-        return jsonify({'matches': matches, 'visualizations': viz})
+    print(f"[api_repo] {full} viz keys:", list(viz.keys()))
 
-    return jsonify({'matches': [], 'visualizations': {}})
+    return jsonify({
+        'matches': matches,
+        'visualizations': viz
+    })
 
+# ===== 硅基流动配置 =====
+SILICONFLOW_API_KEY = "sk-aikhxaddyhhvwodwvcdwwkrvvbqlwglkbigapjvwqjowdbah"
+SILICONFLOW_BASE_URL = "https://api.siliconflow.cn/v1"
+SILICONFLOW_MODEL = "deepseek-ai/DeepSeek-V3.2-Exp"
+
+client = OpenAI(
+    api_key=SILICONFLOW_API_KEY,
+    base_url=SILICONFLOW_BASE_URL
+)
+
+@app.route('/api/repo-ai', methods=['POST'])
+def repo_ai():
+    data = request.json or {}
+    summary = data.get('summary', [])
+    full_name = data.get('full_name', '')
+
+    prompt = (
+        "你是软件工程分析助手，请基于以下仓库统计结果，"
+        "用 5-8 句话分析环境依赖复杂度、新手友好程度，"
+        "并指出潜在问题与改进建议。\n\n"
+        f"仓库：{full_name}\n"
+        + "\n".join(summary)
+    )
+
+    try:
+        resp = client.chat.completions.create(
+            model=SILICONFLOW_MODEL,
+            messages=[
+                {"role": "system", "content": "你是严谨的软件工程研究分析助手"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=512
+        )
+
+        text = resp.choices[0].message.content
+        return jsonify({"analysis": text})
+
+    except Exception as e:
+        print("AI ERROR:", repr(e))
+        return jsonify({
+            "error": "AI analysis failed",
+            "detail": str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

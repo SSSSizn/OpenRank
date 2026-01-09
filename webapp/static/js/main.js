@@ -240,11 +240,12 @@ function clientSideTokenizeAndCount(items) {
 
 async function renderRepoDetail(fullName){
   try {
+    window.currentRepoFullName = fullName
     const r = await axios.get('/api/repo', { params:{ full_name: fullName } })
     const d = r.data
     const container = document.getElementById('repoDetail')
     container.innerHTML = ''
-    
+
     // 标题
     const header = document.createElement('div')
     header.className = 'd-flex justify-content-between align-items-center mb-3'
@@ -252,110 +253,165 @@ async function renderRepoDetail(fullName){
     container.appendChild(header)
 
     const viz = d.visualizations || {}
-
-    // 1. Dependency Overview
+    console.log('viz keys:', Object.keys(viz))
+    // --- 1. Dependency Overview ---
     if(viz.dependency_overview){
-        const dep = viz.dependency_overview
-        const card = createDetailCard('依赖概览')
-        
-        // 饼图
-        createChart(card.body, 'pie', '依赖文件存在', ['是', '否'], 
-            [dep.has_dependency_file?1:0, dep.has_dependency_file?0:1], ['#36a2eb', '#ff6384'])
-            
-        // 文本信息
-        const info = document.createElement('div')
-        info.className = 'alert alert-light border mt-3'
-        info.innerHTML = `
-            <div><strong>README 环境比例:</strong> ${(dep.readme_env_ratio||0).toFixed(4)}</div>
-            <div><strong>总行数:</strong> ${dep.readme_total_lines||0}</div>
-            <div><strong>环境相关行数:</strong> ${dep.readme_env_lines||0}</div>
-        `
-        card.body.appendChild(info)
-        
-        // 单仓库依赖文件词云
-        const tokens = clientSideTokenizeAndCount(dep.dependency_files)
-        drawWordCloud(card.body, tokens, '依赖文件分布')
-        
-        container.appendChild(card.el)
+        try {
+            const dep = viz.dependency_overview
+            const card = createDetailCard('依赖概览')
+
+            createChart(card.body, 'pie', '依赖文件存在', ['是', '否'], 
+                [dep.has_dependency_file?1:0, dep.has_dependency_file?0:1], ['#36a2eb', '#ff6384'])
+
+            const info = document.createElement('div')
+            info.className = 'alert alert-light border mt-3'
+            info.innerHTML = `
+                <div><strong>README 环境比例:</strong> ${(dep.readme_env_ratio||0).toFixed(4)}</div>
+                <div><strong>总行数:</strong> ${dep.readme_total_lines||0}</div>
+                <div><strong>环境相关行数:</strong> ${dep.readme_env_lines||0}</div>
+            `
+            card.body.appendChild(info)
+
+            if(dep.dependency_files){
+                const tokens = clientSideTokenizeAndCount(dep.dependency_files)
+                drawWordCloud(card.body, tokens, '依赖文件分布')
+            }
+
+            container.appendChild(card.el)
+        } catch(e){ console.warn('Dependency Overview 渲染异常', e) }
     }
 
-    // 2. Staleness
+    
+    // --- 2. Staleness ---
     if(viz.dependency_staleness){
-        const stal = viz.dependency_staleness
-        const card = createDetailCard('依赖陈旧性')
-        createChart(card.body, 'bar', '滞后天数', ['vs Repo', 'vs Now'], 
-            [stal.days_behind_repo||0, stal.days_behind_now||0], '#ff9f40')
-        container.appendChild(card.el)
+        try {
+            const stal = viz.dependency_staleness
+            const card = createDetailCard('依赖陈旧性')
+            createChart(card.body, 'bar', '滞后天数', ['vs Repo', 'vs Now'], 
+                [stal.days_behind_repo||0, stal.days_behind_now||0], '#ff9f40')
+            container.appendChild(card.el)
+        } catch(e){ console.warn('Dependency Staleness 渲染异常', e) }
     }
 
-    // 3. Import vs Requirements
+    // --- 3. Import vs Requirements ---
     if(viz.import_vs_requirements){
-        const imp = viz.import_vs_requirements
-        const card = createDetailCard('Import 分析')
-        createChart(card.body, 'bar', '比例', ['缺失率', '冗余率'], 
-            [imp.missing_ratio, imp.redundant_ratio], '#4bc0c0')
-        
-        // 词云
-        const tokens = clientSideTokenizeAndCount(imp.imports)
-        drawWordCloud(card.body, tokens, 'Import 库词云')
-        
-        container.appendChild(card.el)
+        try {
+            const imp = viz.import_vs_requirements
+            const card = createDetailCard('Import 分析')
+            createChart(card.body, 'bar', '比例', ['缺失率', '冗余率'], 
+                [imp.missing_ratio||0, imp.redundant_ratio||0], '#4bc0c0')
+
+            if(imp.imports){
+                const tokens = clientSideTokenizeAndCount(imp.imports)
+                drawWordCloud(card.body, tokens, 'Import 库词云')
+            }
+
+            container.appendChild(card.el)
+        } catch(e){ console.warn('Import vs Requirements 渲染异常', e) }
     }
 
-    // 4. Issue Env Stats
+    // --- 4. Issue Env Stats ---
     if(viz.issue_env_stats){
-        const iss = viz.issue_env_stats
-        const card = createDetailCard('Issue 环境统计')
-        createChart(card.body, 'bar', '比例', ['环境Issue占比'], [iss.env_issue_ratio], '#9966ff')
-        
-        // 这里的 keyword_hits 是个对象 {word: count}，需要转一下格式
-        let kwList = []
-        if(iss.keyword_hits){
-             kwList = Object.entries(iss.keyword_hits)
-                .sort((a,b)=>b[1]-a[1])
-                .slice(0, 50)
-                // 归一化
-             if(kwList.length > 0){
-                 const max = kwList[0][1]
-                 kwList = kwList.map(k => [k[0], 10 + k[1]/max * 40])
-             }
-        }
-        drawWordCloud(card.body, kwList, 'Issue 关键词')
-        
-        container.appendChild(card.el)
+        try {
+            const iss = viz.issue_env_stats
+            const card = createDetailCard('Issue 环境统计')
+            createChart(card.body, 'bar', '比例', ['环境Issue占比'], [iss.env_issue_ratio||0], '#9966ff')
+
+            if(iss.keyword_hits){
+                let kwList = Object.entries(iss.keyword_hits)
+                    .sort((a,b)=>b[1]-a[1])
+                    .slice(0, 50)
+                if(kwList.length>0){
+                    const max = kwList[0][1]
+                    kwList = kwList.map(k => [k[0], 10 + k[1]/max*40])
+                    drawWordCloud(card.body, kwList, 'Issue 关键词')
+                }
+            }
+
+            container.appendChild(card.el)
+        } catch(e){ console.warn('Issue Env Stats 渲染异常', e) }
     }
 
-    // 5. Onboarding
+    // --- 5. Onboarding ---
     if(viz.onboarding_stats){
-        const onb = viz.onboarding_stats
-        const card = createDetailCard('入门/贡献体验')
-        
-        const c_ratio = onb.contributing?.env_ratio || 0
-        const n_ratio = onb.newcomer_issues?.env_ratio || 0
-        const p_ratio = onb.newcomer_prs?.env_fail_ratio || 0
-        
-        createChart(card.body, 'bar', '比例', ['Contributing Env', 'Newcomer Issue Env', 'PR Fail Env'], 
-            [c_ratio, n_ratio, p_ratio], '#c9cbcf')
-            
-        // 关键词词云
-        let kwList = []
-        if(onb.newcomer_issues?.keyword_hits){
-            kwList = Object.entries(onb.newcomer_issues.keyword_hits)
-                .sort((a,b)=>b[1]-a[1]).slice(0, 50)
-             if(kwList.length > 0){
-                 const max = kwList[0][1]
-                 kwList = kwList.map(k => [k[0], 10 + k[1]/max * 40])
-             }
+        try {
+            const onb = viz.onboarding_stats
+            const card = createDetailCard('入门/贡献体验')
+
+            const c_ratio = onb.contributing?.env_ratio || 0
+            const n_ratio = onb.newcomer_issues?.env_ratio || 0
+            const p_ratio = onb.newcomer_prs?.env_fail_ratio || 0
+
+            createChart(
+                card.body,
+                'bar',
+                '比例',
+                ['Contributing Env', 'Newcomer Issue Env', 'PR Fail Env'],
+                [c_ratio, n_ratio, p_ratio],
+                '#c9cbcf'
+            )
+
+            if(onb.newcomer_issues?.keyword_hits){
+                let kwList = Object.entries(onb.newcomer_issues.keyword_hits)
+                    .sort((a,b)=>b[1]-a[1])
+                    .slice(0, 50)
+
+                if(kwList.length>0){
+                    const max = kwList[0][1]
+                    kwList = kwList.map(k => [k[0], 10 + k[1]/max*40])
+                    drawWordCloud(card.body, kwList, '新人 Issue 关键词')
+                }
+            }
+
+            container.appendChild(card.el)
+        } catch(e){
+            console.warn('Onboarding Stats 渲染异常', e)
         }
-        drawWordCloud(card.body, kwList, '新人 Issue 关键词')
-        
-        container.appendChild(card.el)
+    }
+
+    // --- AI 分析区块 ---
+    const aiBox = document.createElement('div')
+    aiBox.id = 'repoAiBox'
+    aiBox.className = 'alert alert-info mt-4'
+    aiBox.innerHTML = "<strong>点击下方按钮获取 AI 分析</strong>"
+    container.appendChild(aiBox)
+
+    const aiBtn = document.createElement('button')
+    aiBtn.className = 'btn btn-primary mt-2'
+    aiBtn.textContent = "获取 AI 分析"
+    container.appendChild(aiBtn)
+
+    // AI 分析点击
+    aiBtn.onclick = async () => {
+        aiBox.innerHTML = "<strong>AI 分析中...</strong>"
+
+        // 构造 prompt 所需的摘要（仍然在前端拼）
+        let summary_lines = []
+        if (viz.dependency_overview) {
+            const dep = viz.dependency_overview
+            summary_lines.push(`README 环境比例: ${(dep.readme_env_ratio || 0).toFixed(4)}`)
+            summary_lines.push(`总行数: ${dep.readme_total_lines || 0}`)
+            summary_lines.push(`环境相关行数: ${dep.readme_env_lines || 0}`)
+        }
+
+        try {
+            const resp = await axios.post('/api/repo-ai', {
+                full_name: fullName,
+                summary: summary_lines
+            })
+
+            aiBox.innerHTML = `<strong>智能分析：</strong><br>${resp.data.analysis}`
+        } catch (err) {
+            console.error(err)
+            aiBox.innerHTML = "<strong>AI 分析失败</strong>"
+        }
     }
   } catch(e) {
-    console.error('Render Detail Error', e)
-    alert('加载仓库详情失败')
+    console.error('Render Detail Error:', e, e.stack)
+    alert('加载仓库详情失败，请打开控制台查看详细错误')
   }
 }
+
 
 function createDetailCard(titleText){
     const el = document.createElement('div')
