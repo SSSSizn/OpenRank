@@ -6,6 +6,11 @@ let files = []
 Chart.defaults.color = '#94a3b8'; // 文字颜色
 Chart.defaults.borderColor = '#334155'; // 网格线颜色
 Chart.defaults.font.family = "'JetBrains Mono', 'Inter', sans-serif";
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.9)';
+Chart.defaults.plugins.tooltip.borderColor = '#38bdf8';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.titleColor = '#f1f5f9';
+Chart.defaults.plugins.tooltip.bodyColor = '#cbd5e1';
 
 // 生成唯一ID
 function uid(prefix){
@@ -50,7 +55,7 @@ function drawWordCloud(container, list, title) {
 
     // 1. 创建标题
     const label = document.createElement('div')
-    label.className = 'label-text'
+    label.className = 'label-text mt-3' // 增加顶部外边距
     label.textContent = title
     container.appendChild(label)
 
@@ -70,14 +75,16 @@ function drawWordCloud(container, list, title) {
                     list: list,
                     gridSize: 10,
                     weightFactor: function (size) {
-                        return Math.pow(size, 1.1) * 0.8; // 调整字体大小缩放
+                        return Math.pow(size, 1.1) * 0.8;
                     },
                     fontFamily: 'JetBrains Mono, sans-serif',
                     color: 'random-light', // 改为浅色随机，适配深色背景
-                    rotateRatio: 0,   // 数据大屏通常喜欢水平排列，显得整洁，或设0.3
+                    rotateRatio: 0.1,   // 保持轻微旋转
                     backgroundColor: 'transparent', // 透明背景
                     shrinkToFit: true,
-                    drawOutOfBound: false
+                    drawOutOfBound: false,
+                    minRotation: -Math.PI / 8, // 最小旋转角度
+                    maxRotation: Math.PI / 8,  // 最大旋转角度
                 })
             } catch(wcError) {
                 console.warn('WordCloud lib error:', wcError)
@@ -91,10 +98,11 @@ function drawWordCloud(container, list, title) {
 function renderFileSummary(filename, summary){
   const container = document.getElementById('fileSummaries')
   const col = document.createElement('div')
-  col.className = 'col-md-6 col-lg-4 col-xl-3' // 响应式布局调整
+  // 调整列宽：在 extra-large 屏幕上显示 3 列，以实现 3+2 的布局
+  col.className = 'col-md-6 col-lg-4 col-xl-4'
 
   const card = document.createElement('div')
-  card.className = 'card h-100' // 样式在 CSS 中定义
+  card.className = 'card h-100'
 
   const body = document.createElement('div')
   body.className = 'card-body'
@@ -125,16 +133,17 @@ function renderFileSummary(filename, summary){
   const neonGreen = '#4ade80';
   const neonOrange = '#fb923c';
   const neonRed = '#f87171';
+  const lightGrey = 'rgba(255,255,255,0.15)'; // 用于背景或次要部分
 
   // 根据不同类型渲染不同图表
   if(summary.type === 'dependency_overview'){
     if(summary.has_dependency_file){
       createChart(body, 'doughnut', 'DEPENDENCY FILE STATUS', ['YES', 'NO'],
         [summary.has_dependency_file['True']||0, summary.has_dependency_file['False']||0],
-        [neonBlue, 'rgba(255,255,255,0.1)']) // 使用半透明灰作为“无”
+        [neonBlue, lightGrey])
     }
     if(summary.dependency_files){
-      const entries = Object.entries(summary.dependency_files).sort((a,b)=>b[1]-a[1]).slice(0, 5) // Top 5 sufficient
+      const entries = Object.entries(summary.dependency_files).sort((a,b)=>b[1]-a[1]).slice(0, 5)
       if(entries.length > 0){
         createChart(body, 'bar', 'TOP 5 DEP FILES', entries.map(e=>e[0]), entries.map(e=>e[1]), neonPurple, 'y')
       }
@@ -153,7 +162,7 @@ function renderFileSummary(filename, summary){
     createChart(body, 'radar', 'COVERAGE RATIO',
       ['MISSING', 'REDUNDANT'],
       [summary.missing_ratio_mean, summary.redundant_ratio_mean],
-      'rgba(56, 189, 248, 0.5)') // Radar needs transparency
+      'rgba(56, 189, 248, 0.5)')
 
     drawWordCloud(body, summary.tokens_top, 'TOP IMPORTS')
   }
@@ -180,7 +189,7 @@ function renderFileSummary(filename, summary){
 // 辅助：创建图表
 function createChart(container, type, label, labels, data, color, indexAxis='x'){
   const canvas = document.createElement('canvas')
-  canvas.style.maxHeight = '180px' // Dashboard card chart height
+  canvas.style.maxHeight = '180px'
   canvas.style.width = '100%'
 
   const wrapper = document.createElement('div')
@@ -194,13 +203,27 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
   wrapper.appendChild(canvas)
   container.appendChild(wrapper)
 
-  // 处理颜色：如果是单一颜色且是填充型图表，增加透明度
   let bgColors = color;
   let borderColors = color;
 
-  if(typeof color === 'string' && (type === 'bar' || type === 'radar')){
-      // 简单处理：不改变透明度，直接用Neon色
+  if (type === 'radar') { // Radar charts usually look better with a filled area
+    if (typeof color === 'string') {
+      bgColors = color; // Already rgba
+      borderColors = color.replace('0.5', '1'); // Make border more solid
+    } else { // Array of colors for radar is rare
+      bgColors = color.map(c => c.replace('1)', '0.5)'));
+      borderColors = color;
+    }
+  } else if (type === 'bar' || type === 'doughnut' || type === 'pie') {
+    if (!Array.isArray(color)) { // Single color for bar, doughnut
+      bgColors = [color];
+      borderColors = [color];
+    } else { // Multiple colors
+      bgColors = color;
+      borderColors = color;
+    }
   }
+
 
   const config = {
     type: type,
@@ -212,8 +235,9 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
         backgroundColor: bgColors,
         borderColor: borderColors,
         borderWidth: 1,
-        borderRadius: 4, // 圆角柱状图
-        barPercentage: 0.6
+        borderRadius: 4,
+        barPercentage: 0.6,
+        fill: type === 'radar' // Fill area for radar chart
       }]
     },
     options: {
@@ -227,12 +251,19 @@ function createChart(container, type, label, labels, data, color, indexAxis='x')
               labels: { boxWidth: 10, padding: 10 }
           }
       },
-      scales: (type === 'pie' || type === 'doughnut' || type === 'radar') ? {} : {
-          x: { grid: { display: false } }, // 隐藏X轴网格
-          y: { grid: { color: '#334155', borderDash: [5, 5] } } // 虚线Y轴网格
+      scales: (type === 'pie' || type === 'doughnut' || type === 'radar') ? {
+          r: { // Radar specific scale options
+            angleLines: { color: '#334155' },
+            grid: { color: '#334155' },
+            pointLabels: { color: '#cbd5e1' },
+            ticks: { color: '#64748b', backdropColor: 'rgba(15, 23, 42, 0.8)' }
+          }
+      } : {
+          x: { grid: { display: false } },
+          y: { grid: { color: '#334155', borderDash: [5, 5] } }
       },
       elements: {
-          line: { tension: 0.4 } // 平滑曲线
+          line: { tension: 0.4 }
       }
     }
   }
@@ -258,160 +289,231 @@ function clientSideTokenizeAndCount(items) {
         sorted = sorted.map(item => {
             const val = item[1]
             let weight = 20
-            if(max !== min) weight = 10 + ((val - min) / (max - min)) * 50 // 加大字号范围
+            if(max !== min) weight = 10 + ((val - min) / (max - min)) * 50
             return [item[0], weight]
         })
     }
     return sorted
 }
 
+// Helper to create a Bootstrap card wrapped in a column
+function createDashboardCard(titleText, colClass = 'col-md-6') {
+    const col = document.createElement('div');
+    col.className = colClass;
+
+    const card = document.createElement('div');
+    card.className = 'card h-100 p-3'; // Card styling from CSS
+
+    const h6 = document.createElement('h6');
+    h6.className = 'card-title';
+    h6.textContent = titleText;
+    card.appendChild(h6);
+
+    // This div will contain all the charts/wordclouds
+    const contentBody = document.createElement('div');
+    card.appendChild(contentBody);
+
+    col.appendChild(card);
+    return { colElement: col, contentBody: contentBody }; // Return the column and its content div
+}
+
+
 async function renderRepoDetail(fullName){
   try {
     window.currentRepoFullName = fullName
-    // 更新 UI 状态
+
+    // Update UI state for current repo badge
     const badge = document.getElementById('currentRepoBadge')
-    badge.classList.remove('d-none')
+    badge.classList.remove('d-none', 'bg-dark', 'text-secondary')
+    badge.classList.add('bg-info', 'text-dark', 'shadow-sm')
     badge.textContent = fullName.toUpperCase()
-    badge.className = 'badge bg-info text-dark shadow-sm'
 
     const r = await axios.get('/api/repo', { params:{ full_name: fullName } })
     const d = r.data
     const container = document.getElementById('repoDetail')
-    container.innerHTML = '' // Clear
-    container.className = 'row g-4' // 使用 Grid
+    container.innerHTML = '' // Clear existing content
+    // repoDetail itself is already a row (see index.html)
+
+    // Remove empty state if it exists
+    const emptyState = container.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.remove();
+    }
 
     const viz = d.visualizations || {}
 
-    // 辅助：创建详情卡片 Col
-    function createColCard(title, colClass='col-md-6'){
-        const col = document.createElement('div')
-        col.className = colClass
-        const card = document.createElement('div')
-        card.className = 'card h-100 p-3'
-        const h6 = document.createElement('h6')
-        h6.className = 'card-title'
-        h6.textContent = title
-        card.appendChild(h6)
-        col.appendChild(card)
-        return { col, body: card }
-    }
+    const neonBlue = '#38bdf8';
+    const neonPurple = '#a855f7';
+    const neonGreen = '#4ade80';
+    const neonOrange = '#fb923c';
+    const neonRed = '#f87171';
+    const lightGrey = 'rgba(255,255,255,0.15)';
 
-    // 1. Dependency Overview
+
+    // --- Left Main Panel (col-lg-8) ---
+    const leftPanelCol = document.createElement('div');
+    leftPanelCol.className = 'col-lg-8';
+    const leftPanelRow = document.createElement('div');
+    leftPanelRow.className = 'row g-4'; // Nested row for cards inside left panel
+    leftPanelCol.appendChild(leftPanelRow);
+    container.appendChild(leftPanelCol);
+
+    // --- Right Side Panel (col-lg-4) ---
+    const rightPanelCol = document.createElement('div');
+    rightPanelCol.className = 'col-lg-4';
+    const rightPanelRow = document.createElement('div');
+    rightPanelRow.className = 'row g-4'; // Nested row for cards inside right panel
+    rightPanelCol.appendChild(rightPanelRow);
+    container.appendChild(rightPanelCol);
+
+    // --- Individual Visualizations ---
+
+    // 1. Dependency Overview (into leftPanelRow)
     if(viz.dependency_overview){
         const dep = viz.dependency_overview
-        const { col, body } = createColCard('Dependency Overview', 'col-md-4')
+        const { colElement, contentBody } = createDashboardCard('Dependency Overview', 'col-md-6');
+        leftPanelRow.appendChild(colElement);
 
-        // 使用两个小图表
-        createChart(body, 'doughnut', 'HAS FILE', ['YES', 'NO'],
-            [dep.has_dependency_file?1:0, dep.has_dependency_file?0:1], ['#38bdf8', '#1e293b'])
+        createChart(contentBody, 'doughnut', 'HAS DEPENDENCY FILE', ['YES', 'NO'],
+            [dep.has_dependency_file?1:0, dep.has_dependency_file?0:1], [neonBlue, lightGrey])
 
         const info = document.createElement('div')
         info.className = 'mt-3 p-2 border border-secondary rounded bg-dark font-monospace text-muted'
         info.style.fontSize = '0.8rem'
         info.innerHTML = `
-            <div class="d-flex justify-content-between"><span>README RATIO:</span> <span class="text-white">${(dep.readme_env_ratio||0).toFixed(4)}</span></div>
+            <div class="d-flex justify-content-between"><span>README ENV RATIO:</span> <span class="text-white">${(dep.readme_env_ratio||0).toFixed(4)}</span></div>
+            <div class="d-flex justify-content-between"><span>TOTAL LINES:</span> <span class="text-white">${dep.readme_total_lines||0}</span></div>
             <div class="d-flex justify-content-between"><span>ENV LINES:</span> <span class="text-white">${dep.readme_env_lines||0}</span></div>
         `
-        body.appendChild(info)
-        container.appendChild(col)
+        contentBody.appendChild(info)
+    }
 
-        // 词云单独放一个卡片
-        if(dep.dependency_files){
-             const { col: wcCol, body: wcBody } = createColCard('File Types Cloud', 'col-md-4')
-             const tokens = clientSideTokenizeAndCount(dep.dependency_files)
-             drawWordCloud(wcBody, tokens, 'TYPES')
-             container.appendChild(wcCol)
+    // 2. Import vs Requirements (into leftPanelRow)
+    if(viz.import_vs_requirements){
+        const imp = viz.import_vs_requirements
+        const { colElement, contentBody } = createDashboardCard('Import Health', 'col-md-6');
+        leftPanelRow.appendChild(colElement);
+
+        createChart(contentBody, 'radar', 'COVERAGE RATIO', ['MISSING', 'REDUNDANT'],
+            [imp.missing_ratio||0, imp.redundant_ratio||0], 'rgba(168, 85, 247, 0.6)') // Neon Purple for Radar
+    }
+
+    // 3. Dependency Word Clouds (Combined into a separate card in leftPanelRow)
+    if( (viz.dependency_overview && viz.dependency_overview.dependency_files) ||
+        (viz.import_vs_requirements && viz.import_vs_requirements.imports) ) {
+        const { colElement, contentBody } = createDashboardCard('Keywords & Modules', 'col-12'); // Full width for word clouds
+        leftPanelRow.appendChild(colElement);
+
+        if(viz.dependency_overview && viz.dependency_overview.dependency_files){
+            const tokens = clientSideTokenizeAndCount(viz.dependency_overview.dependency_files);
+            drawWordCloud(contentBody, tokens, 'DEPENDENCY FILES');
+        }
+        if(viz.import_vs_requirements && viz.import_vs_requirements.imports){
+            const tokens = clientSideTokenizeAndCount(viz.import_vs_requirements.imports);
+            drawWordCloud(contentBody, tokens, 'IMPORT MODULES');
         }
     }
 
-    // 2. Import Analysis (Radar Chart looks cool in dashboards)
-    if(viz.import_vs_requirements){
-        const imp = viz.import_vs_requirements
-        const { col, body } = createColCard('Import Health', 'col-md-4')
 
-        createChart(body, 'radar', 'METRICS', ['MISSING', 'REDUNDANT'],
-            [imp.missing_ratio||0, imp.redundant_ratio||0], 'rgba(168, 85, 247, 0.6)')
+    // 4. Staleness (into rightPanelRow)
+    if(viz.dependency_staleness){
+        const stal = viz.dependency_staleness
+        const { colElement, contentBody } = createDashboardCard('Dependency Staleness', 'col-12');
+        rightPanelRow.appendChild(colElement);
 
-        container.appendChild(col)
+        createChart(contentBody, 'bar', 'LAGGING DAYS', ['VS REPO', 'VS NOW'],
+            [stal.days_behind_repo||0, stal.days_behind_now||0], [neonOrange, neonRed])
     }
 
-    // 3. Issue & Onboarding (Combined)
-    if(viz.onboarding_stats || viz.issue_env_stats){
-        const { col, body } = createColCard('Friction Analysis', 'col-12')
-        // 创建一个 Flex 容器放横向柱状图
-        const flexDiv = document.createElement('div')
-        flexDiv.className = 'row'
-        body.appendChild(flexDiv)
+    // 5. Issue Env Stats & Onboarding (Combined into one card in rightPanelRow)
+    if(viz.issue_env_stats || viz.onboarding_stats){
+        const { colElement, contentBody } = createDashboardCard('Friction & Onboarding', 'col-12');
+        rightPanelRow.appendChild(colElement);
 
         if(viz.onboarding_stats){
              const onb = viz.onboarding_stats
-             const subDiv = document.createElement('div')
-             subDiv.className = 'col-md-6'
-             flexDiv.appendChild(subDiv)
-             createChart(subDiv, 'bar', 'ONBOARDING FRICTION',
-                ['CONTRIB', 'NEW ISSUE', 'PR FAIL'],
+             createChart(contentBody, 'bar', 'ONBOARDING FRICTION',
+                ['DOCS', 'NEW ISSUE', 'PR FAIL'],
                 [onb.contributing?.env_ratio||0, onb.newcomer_issues?.env_ratio||0, onb.newcomer_prs?.env_fail_ratio||0],
-                ['#4ade80', '#fb923c', '#f87171']
+                [neonGreen, neonOrange, neonRed]
              )
         }
         if(viz.issue_env_stats){
              const iss = viz.issue_env_stats
-             const subDiv = document.createElement('div')
-             subDiv.className = 'col-md-6'
-             flexDiv.appendChild(subDiv)
              if(iss.keyword_hits){
                  let kwList = Object.entries(iss.keyword_hits).sort((a,b)=>b[1]-a[1]).slice(0, 40)
                  if(kwList.length > 0) {
                      const max = kwList[0][1]
                      kwList = kwList.map(k => [k[0], 10 + k[1]/max*50])
-                     drawWordCloud(subDiv, kwList, 'ISSUE KEYWORDS')
+                     drawWordCloud(contentBody, kwList, 'ISSUE KEYWORDS')
                  }
              }
         }
-        container.appendChild(col)
     }
 
-    // --- AI Section ---
-    const aiCol = document.createElement('div')
-    aiCol.className = 'col-12'
-    const aiBox = document.createElement('div')
-    aiBox.id = 'repoAiBox'
-    aiBox.className = 'mt-2'
-    aiBox.innerHTML = `
-        <div class="d-flex align-items-center justify-content-between">
-            <span>> READY FOR ANALYSIS...</span>
+    // --- AI Analysis Full Width at bottom (outside left/right panels) ---
+    const { colElement: aiColElement, contentBody: aiCardContentBody } = createDashboardCard('AI Analysis', 'col-12');
+    container.appendChild(aiColElement);
+
+    // Override default card content for terminal-like display
+    aiCardContentBody.parentElement.id = 'repoAiBox'; // Set ID on the card itself
+    aiCardContentBody.parentElement.innerHTML = `
+        <div class="ai-terminal-header">
+            <span>> SYSTEM AI LOG</span>
             <button id="triggerAiBtn" class="btn btn-sm btn-outline-success font-monospace">RUN_AI_MODEL()</button>
         </div>
-    `
-    aiCol.appendChild(aiBox)
-    container.appendChild(aiCol)
+        <div class="ai-output-area pt-2">
+            <div class="text-muted">> Awaiting command for intelligent analysis...</div>
+        </div>
+    `;
 
     // Bind AI Event
     document.getElementById('triggerAiBtn').onclick = async function() {
         const btn = this;
+        const outputArea = aiColElement.querySelector('.ai-output-area');
         btn.disabled = true;
         btn.textContent = 'PROCESSING...';
-        aiBox.innerHTML += `<div class="mt-2 text-warning">> Connecting to DeepSeek-V3...</div>`
+        outputArea.innerHTML = `<div class="mt-2 text-warning">> CONNECTING TO DEEPSEEK-V3...</div>`;
 
         let summary_lines = []
-        // 构建简单的 prompt summary
+        // Construct prompt summary for AI
         if (viz.dependency_overview) {
-            summary_lines.push(`Env Ratio: ${(viz.dependency_overview.readme_env_ratio||0).toFixed(4)}`)
+            summary_lines.push(`README Env Ratio: ${(viz.dependency_overview.readme_env_ratio||0).toFixed(4)}`)
+            summary_lines.push(`Total lines in README: ${viz.dependency_overview.readme_total_lines||0}`)
+            summary_lines.push(`Environment related lines in README: ${viz.dependency_overview.readme_env_lines||0}`)
         }
+        // Add more relevant summary points if available and concise
+        if (viz.dependency_staleness) {
+            summary_lines.push(`Avg days behind repo: ${viz.dependency_staleness.days_behind_repo||0}`)
+            summary_lines.push(`Avg days behind now: ${viz.dependency_staleness.days_behind_now||0}`)
+        }
+        if (viz.import_vs_requirements) {
+            summary_lines.push(`Import missing ratio: ${viz.import_vs_requirements.missing_ratio||0}`)
+            summary_lines.push(`Import redundant ratio: ${viz.import_vs_requirements.redundant_ratio||0}`)
+        }
+        if (viz.issue_env_stats) {
+            summary_lines.push(`Environment issue ratio: ${viz.issue_env_stats.env_issue_ratio||0}`)
+        }
+        if (viz.onboarding_stats) {
+            summary_lines.push(`Contributing env ratio: ${viz.onboarding_stats.contributing?.env_ratio || 0}`)
+            summary_lines.push(`Newcomer issue env ratio: ${viz.onboarding_stats.newcomer_issues?.env_ratio || 0}`)
+            summary_lines.push(`Newcomer PR env fail ratio: ${viz.onboarding_stats.newcomer_prs?.env_fail_ratio || 0}`)
+        }
+
 
         try {
             const resp = await axios.post('/api/repo-ai', {
                 full_name: fullName,
                 summary: summary_lines
             })
-            // 打字机效果输出
             const analysisText = resp.data.analysis.replace(/\n/g, '<br>');
-            aiBox.innerHTML = `
+            outputArea.innerHTML = `
                 <div class="mb-2 text-success">> ANALYSIS COMPLETE:</div>
                 <div style="color: #e2e8f0; line-height: 1.6;">${analysisText}</div>
             `
         } catch (err) {
-            aiBox.innerHTML += `<div class="text-danger">> ERROR: CONNECTION FAILED</div>`
+            outputArea.innerHTML += `<div class="text-danger mt-2">> ERROR: AI ANALYSIS FAILED. DETAIL: ${err.message}</div>`
+            console.error("AI Analysis Failed:", err);
             btn.disabled = false;
             btn.textContent = 'RETRY';
         }
@@ -419,6 +521,13 @@ async function renderRepoDetail(fullName){
 
   } catch(e) {
     console.error('Render Detail Error:', e)
+    const container = document.getElementById('repoDetail');
+    container.innerHTML = `<div class="col-12 text-danger text-center p-5 font-monospace">[FATAL ERROR] FAILED TO LOAD REPOSITORY DETAIL.<br>Please check console for details: ${e.message}</div>`;
+    // Re-add empty state if detail fails, but with error
+    const badge = document.getElementById('currentRepoBadge');
+    badge.classList.remove('bg-info', 'text-dark');
+    badge.classList.add('bg-danger', 'text-white');
+    badge.textContent = `ERROR LOADING ${window.currentRepoFullName ? window.currentRepoFullName.toUpperCase() : 'REPO'}`;
   }
 }
 
@@ -441,7 +550,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           listDiv.style.display = 'none'
           return
       }
-      const matches = allRepos.filter(r => r.toLowerCase().includes(val)).slice(0, 10)
+      const matches = allRepos.filter(r => r.toLowerCase().includes(val)).slice(0, 10) // Limit to 10 suggestions
       listDiv.innerHTML = ''
       if(matches.length > 0){
           listDiv.style.display = 'block'
@@ -470,7 +579,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('searchBtn').addEventListener('click', async ()=>{
     const q = input.value.trim()
     if(q) {
-        // 先尝试精确匹配，或者调用搜索API
         renderRepoDetail(q)
     }
   })

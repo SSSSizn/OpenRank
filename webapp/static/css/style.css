@@ -126,6 +126,9 @@ body {
     font-size: 0.85rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+#reposList div:last-child {
+    border-bottom: none;
+}
 #reposList div:hover {
     background: #334155;
     color: var(--primary-glow);
@@ -156,6 +159,7 @@ body {
     letter-spacing: 1px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     padding-bottom: 10px;
+    margin-bottom: 1rem; /* Adjust margin for title */
 }
 
 .card-body {
@@ -194,7 +198,8 @@ body {
 }
 
 /* --- AI 分析区域 (Terminal Style) --- */
-#repoAiBox {
+/* This specific card for AI will override some general .card styles */
+#repoAiBox.card {
     background: #000;
     border: 1px solid #333;
     color: #00ff00;
@@ -205,18 +210,21 @@ body {
     position: relative;
     min-height: 100px;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    overflow: hidden; /* Ensure content stays within */
 }
-#repoAiBox::before {
-    content: '> SYSTEM ANALYSIS OUTPUT';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+#repoAiBox.card .card-title { /* Hide the generic card title for AI box */
+    display: none;
+}
+#repoAiBox .ai-terminal-header {
     background: #111;
     color: #666;
     font-size: 0.7rem;
     padding: 2px 10px;
     border-bottom: 1px solid #333;
+    margin: -20px -20px 10px -20px; /* Adjust to cover full width of card */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 #repoAiBox strong {
     color: white;
@@ -232,6 +240,15 @@ body {
     background: linear-gradient(90deg, #1d4ed8, #2563eb);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
 }
+.btn-outline-success {
+    color: #4ade80;
+    border-color: #4ade80;
+}
+.btn-outline-success:hover {
+    background-color: #4ade80;
+    color: var(--bg-dark);
+}
+
 
 /* --- 响应式调整 --- */
 @media (max-width: 768px) {
@@ -241,5 +258,18 @@ body {
     }
     .search-wrapper {
         width: 100%;
+    }
+    .dashboard-container {
+        padding: 10px;
+    }
+}
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.3rem;
+    }
+    .logo-box {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
 }
