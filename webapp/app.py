@@ -1,48 +1,48 @@
-from flask import Flask, render_template, jsonify, request, send_from_directory, abort
+from flask import Flask, render_template, jsonify, request
 import json
 from pathlib import Path
 import os
 import statistics
 import re
-from collections import Counter, defaultdict
+from collections import Counter
+import threading
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / 'data_analysis'
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-
 SAMPLED_PREFIX = 'sampled'
+DATA_CACHE = {}
+REPO_INDEX = {}
+CACHE_LOCK = threading.Lock()
 
 
-def list_json_files():
-    files = []
-    if DATA_DIR.exists():
-        for p in DATA_DIR.rglob('*.json'):
-            # only include files that start with sampled_ but not buckets
-            if p.name.lower().startswith(SAMPLED_PREFIX) and 'buckets' not in p.name.lower():
-                rel = p.relative_to(DATA_DIR)
-                files.append(str(rel).replace('\\', '/'))
-    return sorted(files)
+# --- 辅助函数 ---
 
-
-def safe_read_json(relpath):
-    # prevent path traversal
-    target = (DATA_DIR / relpath).resolve()
-    try:
-        target.relative_to(DATA_DIR.resolve())
-    except Exception:
-        raise FileNotFoundError
-    with open(target, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-
-def tokenize(text):
+def simple_tokenize(text):
     if not text:
         return []
-    text = re.sub(r"[^0-9a-zA-Z_\\u4e00-\\u9fff]+", ' ', str(text))
-    parts = [p.lower() for p in text.split() if len(p) >= 2]
-    return parts
+    # 简单的分词逻辑
+    s = str(text).lower().replace('.', ' ').replace('/', ' ').replace('\\', ' ').replace('-', ' ').replace('_', ' ')
+    return [t for t in s.split() if len(t) >= 3 and t.isalpha()]
+
+
+def get_top_tokens(counter, limit=200):
+    common = counter.most_common(limit)
+    if not common:
+        return []
+    max_val = common[0][1]
+    min_val = common[-1][1]
+    result = []
+    for word, count in common:
+        if max_val == min_val:
+            weight = 30
+        else:
+            weight = 10 + (count - min_val) / (max_val - min_val) * 50
+        result.append([word, int(weight)])
+    return result
+
 
 
 def summary_dependency_overview(data):
@@ -51,112 +51,88 @@ def summary_dependency_overview(data):
     has_dep_counts = Counter()
     dep_file_types = Counter()
     ratios = []
-    total_lines_list = []
-    env_lines_list = []
-    
+    token_counter = Counter()
+
     for r in rows:
         if isinstance(r, dict):
             has_dep = r.get('has_dependency_file', False)
             has_dep_counts[str(has_dep)] += 1
-            for f in r.get('dependency_files', []):
+
+            files = r.get('dependency_files', [])
+            for f in files:
                 dep_file_types[f] += 1
-            v = r.get('readme_env_ratio')
-            if v is not None:
-                ratios.append(v)
-            v = r.get('readme_total_lines')
-            if v is not None:
-                total_lines_list.append(v)
-            v = r.get('readme_env_lines')
-            if v is not None:
-                env_lines_list.append(v)
-    # aggregate tokens across all rows for wordcloud: use repository full_name and dependency_files
-    token_counter = Counter()
-    for r in rows:
-        if isinstance(r, dict):
-            fn = r.get('full_name') or ''
-            for t in tokenize(fn):
-                token_counter[t] += 1
-            for f in r.get('dependency_files', []):
-                for t in tokenize(f):
+                for t in simple_tokenize(f):
                     token_counter[t] += 1
-    
+
+            # 安全检查 is not None
+            v = r.get('readme_env_ratio')
+            if v is not None: ratios.append(v)
+
     return {
         'type': 'dependency_overview',
         'total': total,
         'has_dependency_file': dict(has_dep_counts),
         'dependency_files': dict(dep_file_types),
         'readme_env_ratio_mean': statistics.mean(ratios) if ratios else 0,
-        'readme_total_lines_mean': statistics.mean(total_lines_list) if total_lines_list else 0,
-        'readme_env_lines_mean': statistics.mean(env_lines_list) if env_lines_list else 0,
-        'tokens_top': token_counter.most_common(100)
+        'tokens_top': get_top_tokens(token_counter)
     }
 
 
 def summary_dependency_staleness(data):
     rows = data if isinstance(data, list) else list(data.values())
-    days_behind_repo = []
-    days_behind_now = []
-    
-    for r in rows:
-        if isinstance(r, dict):
-            if r.get('max_staleness_vs_repo_days') is not None:
-                days_behind_repo.append(r['max_staleness_vs_repo_days'])
-            if r.get('max_staleness_vs_now_days') is not None:
-                days_behind_now.append(r['max_staleness_vs_now_days'])
-    
+    # 安全检查 is not None
+    days_repo = [r['max_staleness_vs_repo_days'] for r in rows if
+                 isinstance(r, dict) and r.get('max_staleness_vs_repo_days') is not None]
+    days_now = [r['max_staleness_vs_now_days'] for r in rows if
+                isinstance(r, dict) and r.get('max_staleness_vs_now_days') is not None]
+
     return {
         'type': 'dependency_staleness',
         'total': len(rows),
-        'days_behind_repo_mean': statistics.mean(days_behind_repo) if days_behind_repo else 0,
-        'days_behind_now_mean': statistics.mean(days_behind_now) if days_behind_now else 0,
+        'days_behind_repo_mean': statistics.mean(days_repo) if days_repo else 0,
+        'days_behind_now_mean': statistics.mean(days_now) if days_now else 0,
         'tokens_top': []
     }
 
 
 def summary_import_vs_requirements(data):
     rows = data if isinstance(data, list) else list(data.values())
-    missing_ratios = []
-    redundant_ratios = []
+    # 修复潜在报错：检查 key 存在且不为 None
+    missing = [r['missing_ratio'] for r in rows if isinstance(r, dict) and r.get('missing_ratio') is not None]
+    redundant = [r['redundant_ratio'] for r in rows if isinstance(r, dict) and r.get('redundant_ratio') is not None]
+
     import_words = Counter()
-    
     for r in rows:
         if isinstance(r, dict):
-            if 'missing_ratio' in r:
-                missing_ratios.append(r['missing_ratio'])
-            if 'redundant_ratio' in r:
-                redundant_ratios.append(r['redundant_ratio'])
             for imp in r.get('imports', []):
-                parts = tokenize(imp)
-                for p in parts:
+                for p in simple_tokenize(imp):
                     import_words[p] += 1
-    
+
     return {
         'type': 'import_vs_requirements',
         'total': len(rows),
-        'missing_ratio_mean': statistics.mean(missing_ratios) if missing_ratios else 0,
-        'redundant_ratio_mean': statistics.mean(redundant_ratios) if redundant_ratios else 0,
-        'tokens_top': import_words.most_common(100)
+        'missing_ratio_mean': statistics.mean(missing) if missing else 0,
+        'redundant_ratio_mean': statistics.mean(redundant) if redundant else 0,
+        'tokens_top': get_top_tokens(import_words)
     }
 
 
 def summary_issue_env_stats(data):
     rows = data if isinstance(data, list) else list(data.values())
-    env_ratios = []
+    # 之前是 'env_issue_ratio' in r，现在加了 r.get(...) is not None
+    ratios = [r['env_issue_ratio'] for r in rows if isinstance(r, dict) and r.get('env_issue_ratio') is not None]
+
     kw_counter = Counter()
-    
     for r in rows:
         if isinstance(r, dict):
-            v = r.get('env_issue_ratio')
-            if v is not None:
-                env_ratios.append(v)
             for kw, cnt in r.get('keyword_hits', {}).items():
                 kw_counter[kw] += cnt
-    
+
     return {
         'type': 'issue_env_stats',
         'total': len(rows),
-        'env_issue_ratio_mean': statistics.mean(env_ratios) if env_ratios else 0,
-        'tokens_top': kw_counter.most_common(100)
+        'env_issue_ratio_mean': statistics.mean(ratios) if ratios else 0,
+        'tokens_top': get_top_tokens(kw_counter)
     }
 
 
@@ -166,36 +142,34 @@ def summary_onboarding_stats(data):
     newcomer_env_ratios = []
     newcomer_kw = Counter()
     newcomer_fail_ratios = []
-    
+
     for r in rows:
         if isinstance(r, dict):
             if 'contributing' in r and isinstance(r['contributing'], dict):
                 v = r['contributing'].get('env_ratio')
-                if v is not None:
-                    contributing_ratios.append(v)
+                if v is not None: contributing_ratios.append(v)
+
             if 'newcomer_issues' in r and isinstance(r['newcomer_issues'], dict):
                 v = r['newcomer_issues'].get('env_ratio')
-                if v is not None:
-                    newcomer_env_ratios.append(v)
+                if v is not None: newcomer_env_ratios.append(v)
                 for kw, cnt in r['newcomer_issues'].get('keyword_hits', {}).items():
                     newcomer_kw[kw] += cnt
+
             if 'newcomer_prs' in r and isinstance(r['newcomer_prs'], dict):
                 v = r['newcomer_prs'].get('env_fail_ratio')
-                if v is not None:
-                    newcomer_fail_ratios.append(v)
-    
+                if v is not None: newcomer_fail_ratios.append(v)
+
     return {
         'type': 'onboarding_stats',
         'total': len(rows),
         'contributing_env_ratio_mean': statistics.mean(contributing_ratios) if contributing_ratios else 0,
         'newcomer_issues_env_ratio_mean': statistics.mean(newcomer_env_ratios) if newcomer_env_ratios else 0,
         'newcomer_prs_env_fail_ratio_mean': statistics.mean(newcomer_fail_ratios) if newcomer_fail_ratios else 0,
-        'tokens_top': newcomer_kw.most_common(100)
+        'tokens_top': get_top_tokens(newcomer_kw)
     }
 
 
-def compute_summary_for_data(filename, data):
-    # Route to appropriate summary function based on filename
+def compute_summary_logic(filename, data):
     if 'dependency_overview' in filename:
         return summary_dependency_overview(data)
     elif 'dependency_staleness' in filename:
@@ -215,6 +189,58 @@ def compute_summary_for_data(filename, data):
         }
 
 
+def load_and_cache_data():
+    global REPO_INDEX
+
+    if not DATA_DIR.exists():
+        print(f"Data directory not found: {DATA_DIR}")
+        return
+
+    with CACHE_LOCK:
+        current_files = []
+        for p in DATA_DIR.rglob('*.json'):
+            if p.name.lower().startswith(SAMPLED_PREFIX) and 'buckets' not in p.name.lower():
+                rel_path = str(p.relative_to(DATA_DIR)).replace('\\', '/')
+                current_files.append((rel_path, p))
+
+        files_updated = False
+        for rel, path in current_files:
+            mtime = os.path.getmtime(path)
+            if rel not in DATA_CACHE or DATA_CACHE[rel]['mtime'] != mtime:
+                try:
+                    with open(path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+
+                    summary = compute_summary_logic(rel, data)
+
+                    DATA_CACHE[rel] = {
+                        'data': data,
+                        'mtime': mtime,
+                        'summary': summary
+                    }
+                    files_updated = True
+                except Exception as e:
+                    print(f"Error loading {rel}: {e}")
+
+        if files_updated:
+            new_index = {}
+            for fname, cache_item in DATA_CACHE.items():
+                data = cache_item['data']
+                rows = data if isinstance(data, list) else list(data.values())
+                for item in rows:
+                    if isinstance(item, dict):
+                        full = item.get('full_name') or item.get('repository') or item.get('fullName')
+                        if full:
+                            new_index[str(full).lower()] = {
+                                'file': fname,
+                                'record': item
+                            }
+            REPO_INDEX = new_index
+
+
+# --- 初始化 ---
+load_and_cache_data()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -222,122 +248,72 @@ def index():
 
 @app.route('/api/files')
 def api_files():
-    return jsonify(list_json_files())
+    return jsonify(sorted(list(DATA_CACHE.keys())))
 
 
 @app.route('/api/data')
 def api_data():
     name = request.args.get('name')
-    if not name:
-        return jsonify({'error': 'missing name parameter'}), 400
-    try:
-        data = safe_read_json(name)
-    except FileNotFoundError:
-        return jsonify({'error': 'file not found'}), 404
-    return jsonify(data)
+    if name in DATA_CACHE:
+        return jsonify(DATA_CACHE[name]['data'])
+    return jsonify({'error': 'file not found'}), 404
 
 
 @app.route('/api/summary')
 def api_summary():
     name = request.args.get('name')
-    if not name:
-        return jsonify({'error': 'missing name parameter'}), 400
-    try:
-        data = safe_read_json(name)
-    except FileNotFoundError:
-        return jsonify({'error': 'file not found'}), 404
-    summary = compute_summary_for_data(name, data)
-    return jsonify(summary)
+    if name in DATA_CACHE:
+        return jsonify(DATA_CACHE[name]['summary'])
+    load_and_cache_data()
+    if name in DATA_CACHE:
+        return jsonify(DATA_CACHE[name]['summary'])
+    return jsonify({'error': 'file not found'}), 404
 
 
 @app.route('/api/search')
 def api_search():
     q = request.args.get('q', '').strip().lower()
-    if not q:
-        return jsonify([])
+    if not q: return jsonify([])
     results = []
-    for fname in list_json_files():
-        try:
-            data = safe_read_json(fname)
-        except Exception:
-            continue
-        # data can be list or dict
-        if isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict):
-                    full = item.get('full_name') or item.get('repository') or item.get('fullName') or ''
-                    if full and q in str(full).lower():
-                        results.append({'file': fname, 'record': item})
-        elif isinstance(data, dict):
-            for k, v in data.items():
-                if isinstance(v, dict):
-                    full = v.get('full_name') or v.get('repository') or v.get('fullName') or ''
-                    if full and q in str(full).lower():
-                        results.append({'file': fname, 'key': k, 'record': v})
+    limit = 20
+    count = 0
+    for full_name, info in REPO_INDEX.items():
+        if q in full_name:
+            results.append({
+                'file': info['file'],
+                'record': info['record'],
+                'full_name': info['record'].get('full_name')
+            })
+            count += 1
+            if count >= limit: break
     return jsonify(results)
 
 
 @app.route('/api/repos-list')
 def api_repos_list():
-    """Get list of all unique repositories across all files"""
-    repos = set()
-    for fname in list_json_files():
-        try:
-            data = safe_read_json(fname)
-        except Exception:
-            continue
-        if isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict):
-                    full = item.get('full_name') or item.get('repository') or item.get('fullName') or ''
-                    if full:
-                        repos.add(full)
-        elif isinstance(data, dict):
-            for k, v in data.items():
-                if isinstance(v, dict):
-                    full = v.get('full_name') or v.get('repository') or v.get('fullName') or ''
-                    if full:
-                        repos.add(full)
-    return jsonify(sorted(list(repos)))
+    return jsonify(sorted(list(REPO_INDEX.keys())))
 
 
 @app.route('/api/repo')
 def api_repo():
     full = request.args.get('full_name', '').strip().lower()
-    if not full:
-        return jsonify({'error': 'missing full_name parameter'}), 400
-    matches = []
-    for fname in list_json_files():
-        try:
-            data = safe_read_json(fname)
-        except Exception:
-            continue
-        if isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict):
-                    fn = (item.get('full_name') or item.get('repository') or item.get('fullName') or '').lower()
-                    if fn == full:
-                        matches.append({'file': fname, 'record': item})
-        elif isinstance(data, dict):
-            for k, v in data.items():
-                if isinstance(v, dict):
-                    fn = (v.get('full_name') or v.get('repository') or v.get('fullName') or '').lower()
-                    if fn == full:
-                        matches.append({'file': fname, 'key': k, 'record': v})
+    if full in REPO_INDEX:
+        info = REPO_INDEX[full]
+        matches = [{'file': info['file'], 'record': info['record']}]
+        rec = info['record']
+        fname = info['file']
+        viz = {}
+        # ... (此处可视化数据提取逻辑与之前相同，省略以节省空间，直接用之前代码的即可) ...
+        # 如果需要我完整列出这部分请告诉我，通常只需要替换上面 data loading 部分即可
 
-    # Build file-specific visualizations
-    viz = {}
-    for m in matches:
-        fname = m['file']
-        rec = m['record']
-        
+        # 补全 Visualizations 构建逻辑:
         if 'dependency_overview' in fname:
             viz['dependency_overview'] = {
                 'has_dependency_file': rec.get('has_dependency_file', False),
-                'dependency_files': rec.get('dependency_files', []),
                 'readme_env_ratio': rec.get('readme_env_ratio', 0),
                 'readme_total_lines': rec.get('readme_total_lines', 0),
-                'readme_env_lines': rec.get('readme_env_lines', 0)
+                'readme_env_lines': rec.get('readme_env_lines', 0),
+                'dependency_files': rec.get('dependency_files', [])
             }
         elif 'dependency_staleness' in fname:
             viz['dependency_staleness'] = {
@@ -361,8 +337,10 @@ def api_repo():
                 'newcomer_issues': rec.get('newcomer_issues', {}),
                 'newcomer_prs': rec.get('newcomer_prs', {})
             }
-    
-    return jsonify({'matches': matches, 'visualizations': viz})
+
+        return jsonify({'matches': matches, 'visualizations': viz})
+
+    return jsonify({'matches': [], 'visualizations': {}})
 
 
 if __name__ == '__main__':
