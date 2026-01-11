@@ -1,3 +1,5 @@
+// sidepanel.js
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM 元素引用 ---
     const elements = {
@@ -5,25 +7,212 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAi: document.getElementById('btn-ai'),
         btnCopy: document.getElementById('btn-copy'),
         btnDownload: document.getElementById('btn-download'),
-        
+
+        // 区域与显示
+        repoDisplay: document.querySelector("#repo-display .value"),
         resultSection: document.getElementById('result-section'),
         codeReq: document.getElementById('code-req'),
         codeDock: document.getElementById('code-dock'),
         terminal: document.getElementById('terminal-output'),
-        
-        tabs: document.querySelectorAll('.tab'),
+
+        // AI 区域
         aiInsightBox: document.getElementById('ai-insight-box'),
         aiExplanation: document.getElementById('ai-explanation'),
-        repoDisplay: document.getElementById('repo-display')
+
+        // 选项卡
+        tabs: document.querySelectorAll('.tab'),
+
+        // 设置模态框
+        btnSettings: document.getElementById("btn-settings"),
+        btnCloseSettings: document.getElementById("close-settings"),
+        btnSaveSettings: document.getElementById("save-settings"),
+        modal: document.getElementById("settings-modal"),
+        inputs: {
+            url: document.getElementById("cfg-url"),
+            key: document.getElementById("cfg-key"),
+            model: document.getElementById("cfg-model"),
+        }
     };
 
-    // 状态变量
-    let currentData = {
+    // --- 状态变量 ---
+    // scanData: 存储第一步扫描到的 { candidates, repoInfo }，用于传给 LLM
+    let scanData = null;
+
+    // finalResult: 存储 LLM 生成的最终文本，用于复制/下载
+    let finalResult = {
         requirements: "",
         dockerfile: ""
     };
 
-    // --- 工具函数：写日志 ---
+    // --- 初始化 ---
+    loadSettings();
+
+    // --- 1. 扫描按钮逻辑 (第一步) ---
+    elements.btnScan.addEventListener('click', () => {
+        // 1. 重置 UI 和 状态 (关键：防止显示上一个仓库的数据)
+        resetState();
+
+        elements.btnScan.disabled = true;
+        elements.btnScan.querySelector('.btn-text').textContent = 'SCANNING...';
+
+        log('Initializing repository scan...', 'info');
+
+        // 2. 发送消息给 background.js 执行真正的扫描
+        chrome.runtime.sendMessage({ type: "SCAN_REPO" });
+    });
+
+    // --- 2. AI 分析按钮逻辑 (第二步) ---
+    elements.btnAi.addEventListener('click', () => {
+        if (!scanData) {
+            log('Error: No scan data available. Please scan first.', 'error');
+            return;
+        }
+
+        elements.btnAi.disabled = true;
+        elements.btnAi.querySelector('.btn-text').textContent = 'ANALYZING...';
+
+        log('Sending dependency data to AI model...', 'info');
+
+        // 发送第一步扫描到的数据给 LLM
+        chrome.runtime.sendMessage({
+            type: "ANALYZE_WITH_LLM",
+            payload: scanData
+        });
+    });
+
+    // --- 3. 消息监听 (接收 Background 的反馈) ---
+    chrome.runtime.onMessage.addListener((msg) => {
+        // A. 处理状态日志
+        if (msg.type === "UPDATE_STATUS") {
+            const type = msg.isError ? 'error' : 'info';
+            log(msg.text, type);
+
+            if (msg.isError) {
+                // 出错时恢复按钮状态
+                elements.btnScan.disabled = false;
+                elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
+                if(elements.btnAi) {
+                    elements.btnAi.disabled = false;
+                    elements.btnAi.querySelector('.btn-text').textContent = '✨ ANALYZE WITH AI';
+                }
+            }
+        }
+
+        // B. 处理第一步扫描完成
+        if (msg.type === "SCAN_COMPLETE") {
+            const { candidates, repoInfo } = msg.data;
+
+            // 保存状态供下一步使用
+            scanData = { candidates, repoInfo };
+
+            // 更新 UI
+            elements.repoDisplay.textContent = `${repoInfo.owner}/${repoInfo.repo}`;
+            elements.repoDisplay.style.color = "var(--neon-blue)";
+
+            log(`Scan complete. Found ${candidates.length} unique imports.`, 'success');
+            candidates.forEach(c => log(`+ ${c}`, 'info'));
+
+            // 按钮变身
+            elements.btnScan.disabled = false;
+            elements.btnScan.classList.add('secondary'); // 变暗
+            elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
+
+            // 显示结果区(虽然还没内容)和 AI 按钮
+            elements.resultSection.classList.remove('hidden');
+            elements.btnAi.classList.remove('hidden');
+            elements.codeReq.textContent = "Waiting for AI analysis...";
+            elements.codeDock.textContent = "Waiting for AI analysis...";
+
+            // 滚动到底部
+            scrollToBottom();
+        }
+
+        // C. 处理第二步 AI 分析完成
+        if (msg.type === "ANALYSIS_RESULT") {
+            const data = msg.data;
+
+            // 保存最终结果
+            finalResult.requirements = data.requirements || "# No requirements generated";
+            finalResult.dockerfile = data.dockerfile || "# No Dockerfile generated";
+
+            // 渲染代码
+            elements.codeReq.textContent = finalResult.requirements;
+            elements.codeDock.textContent = finalResult.dockerfile;
+
+            // 渲染 AI 解释
+            elements.aiInsightBox.classList.remove('hidden');
+            elements.aiExplanation.textContent = data.explanation || "Analysis complete.";
+
+            log('AI Analysis complete.', 'success');
+
+            // 恢复按钮
+            elements.btnAi.disabled = false;
+            elements.btnAi.querySelector('.btn-text').textContent = '✨ RE-ANALYZE';
+
+            scrollToBottom();
+        }
+    });
+
+    // --- 4. 辅助功能 (复制/下载/Tab切换/设置) ---
+
+    // Tab 切换
+    elements.tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            elements.tabs.forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.code-content').forEach(c => c.classList.add('hidden'));
+
+            tab.classList.add('active');
+            const targetId = tab.dataset.target;
+            document.getElementById(`code-${targetId}`).classList.remove('hidden');
+        });
+    });
+
+    // 复制功能
+    elements.btnCopy.addEventListener('click', () => {
+        const activeTab = document.querySelector('.tab.active').dataset.target;
+        const text = activeTab === 'req' ? elements.codeReq.textContent : elements.codeDock.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = elements.btnCopy.textContent;
+            elements.btnCopy.textContent = 'OK!';
+            setTimeout(() => elements.btnCopy.textContent = originalText, 1500);
+        });
+    });
+
+    // 下载功能
+    elements.btnDownload.addEventListener('click', () => {
+        const activeTab = document.querySelector('.tab.active').dataset.target;
+        const content = activeTab === 'req' ? elements.codeReq.textContent : elements.codeDock.textContent;
+        const filename = activeTab === 'req' ? 'requirements.txt' : 'Dockerfile';
+
+        if (!content || content.startsWith("Waiting")) return;
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // 设置逻辑
+    elements.btnSettings.onclick = () => elements.modal.classList.remove("hidden");
+    elements.btnCloseSettings.onclick = () => elements.modal.classList.add("hidden");
+    elements.btnSaveSettings.onclick = () => {
+        const config = {
+            baseUrl: elements.inputs.url.value,
+            apiKey: elements.inputs.key.value,
+            model: elements.inputs.model.value
+        };
+        chrome.storage.local.set({ llmConfig: config }, () => {
+            elements.modal.classList.add("hidden");
+            log("Configuration saved.", 'success');
+        });
+    };
+
+    // --- 内部函数 ---
+
     function log(msg, type = 'info') {
         const div = document.createElement('div');
         div.className = `log-line ${type}`;
@@ -33,110 +222,36 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.terminal.scrollTop = elements.terminal.scrollHeight;
     }
 
-    // --- 1. 扫描按钮逻辑 ---
-    elements.btnScan.addEventListener('click', async () => {
-        // UI 状态更新
-        elements.btnScan.disabled = true;
-        elements.btnScan.querySelector('.btn-text').textContent = 'SCANNING...';
-        
-        log('Starting repository scan...');
-        
-        // 模拟扫描过程 (这里替换为你真实的 chrome.runtime.sendMessage 逻辑)
-        setTimeout(() => {
-            // 假设这是扫描到的结果
-            const dummyReq = "flask>=2.3.2\nrequests>=2.28.0\nopenai>=0.27.0\ntomli>=2.0.1";
-            const dummyDock = "FROM python:3.9-slim\nWORKDIR /app\nCOPY . .\nRUN pip install -r requirements.txt\nCMD [\"python\", \"app.py\"]";
-            
-            // 1. 保存数据
-            currentData.requirements = dummyReq;
-            currentData.dockerfile = dummyDock;
+    function resetState() {
+        // 清空内部数据
+        scanData = null;
+        finalResult = { requirements: "", dockerfile: "" };
 
-            // 2. 填充代码预览区
-            elements.codeReq.textContent = dummyReq;
-            elements.codeDock.textContent = dummyDock;
+        // 清空 UI
+        elements.terminal.innerHTML = "";
+        elements.repoDisplay.textContent = "Scanning...";
+        elements.repoDisplay.style.color = "var(--text-main)";
 
-            // 3. 关键：显示结果区域 (移除 hidden 类)
-            elements.resultSection.classList.remove('hidden');
-            
-            // 4. 显示 AI 分析按钮 (移除 hidden 类)
-            // 注意：如果你在 CSS 中给 .cyber-btn.hidden 写了 display:none，这里需要移除它
-            // 如果你的 HTML 中 btn-ai 没有 hidden 类，这步可以省略，但为了保险：
-            elements.btnAi.classList.remove('hidden'); 
+        elements.resultSection.classList.add('hidden');
+        elements.btnAi.classList.add('hidden');
+        elements.aiInsightBox.classList.add('hidden');
 
-            // 5. 更新日志和按钮状态
-            log(`Found dependencies: flask, requests, openai`, 'success');
-            log('Ready for AI Analysis.', 'info');
-            
-            elements.btnScan.disabled = false;
-            elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
-            elements.btnScan.classList.add('secondary'); // 样式变为次要按钮
-            
-        }, 1500); // 模拟 1.5秒延迟
-    });
+        // 重置按钮样式
+        elements.btnScan.classList.remove('secondary');
+    }
 
-    // --- 2. AI 分析按钮逻辑 ---
-    elements.btnAi.addEventListener('click', async () => {
-        elements.btnAi.disabled = true;
-        elements.btnAi.querySelector('.btn-text').textContent = 'ANALYZING...';
-        log('Sending data to LLM...', 'info');
+    function scrollToBottom() {
+        const main = document.querySelector('main');
+        main.scrollTop = main.scrollHeight;
+    }
 
-        // 模拟 AI 请求
-        setTimeout(() => {
-            // 1. 显示 AI 结果框
-            elements.aiInsightBox.classList.remove('hidden');
-            
-            // 2. 填充内容
-            const aiText = "Analysis Complete:\n- Detected Flask web application.\n- Python 3.9 is a stable choice.\n- Recommendation: Pin exact versions in requirements.txt for better reproducibility.";
-            elements.aiExplanation.innerText = aiText; // 使用 innerText 保持换行
-
-            log('AI Analysis complete.', 'success');
-            
-            elements.btnAi.disabled = false;
-            elements.btnAi.querySelector('.btn-text').textContent = '✨ RE-ANALYZE';
-        }, 2000);
-    });
-
-    // --- 3. 选项卡切换逻辑 (Req / Dockerfile) ---
-    elements.tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // 移除所有激活状态
-            elements.tabs.forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.code-content').forEach(c => c.classList.add('hidden'));
-
-            // 激活当前点击的
-            tab.classList.add('active');
-            const targetId = tab.dataset.target; // 'req' 或 'dock'
-            document.getElementById(`code-${targetId}`).classList.remove('hidden');
+    function loadSettings() {
+        chrome.storage.local.get(['llmConfig'], (res) => {
+            if (res.llmConfig) {
+                elements.inputs.url.value = res.llmConfig.baseUrl || "";
+                elements.inputs.key.value = res.llmConfig.apiKey || "";
+                elements.inputs.model.value = res.llmConfig.model || "";
+            }
         });
-    });
-
-    // --- 4. 复制按钮逻辑 ---
-    elements.btnCopy.addEventListener('click', () => {
-        // 判断当前哪个 tab 是激活的
-        const activeTab = document.querySelector('.tab.active').dataset.target;
-        const textToCopy = activeTab === 'req' ? currentData.requirements : currentData.dockerfile;
-        
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            const originalText = elements.btnCopy.textContent;
-            elements.btnCopy.textContent = 'OK!';
-            setTimeout(() => elements.btnCopy.textContent = originalText, 1500);
-            log('Content copied to clipboard.');
-        });
-    });
-
-    // --- 5. 下载按钮逻辑 ---
-    elements.btnDownload.addEventListener('click', () => {
-        const activeTab = document.querySelector('.tab.active').dataset.target;
-        const content = activeTab === 'req' ? currentData.requirements : currentData.dockerfile;
-        const filename = activeTab === 'req' ? 'requirements.txt' : 'Dockerfile';
-        
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-        log(`Downloaded ${filename}.`);
-    });
+    }
 });

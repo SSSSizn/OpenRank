@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   // 阶段 1: 扫描仓库
   if (msg.type === "SCAN_REPO") {
     performScan().then(res => {
-      // 成功扫描，返回数据给 UI
       chrome.runtime.sendMessage({ type: "SCAN_COMPLETE", data: res });
     }).catch(err => {
       chrome.runtime.sendMessage({
@@ -18,7 +17,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         isError: true
       });
     });
-    return true;
+    return true; // 保持通道开启
   }
 
   // 阶段 2: AI 分析
@@ -36,21 +35,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 // --- 阶段 1: 静态扫描逻辑 ---
 async function performScan() {
-  // 1. 获取 Tab 信息
+  // 关键：每次调用时动态获取当前 Active Tab
   const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   const tab = tabs[0];
-  if (!tab || !tab.url) throw new Error("No active tab found. Click on the page.");
-  if (!tab.url.includes("github.com")) throw new Error("Not a GitHub repository.");
+
+  if (!tab || !tab.url) {
+    throw new Error("No active tab found. Please focus on a GitHub page.");
+  }
+
+  // 只有在 GitHub 页面才继续
+  if (!tab.url.includes("github.com")) {
+    throw new Error("Target must be a GitHub repository.");
+  }
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "1/4 Parsing repo info..." });
 
-  // 注入脚本
+  // 尝试重新注入 Content Script，以防页面刚刚刷新过
   try {
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'] });
-  } catch (e) {}
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content.js']
+    });
+  } catch (e) {
+    // 忽略脚本已存在的错误
+  }
 
+  // 获取仓库信息
   const repoInfo = await chrome.tabs.sendMessage(tab.id, { type: "GET_REPO_INFO" });
-  if (!repoInfo || !repoInfo.ok) throw new Error("Failed to get repo info.");
+  if (!repoInfo || !repoInfo.ok) throw new Error("Failed to get repo info. Refresh page?");
 
   // 获取文件树
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "2/4 Fetching file tree..." });
@@ -74,7 +86,7 @@ async function performScan() {
   }, 5);
 
   // 整理依赖
-  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "4/4 filtering local modules..." });
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "4/4 Filtering local modules..." });
   const allImports = new Set();
   const localModules = new Set(targetFiles.map(f => {
     const parts = f.path.split('/');
@@ -99,7 +111,7 @@ async function performScan() {
 // --- 阶段 2: LLM 交互逻辑 ---
 async function performLLMAnalysis({ candidates, repoInfo }) {
   const { llmConfig } = await chrome.storage.local.get(['llmConfig']);
-  if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key.");
+  if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key. Check Settings.");
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "📡 Contacting AI Model..." });
 
@@ -114,7 +126,7 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
     3. Generate requirements.txt.
     4. Generate a lean Dockerfile (python:3.9-slim).
     
-    Return STRICT JSON:
+    Return STRICT JSON (no markdown):
     {
       "requirements": "string (multiline)",
       "dockerfile": "string (multiline)",
@@ -130,19 +142,26 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
 async function fetchRepoTree({ owner, repo, branch }) {
   const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
   const repoRes = await fetch(repoApi);
-  if (!repoRes.ok) throw new Error("Repo inaccessible.");
+  if (!repoRes.ok) throw new Error("Repo inaccessible (Private or Invalid).");
+
   const repoData = await repoRes.json();
   const actualBranch = (branch && branch !== 'main') ? branch : repoData.default_branch;
+
   const treeApi = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
   const res = await fetch(treeApi);
   if (!res.ok) throw new Error("Tree fetch failed.");
+
   const data = await res.json();
   return data.tree || [];
 }
 
 async function callLLM(config, userPrompt) {
   const url = `${config.baseUrl}/chat/completions`;
-  const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${config.apiKey}` };
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${config.apiKey}`
+  };
+
   const body = JSON.stringify({
     model: config.model,
     messages: [
@@ -153,13 +172,19 @@ async function callLLM(config, userPrompt) {
   });
 
   const res = await fetch(url, { method: "POST", headers, body });
-  if (!res.ok) throw new Error(`API Error ${res.status}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`API Error ${res.status}: ${txt}`);
+  }
+
   const data = await res.json();
   try {
     return JSON.parse(data.choices[0].message.content);
   } catch (e) {
-    const match = data.choices[0].message.content.match(/\{[\s\S]*\}/);
+    // 容错处理：有时模型会返回 Markdown ```json ... ```
+    const content = data.choices[0].message.content;
+    const match = content.match(/\{[\s\S]*\}/);
     if (match) return JSON.parse(match[0]);
-    throw new Error("Invalid JSON response");
+    throw new Error("Invalid JSON response from LLM");
   }
 }
