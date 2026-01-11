@@ -1,28 +1,23 @@
-// sidepanel.js
-
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM 元素引用 ---
+    // --- DOM 元素 ---
     const elements = {
         btnScan: document.getElementById('btn-scan'),
         btnAi: document.getElementById('btn-ai'),
         btnCopy: document.getElementById('btn-copy'),
         btnDownload: document.getElementById('btn-download'),
 
-        // 区域与显示
         repoDisplay: document.querySelector("#repo-display .value"),
         resultSection: document.getElementById('result-section'),
         codeReq: document.getElementById('code-req'),
         codeDock: document.getElementById('code-dock'),
+        // 新增：获取行号容器
+        lineNumbers: document.querySelector('.line-numbers'),
         terminal: document.getElementById('terminal-output'),
 
-        // AI 区域
         aiInsightBox: document.getElementById('ai-insight-box'),
         aiExplanation: document.getElementById('ai-explanation'),
-
-        // 选项卡
         tabs: document.querySelectorAll('.tab'),
 
-        // 设置模态框
         btnSettings: document.getElementById("btn-settings"),
         btnCloseSettings: document.getElementById("close-settings"),
         btnSaveSettings: document.getElementById("save-settings"),
@@ -34,128 +29,131 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- 状态变量 ---
-    // scanData: 存储第一步扫描到的 { candidates, repoInfo }，用于传给 LLM
+    // --- 状态 ---
     let scanData = null;
 
-    // finalResult: 存储 LLM 生成的最终文本，用于复制/下载
-    let finalResult = {
-        requirements: "",
-        dockerfile: ""
-    };
-
-    // --- 初始化 ---
+    // 初始化
     loadSettings();
 
-    // --- 1. 扫描按钮逻辑 (第一步) ---
-    elements.btnScan.addEventListener('click', () => {
-        // 1. 重置 UI 和 状态 (关键：防止显示上一个仓库的数据)
-        resetState();
+    // --- 核心修复：动态更新行号函数 ---
+    function updateLineNumbers(text) {
+        if (!text) {
+            elements.lineNumbers.innerHTML = '<span>1</span>';
+            return;
+        }
+        // 计算行数 (根据换行符)
+        // 过滤掉末尾可能的空行，防止多出一个空行号
+        const lines = text.trimEnd().split('\n').length;
 
+        // 生成对应数量的 span
+        let html = '';
+        for (let i = 1; i <= lines; i++) {
+            html += `<span>${i}</span>`;
+        }
+        elements.lineNumbers.innerHTML = html;
+    }
+
+    // --- 按钮逻辑 ---
+
+    // 1. 扫描 (SCAN REPO)
+    elements.btnScan.addEventListener('click', () => {
+        resetState();
         elements.btnScan.disabled = true;
         elements.btnScan.querySelector('.btn-text').textContent = 'SCANNING...';
-
         log('Initializing repository scan...', 'info');
-
-        // 2. 发送消息给 background.js 执行真正的扫描
         chrome.runtime.sendMessage({ type: "SCAN_REPO" });
     });
 
-    // --- 2. AI 分析按钮逻辑 (第二步) ---
+    // 2. AI 分析 (ANALYZE WITH AI)
     elements.btnAi.addEventListener('click', () => {
-        if (!scanData) {
-            log('Error: No scan data available. Please scan first.', 'error');
-            return;
-        }
+        if (!scanData) return;
 
         elements.btnAi.disabled = true;
-        elements.btnAi.querySelector('.btn-text').textContent = 'ANALYZING...';
+        elements.btnAi.querySelector('.btn-text').textContent = 'GENERATING...';
 
-        log('Sending dependency data to AI model...', 'info');
+        elements.aiInsightBox.classList.remove('hidden');
+        elements.aiExplanation.textContent = "🤖 AI is analyzing dependencies and generating optimized versions...";
 
-        // 发送第一步扫描到的数据给 LLM
-        chrome.runtime.sendMessage({
-            type: "ANALYZE_WITH_LLM",
-            payload: scanData
-        });
+        log('Sending data to LLM...', 'info');
+        chrome.runtime.sendMessage({ type: "ANALYZE_WITH_LLM", payload: scanData });
     });
 
-    // --- 3. 消息监听 (接收 Background 的反馈) ---
+    // --- 消息监听 ---
     chrome.runtime.onMessage.addListener((msg) => {
-        // A. 处理状态日志
         if (msg.type === "UPDATE_STATUS") {
-            const type = msg.isError ? 'error' : 'info';
-            log(msg.text, type);
-
+            log(msg.text, msg.isError ? 'error' : 'info');
             if (msg.isError) {
-                // 出错时恢复按钮状态
                 elements.btnScan.disabled = false;
                 elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
                 if(elements.btnAi) {
                     elements.btnAi.disabled = false;
-                    elements.btnAi.querySelector('.btn-text').textContent = '✨ ANALYZE WITH AI';
+                    elements.btnAi.querySelector('.btn-text').textContent = '✨ RETRY AI';
                 }
             }
         }
 
-        // B. 处理第一步扫描完成
+        // 阶段1完成
         if (msg.type === "SCAN_COMPLETE") {
             const { candidates, repoInfo } = msg.data;
-
-            // 保存状态供下一步使用
             scanData = { candidates, repoInfo };
 
-            // 更新 UI
             elements.repoDisplay.textContent = `${repoInfo.owner}/${repoInfo.repo}`;
             elements.repoDisplay.style.color = "var(--neon-blue)";
 
-            log(`Scan complete. Found ${candidates.length} unique imports.`, 'success');
+            log(`Scan found ${candidates.length} imports.`, 'success');
             candidates.forEach(c => log(`+ ${c}`, 'info'));
 
-            // 按钮变身
             elements.btnScan.disabled = false;
-            elements.btnScan.classList.add('secondary'); // 变暗
+            elements.btnScan.classList.add('secondary');
             elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
 
-            // 显示结果区(虽然还没内容)和 AI 按钮
             elements.resultSection.classList.remove('hidden');
             elements.btnAi.classList.remove('hidden');
-            elements.codeReq.textContent = "Waiting for AI analysis...";
-            elements.codeDock.textContent = "Waiting for AI analysis...";
+            elements.btnAi.disabled = false;
 
-            // 滚动到底部
+            // 生成草稿
+            const reqDraft = candidates.length > 0
+                ? "# [Draft] Generated from static import analysis:\n" + candidates.join('\n')
+                : "# No explicit imports detected.";
+
+            const dockDraft = `# [Draft] Basic Template\nFROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY . .\n\n# Install dependencies detected in scan\nRUN pip install --no-cache-dir ${candidates.join(' ')}\n\n# CMD ["python", "app.py"]`;
+
+            elements.codeReq.textContent = reqDraft;
+            elements.codeDock.textContent = dockDraft;
+
+            // 【关键】更新行号 (默认显示的是 requirements)
+            updateLineNumbers(reqDraft);
+
             scrollToBottom();
         }
 
-        // C. 处理第二步 AI 分析完成
+        // 阶段2完成
         if (msg.type === "ANALYSIS_RESULT") {
             const data = msg.data;
 
-            // 保存最终结果
-            finalResult.requirements = data.requirements || "# No requirements generated";
-            finalResult.dockerfile = data.dockerfile || "# No Dockerfile generated";
+            elements.codeReq.textContent = data.requirements || "# Error";
+            elements.codeDock.textContent = data.dockerfile || "# Error";
 
-            // 渲染代码
-            elements.codeReq.textContent = finalResult.requirements;
-            elements.codeDock.textContent = finalResult.dockerfile;
-
-            // 渲染 AI 解释
             elements.aiInsightBox.classList.remove('hidden');
-            elements.aiExplanation.textContent = data.explanation || "Analysis complete.";
+            elements.aiExplanation.textContent = data.explanation || "No explanation provided.";
 
-            log('AI Analysis complete.', 'success');
+            log('AI content generated successfully.', 'success');
 
-            // 恢复按钮
             elements.btnAi.disabled = false;
-            elements.btnAi.querySelector('.btn-text').textContent = '✨ RE-ANALYZE';
+            elements.btnAi.querySelector('.btn-text').textContent = '✨ RE-GENERATE';
+
+            // 【关键】更新行号 (检查当前哪个 Tab 是激活的)
+            const activeTab = document.querySelector('.tab.active').dataset.target;
+            const activeText = activeTab === 'req' ? elements.codeReq.textContent : elements.codeDock.textContent;
+            updateLineNumbers(activeText);
 
             scrollToBottom();
         }
     });
 
-    // --- 4. 辅助功能 (复制/下载/Tab切换/设置) ---
+    // --- 辅助功能 ---
 
-    // Tab 切换
+    // Tab 切换 (修改重点)
     elements.tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             elements.tabs.forEach(t => t.classList.remove('active'));
@@ -163,15 +161,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tab.classList.add('active');
             const targetId = tab.dataset.target;
-            document.getElementById(`code-${targetId}`).classList.remove('hidden');
+
+            // 显示对应的内容
+            const targetElement = document.getElementById(`code-${targetId}`);
+            targetElement.classList.remove('hidden');
+
+            // 【关键】切换 Tab 时重新计算行号
+            updateLineNumbers(targetElement.textContent);
         });
     });
 
-    // 复制功能
     elements.btnCopy.addEventListener('click', () => {
         const activeTab = document.querySelector('.tab.active').dataset.target;
         const text = activeTab === 'req' ? elements.codeReq.textContent : elements.codeDock.textContent;
-
         navigator.clipboard.writeText(text).then(() => {
             const originalText = elements.btnCopy.textContent;
             elements.btnCopy.textContent = 'OK!';
@@ -179,13 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 下载功能
     elements.btnDownload.addEventListener('click', () => {
         const activeTab = document.querySelector('.tab.active').dataset.target;
         const content = activeTab === 'req' ? elements.codeReq.textContent : elements.codeDock.textContent;
         const filename = activeTab === 'req' ? 'requirements.txt' : 'Dockerfile';
-
-        if (!content || content.startsWith("Waiting")) return;
+        if (!content) return;
 
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 
-    // 设置逻辑
+    // 设置逻辑保持不变...
     elements.btnSettings.onclick = () => elements.modal.classList.remove("hidden");
     elements.btnCloseSettings.onclick = () => elements.modal.classList.add("hidden");
     elements.btnSaveSettings.onclick = () => {
@@ -207,37 +207,29 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         chrome.storage.local.set({ llmConfig: config }, () => {
             elements.modal.classList.add("hidden");
-            log("Configuration saved.", 'success');
+            log("Config saved.", 'success');
         });
     };
-
-    // --- 内部函数 ---
 
     function log(msg, type = 'info') {
         const div = document.createElement('div');
         div.className = `log-line ${type}`;
-        const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
-        div.textContent = `[${time}] > ${msg}`;
+        div.textContent = `> ${msg}`;
         elements.terminal.appendChild(div);
         elements.terminal.scrollTop = elements.terminal.scrollHeight;
     }
 
     function resetState() {
-        // 清空内部数据
         scanData = null;
-        finalResult = { requirements: "", dockerfile: "" };
-
-        // 清空 UI
         elements.terminal.innerHTML = "";
-        elements.repoDisplay.textContent = "Scanning...";
+        elements.repoDisplay.textContent = "Waiting...";
         elements.repoDisplay.style.color = "var(--text-main)";
-
         elements.resultSection.classList.add('hidden');
         elements.btnAi.classList.add('hidden');
         elements.aiInsightBox.classList.add('hidden');
-
-        // 重置按钮样式
         elements.btnScan.classList.remove('secondary');
+        // 重置行号
+        updateLineNumbers("");
     }
 
     function scrollToBottom() {

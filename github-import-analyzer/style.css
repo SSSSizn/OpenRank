@@ -192,7 +192,7 @@ main { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: 
   font-family: var(--font-code); font-size: 11px; line-height: 1.5;
   color: var(--text-main);
   overflow: auto;
-  white-space: pre-wrap;
+  white-space: pre;
   flex: 1;
   max-height: 300px;
 }

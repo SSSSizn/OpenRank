@@ -11,23 +11,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     performScan().then(res => {
       chrome.runtime.sendMessage({ type: "SCAN_COMPLETE", data: res });
     }).catch(err => {
-      chrome.runtime.sendMessage({
-        type: "UPDATE_STATUS",
-        text: `❌ Error: ${err.message}`,
-        isError: true
-      });
+      chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: `❌ Error: ${err.message}`, isError: true });
     });
-    return true; // 保持通道开启
+    return true;
   }
 
   // 阶段 2: AI 分析
   if (msg.type === "ANALYZE_WITH_LLM") {
     performLLMAnalysis(msg.payload).catch(err => {
-      chrome.runtime.sendMessage({
-        type: "UPDATE_STATUS",
-        text: `❌ AI Error: ${err.message}`,
-        isError: true
-      });
+      chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: `❌ AI Error: ${err.message}`, isError: true });
     });
     return true;
   }
@@ -35,43 +27,26 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 // --- 阶段 1: 静态扫描逻辑 ---
 async function performScan() {
-  // 关键：每次调用时动态获取当前 Active Tab
   const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   const tab = tabs[0];
-
-  if (!tab || !tab.url) {
-    throw new Error("No active tab found. Please focus on a GitHub page.");
-  }
-
-  // 只有在 GitHub 页面才继续
-  if (!tab.url.includes("github.com")) {
-    throw new Error("Target must be a GitHub repository.");
-  }
+  if (!tab || !tab.url) throw new Error("No active tab found.");
+  if (!tab.url.includes("github.com")) throw new Error("Not a GitHub repository.");
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "1/4 Parsing repo info..." });
 
-  // 尝试重新注入 Content Script，以防页面刚刚刷新过
   try {
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['content.js']
-    });
-  } catch (e) {
-    // 忽略脚本已存在的错误
-  }
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'] });
+  } catch (e) {}
 
-  // 获取仓库信息
   const repoInfo = await chrome.tabs.sendMessage(tab.id, { type: "GET_REPO_INFO" });
-  if (!repoInfo || !repoInfo.ok) throw new Error("Failed to get repo info. Refresh page?");
+  if (!repoInfo || !repoInfo.ok) throw new Error("Failed to get repo info.");
 
-  // 获取文件树
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "2/4 Fetching file tree..." });
   const tree = await fetchRepoTree(repoInfo);
 
   const pyFiles = tree.filter(f => f.path.endsWith(".py"));
   if (pyFiles.length === 0) throw new Error("No Python files found.");
 
-  // 并发拉取
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: `3/4 Scanning ${Math.min(pyFiles.length, 50)} files...` });
   const targetFiles = pyFiles.slice(0, 50);
 
@@ -85,8 +60,7 @@ async function performScan() {
     } catch (e) { return null; }
   }, 5);
 
-  // 整理依赖
-  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "4/4 Filtering local modules..." });
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "4/4 Filtering modules..." });
   const allImports = new Set();
   const localModules = new Set(targetFiles.map(f => {
     const parts = f.path.split('/');
@@ -103,7 +77,8 @@ async function performScan() {
   });
 
   const candidates = [...allImports];
-  if (candidates.length === 0) throw new Error("No external dependencies found.");
+  // 允许空依赖列表，也许 LLM 能发现别的东西
+  if (candidates.length === 0) candidates.push("# No explicit imports found");
 
   return { candidates, repoInfo };
 }
@@ -111,7 +86,7 @@ async function performScan() {
 // --- 阶段 2: LLM 交互逻辑 ---
 async function performLLMAnalysis({ candidates, repoInfo }) {
   const { llmConfig } = await chrome.storage.local.get(['llmConfig']);
-  if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key. Check Settings.");
+  if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key.");
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "📡 Contacting AI Model..." });
 
@@ -121,20 +96,24 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
     Detected Imports: ${JSON.stringify(candidates)}
     
     Task:
-    1. Verify PyPI package names.
-    2. Suggest Python 3.9+ compatible versions.
-    3. Generate requirements.txt.
-    4. Generate a lean Dockerfile (python:3.9-slim).
+    1. Generate a 'requirements.txt' with stable versions (Python 3.9+).
+    2. Generate a 'Dockerfile' (slim-buster).
+    3. Provide a very brief explanation.
     
-    Return STRICT JSON (no markdown):
+    IMPORTANT: Return ONLY valid JSON with these specific keys:
     {
-      "requirements": "string (multiline)",
-      "dockerfile": "string (multiline)",
-      "explanation": "string (brief summary)"
+      "requirements": "string content...",
+      "dockerfile": "string content...",
+      "explanation": "string content..."
     }
   `;
 
   const llmResult = await callLLM(llmConfig, prompt);
+
+  // 检查结果完整性
+  if (!llmResult.requirements) llmResult.requirements = "# AI failed to generate requirements";
+  if (!llmResult.dockerfile) llmResult.dockerfile = "# AI failed to generate Dockerfile";
+
   chrome.runtime.sendMessage({ type: "ANALYSIS_RESULT", data: llmResult });
 }
 
@@ -142,30 +121,23 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
 async function fetchRepoTree({ owner, repo, branch }) {
   const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
   const repoRes = await fetch(repoApi);
-  if (!repoRes.ok) throw new Error("Repo inaccessible (Private or Invalid).");
-
+  if (!repoRes.ok) throw new Error("Repo inaccessible.");
   const repoData = await repoRes.json();
   const actualBranch = (branch && branch !== 'main') ? branch : repoData.default_branch;
-
   const treeApi = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
   const res = await fetch(treeApi);
   if (!res.ok) throw new Error("Tree fetch failed.");
-
   const data = await res.json();
   return data.tree || [];
 }
 
 async function callLLM(config, userPrompt) {
   const url = `${config.baseUrl}/chat/completions`;
-  const headers = {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${config.apiKey}`
-  };
-
+  const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${config.apiKey}` };
   const body = JSON.stringify({
     model: config.model,
     messages: [
-      { role: "system", content: "You are a JSON generator. Always return valid JSON." },
+      { role: "system", content: "You are a JSON generator. Do not use Markdown blocks. Return raw JSON." },
       { role: "user", content: userPrompt }
     ],
     response_format: { type: "json_object" }
@@ -179,12 +151,11 @@ async function callLLM(config, userPrompt) {
 
   const data = await res.json();
   try {
-    return JSON.parse(data.choices[0].message.content);
+    let content = data.choices[0].message.content;
+    // 自动清洗 Markdown 标记 (这是最常见的错误原因)
+    content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(content);
   } catch (e) {
-    // 容错处理：有时模型会返回 Markdown ```json ... ```
-    const content = data.choices[0].message.content;
-    const match = content.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error("Invalid JSON response from LLM");
+    throw new Error("Failed to parse AI response JSON");
   }
 }
