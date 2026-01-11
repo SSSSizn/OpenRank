@@ -1,38 +1,29 @@
-console.log("Content script loaded on GitHub page");
+console.log("GitHub Analyzer Content Script Active");
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_REPO_INFO") {
-    console.log("Received GET_REPO_INFO message");
-    const match = window.location.pathname.match(/^\/([^/]+)\/([^/]+)/);
-    if (!match) {
-      console.log("Not a repo page");
+    // 兼容多种 GitHub URL 格式
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+
+    if (pathParts.length < 2) {
       sendResponse({ ok: false });
       return;
     }
 
-    const [_, owner, repo] = match;
-    let branch = "main"; // default
+    const owner = pathParts[0];
+    const repo = pathParts[1];
 
-    // Try to get branch from meta tag
-    const metaBranch = document.querySelector('meta[name="octolytics-dimension-repository_default_branch"]')?.content;
-    if (metaBranch) {
-      branch = metaBranch;
+    // 尝试获取分支，默认为 main，后续 API 会校正
+    let branch = "main";
+    // 如果 URL 包含 /tree/xxx 或 /blob/xxx
+    if (pathParts[2] === 'tree' || pathParts[2] === 'blob') {
+      branch = pathParts[3];
     } else {
-      // Try to get from page elements
-      const branchElement = document.querySelector('[data-menu-button] [data-target="branch-filter.menuButton"] span') ||
-                            document.querySelector('.branch-name') ||
-                            document.querySelector('[aria-label*="Switch branches"] span');
-      if (branchElement) {
-        branch = branchElement.textContent.trim();
-      }
+        // 尝试从 DOM 获取分支名
+        const branchSelector = document.querySelector('[data-hotkey="w"] span');
+        if (branchSelector) branch = branchSelector.textContent.trim();
     }
 
-    console.log(`Repo info: ${owner}/${repo}, branch: ${branch}`);
-    sendResponse({
-      ok: true,
-      owner,
-      repo,
-      branch
-    });
+    sendResponse({ ok: true, owner, repo, branch });
   }
 });

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PyAnalyzer SidePanel</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 使用 Google Fonts 增加美观度 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header>
+    <div class="brand">
+      <span class="logo">🐍</span>
+      <span class="title">PyAgent</span>
+    </div>
+    <button id="openOptions" class="icon-btn" title="Settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- 初始状态 -->
+    <div id="start-view">
+      <div class="hero">
+        <p>Analyze Python repos with one click.</p>
+      </div>
+      <button id="analyze" class="primary-btn">
+        <span>🚀 Start Analysis</span>
+      </button>
+    </div>
+
+    <!-- 运行状态与进度 -->
+    <div id="status-container" style="display:none;">
+      <div class="progress-steps">
+        <div class="step-line"></div>
+        <div class="step-msg" id="status-msg">Initializing...</div>
+      </div>
+    </div>
+
+    <!-- 结果区域 -->
+    <div id="results" style="display:none;">
+      <div class="tabs-header">
+        <button class="tab-btn active" data-target="req">requirements.txt</button>
+        <button class="tab-btn" data-target="dock">Dockerfile</button>
+      </div>
+
+      <div class="code-container">
+        <div class="code-actions">
+          <span class="lang-tag">TEXT</span>
+          <button id="copyBtn" class="copy-btn">
+            📋 Copy
+          </button>
+        </div>
+        <pre id="output-req" class="code-block active">Loading...</pre>
+        <pre id="output-dock" class="code-block" style="display:none;">Loading...</pre>
+      </div>
+
+      <div class="explanation-box">
+        <h4>🤖 AI Insight</h4>
+        <p id="explanation">Waiting for analysis...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast 提示 -->
+  <div id="toast" class="toast hidden">Copied to clipboard!</div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

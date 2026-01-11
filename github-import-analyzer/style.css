@@ -1,18 +1,119 @@
-body {
-  font-family: Arial, sans-serif;
-  width: 300px;
-  padding: 10px;
+:root {
+  --bg-color: #ffffff;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --border-color: #d0d7de;
+  --accent-color: #1f883d; /* GitHub Green */
+  --accent-hover: #1a7f37;
+  --code-bg: #f6f8fa;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
 }
 
-button {
-  margin: 5px 0;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: #f6f8fa;
+}
+
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; }
+.icon-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 4px; border-radius: 4px; }
+.icon-btn:hover { background: #eaeef2; color: var(--text-primary); }
+
+main { padding: 16px; flex: 1; overflow-y: auto; }
+
+/* 初始视图 */
+#start-view { text-align: center; margin-top: 40px; }
+.hero p { color: var(--text-secondary); margin-bottom: 20px; }
+
+.primary-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
   width: 100%;
 }
+.primary-btn:hover { background: var(--accent-hover); }
+.primary-btn:disabled { background: #94d3a2; cursor: not-allowed; opacity: 0.7; }
 
-pre {
-  background: #f6f8fa;
-  padding: 8px;
-  max-height: 200px;
-  overflow: auto;
-  font-size: 12px;
+/* 状态显示 */
+#status-container { margin: 20px 0; background: #ddf4ff; border: 1px solid #b6e3ff; padding: 12px; border-radius: 6px; color: #0969da; font-size: 13px; }
+.step-msg { font-weight: 500; }
+
+/* 结果区域 Tabs */
+.tabs-header { display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); margin-bottom: 0; }
+.tab-btn {
+  background: none; border: none; padding: 8px 12px;
+  cursor: pointer; font-size: 13px; color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
 }
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--text-primary); border-bottom-color: #fd8c73; font-weight: 600; }
+
+/* 代码区域 */
+.code-container {
+  background: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.code-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 10px; border-bottom: 1px solid var(--border-color);
+  background: #ffffff;
+}
+.lang-tag { font-size: 10px; font-weight: bold; color: var(--text-secondary); }
+.copy-btn {
+  background: transparent; border: 1px solid var(--border-color);
+  border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer;
+}
+.copy-btn:hover { background: #f3f4f6; }
+
+.code-block {
+  margin: 0; padding: 12px;
+  font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.5; overflow-x: auto;
+  white-space: pre-wrap; word-wrap: break-word;
+  color: #24292f;
+  min-height: 100px;
+}
+
+/* AI 解释 */
+.explanation-box {
+  background: #fff; border: 1px solid var(--border-color);
+  border-radius: 6px; padding: 12px;
+}
+.explanation-box h4 { margin: 0 0 8px 0; font-size: 13px; color: #8250df; }
+.explanation-box p { margin: 0; font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #24292f; color: white; padding: 8px 16px;
+  border-radius: 20px; font-size: 12px; opacity: 1; transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast.hidden { opacity: 0; pointer-events: none; }

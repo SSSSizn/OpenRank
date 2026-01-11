@@ -1,167 +1,155 @@
-function extractImports(code) {
-  const imports = new Set();
+import { extractImports, normalize, pMap } from "./utils.js";
+import { pythonStdLib } from "./stdlib.js";
 
-  const patterns = [
-    /^import\s+([a-zA-Z0-9_\.]+)/gm,
-    /^from\s+([a-zA-Z0-9_\.]+)\s+import/gm
-  ];
 
-  patterns.forEach((re) => {
-    let m;
-    while ((m = re.exec(code)) !== null) {
-      imports.add(m[1].split(".")[0]);
-    }
-  });
+// 【新增】设置点击图标打开侧边栏
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
 
-  return [...imports];
-}
-
-function normalize(pkg) {
-  const mapping = {
-    sklearn: "scikit-learn",
-    cv2: "opencv-python",
-    PIL: "Pillow",
-    yaml: "PyYAML"
-  };
-  return mapping[pkg] || pkg;
-}
-
-chrome.runtime.onMessage.addListener((msg, sender) => {
-  console.log("Received message:", msg.type);
-  if (msg.type === "PING") {
-    console.log("Pong");
-    return { pong: true };
-  }
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "START_ANALYSIS") {
-    console.log("Starting analysis");
-    startAnalysis();
-    return { started: true };
-  }
-  if (msg.type === "FETCH_TREE") {
-    console.log("Fetching tree for", msg.owner, msg.repo, msg.branch);
-    const { owner, repo, branch } = msg;
-
-    // First, get repo info to confirm default branch
-    const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
-    return fetch(repoApi)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Repo not found or private: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(repoData => {
-        const actualBranch = repoData.default_branch;
-        console.log("Actual default branch:", actualBranch);
-        const api = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
-        return fetch(api);
-      })
-      .then(res => {
-        console.log("Fetch response status:", res.status);
-        if (!res.ok) {
-          throw new Error(`API error: ${res.status} ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        console.log("Fetched data:", data);
-        if (!data.tree) {
-          throw new Error(`Invalid API response: no tree data`);
-        }
-        return { tree: data.tree };
-      })
-      .catch(error => {
-        console.error("Error in FETCH_TREE:", error);
-        throw new Error(`Failed to fetch tree: ${error.message}`);
-      });
-  }
-
-  if (msg.type === "FETCH_RAW") {
-    console.log("Fetching raw for", msg.path);
-    const { owner, repo, branch, path } = msg;
-    const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
-
-    return fetch(url)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Raw fetch error: ${res.status} ${res.statusText}`);
-        }
-        return res.text();
-      })
-      .then(text => ({ text }))
-      .catch(error => {
-        throw new Error(`Failed to fetch raw file: ${error.message}`);
-      });
+    runAnalysisPipeline().catch(err => {
+      // 发送错误消息给侧边栏
+      chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: `❌ Error: ${err.message}`, isError: true });
+    });
+    return true;
   }
 });
 
-async function startAnalysis() {
+
+async function runAnalysisPipeline() {
+  // 0. 检查 LLM 配置
+  const { llmConfig } = await chrome.storage.local.get(['llmConfig']);
+  if (!llmConfig || !llmConfig.apiKey) {
+    throw new Error("Please set API Key in Extension Options first.");
+  }
+
+  // 1. 获取 Tab 信息
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab.url.includes("github.com")) throw new Error("Not a GitHub page");
+
+  // 2. 注入脚本并获取 Repo 信息 (Step 3)
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "1/6 parsing repo info..." });
+  const repoInfo = await chrome.tabs.sendMessage(tab.id, { type: "GET_REPO_INFO" });
+  if (!repoInfo.ok) throw new Error("Failed to get repo info");
+
+  // 3. 获取文件树 (Step 4)
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "2/6 fetching file tree..." });
+  const tree = await fetchRepoTree(repoInfo);
+
+  // 4. 筛选 .py 文件 (Step 5)
+  const pyFiles = tree.filter(f => f.path.endsWith(".py"));
+  if (pyFiles.length === 0) throw new Error("No Python files found.");
+
+  // 5. 并发拉取内容 (Step 6) & 静态解析 (Step 7)
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: `3/6 fetching ${pyFiles.length} files...` });
+
+  // 限制最大读取 50 个文件防止 Token 爆炸，实际项目可分片处理
+  const targetFiles = pyFiles.slice(0, 50);
+
+  const fileAnalyses = await pMap(targetFiles, async (file) => {
+    const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/${repoInfo.branch}/${file.path}`;
+    try {
+      const res = await fetch(rawUrl);
+      if (!res.ok) return null;
+      const code = await res.text();
+      return {
+        path: file.path,
+        imports: extractImports(code)
+      };
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }, 5); // 5 并发
+
+  // 6. 初步分类与过滤 (Step 8 & 9)
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "4/6 building context..." });
+
+  const allImports = new Set();
+  const importContext = [];
+
+  // 获取本地目录名作为 "本地模块" 排除项
+  const localModules = new Set(targetFiles.map(f => {
+    const parts = f.path.split('/');
+    return parts[parts.length - 1].replace('.py', '');
+  }));
+
+  fileAnalyses.forEach(f => {
+    if (!f) return;
+    f.imports.forEach(imp => {
+      // 排除标准库 和 显式的本地文件
+      if (!pythonStdLib.has(imp) && !localModules.has(imp)) {
+        allImports.add(normalize(imp));
+        importContext.push(`File '${f.path}' imports '${imp}'`);
+      }
+    });
+  });
+
+  const candidates = [...allImports];
+
+  // 7. LLM 推理与生成 (Step 10-16)
+  chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "5/6 LLM reasoning (Steps 10-16)..." });
+
+  const prompt = `
+    You are a Python DevOps Expert. Analyze these imports from a GitHub repo: ${repoInfo.owner}/${repoInfo.repo}.
+    
+    Detected Candidate Imports: ${JSON.stringify(candidates)}
+    Context: ${JSON.stringify(importContext.slice(0, 30))} (truncated)
+
+    Tasks:
+    1. Map imports to correct PyPI package names (e.g., 'yaml' -> 'PyYAML', 'sklearn' -> 'scikit-learn').
+    2. Filter out internal utility modules that might have been missed by static analysis.
+    3. Suggest version constraints compatible with Python 3.8+.
+    4. Generate a 'requirements.txt'.
+    5. Generate a 'Dockerfile' for a standard python app.
+
+    Output format: JSON with keys "requirements" (string), "dockerfile" (string), "explanation" (string).
+  `;
+
+  const llmResult = await callLLM(llmConfig, prompt);
+
+  // 8. 完成
+  chrome.runtime.sendMessage({ type: "ANALYSIS_RESULT", data: llmResult });
+}
+
+// GitHub API Tree Fetcher
+async function fetchRepoTree({ owner, repo, branch }) {
+  // 先获取 default branch 确认
+  const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
+  const repoData = await (await fetch(repoApi)).json();
+  const actualBranch = branch === "main" ? repoData.default_branch : branch;
+
+  const treeApi = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
+  const res = await fetch(treeApi);
+  const data = await res.json();
+  return data.tree || [];
+}
+
+// Generic LLM Caller
+async function callLLM(config, userPrompt) {
+  const url = `${config.baseUrl}/chat/completions`;
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${config.apiKey}`
+  };
+
+  const body = JSON.stringify({
+    model: config.model,
+    messages: [
+      { role: "system", content: "You are a helpful Python dependency analyzer." },
+      { role: "user", content: userPrompt }
+    ],
+    response_format: { type: "json_object" } // Force JSON if supported
+  });
+
+  const res = await fetch(url, { method: "POST", headers, body });
+  const data = await res.json();
+
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    console.log("Got active tab");
-
-    if (!tab.url || !tab.url.startsWith("https://github.com/")) {
-      chrome.runtime.sendMessage({ type: "ANALYSIS_ERROR", error: "Please navigate to a GitHub repository page" });
-      return;
-    }
-
-    const repoInfo = await chrome.tabs.sendMessage(tab.id, { type: "GET_REPO_INFO" });
-    if (!repoInfo.ok) {
-      chrome.runtime.sendMessage({ type: "ANALYSIS_ERROR", error: "Not a GitHub repo page" });
-      return;
-    }
-
-    console.log(`Repo: ${repoInfo.owner}/${repoInfo.repo}, branch: ${repoInfo.branch}`);
-
-    const treeResp = await (async () => {
-      const { owner, repo, branch } = repoInfo;
-      const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
-      const repoRes = await fetch(repoApi);
-      if (!repoRes.ok) {
-        throw new Error(`Repo not found or private: ${repoRes.status}`);
-      }
-      const repoData = await repoRes.json();
-      const actualBranch = repoData.default_branch;
-      const api = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
-      const res = await fetch(api);
-      if (!res.ok) {
-        throw new Error(`API error: ${res.status} ${res.statusText}`);
-      }
-      const data = await res.json();
-      if (!data.tree) {
-        throw new Error(`Invalid API response: no tree data`);
-      }
-      return { tree: data.tree };
-    })();
-
-    console.log(`File count: ${treeResp.tree.length}`);
-
-    const pyFiles = treeResp.tree
-      .filter((f) => f.path.endsWith(".py"))
-      .map((f) => f.path);
-
-    console.log(`Python files: ${pyFiles.length}`);
-
-    const pkgs = new Set();
-
-    for (const path of pyFiles.slice(0, 20)) {
-      console.log(`Fetching ${path}`);
-      const res = await (async () => {
-        const url = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/${repoInfo.branch}/${path}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Raw fetch error: ${response.status}`);
-        }
-        return { text: await response.text() };
-      })();
-      extractImports(res.text).forEach((p) => pkgs.add(normalize(p)));
-    }
-
-    console.log("Analysis done");
-    const result = "Analyzing...\n✔ Analysis done\n\n=== requirements.txt ===\n" + [...pkgs].sort().join("\n");
-    chrome.runtime.sendMessage({ type: "ANALYSIS_RESULT", result });
-  } catch (error) {
-    console.error("Analysis error:", error);
-    chrome.runtime.sendMessage({ type: "ANALYSIS_ERROR", error: error.message });
+    const content = data.choices[0].message.content;
+    return JSON.parse(content);
+  } catch (e) {
+    throw new Error("Failed to parse LLM response: " + e.message);
   }
 }
