@@ -356,6 +356,7 @@ main {
   background: var(--bg-panel);
   overflow: hidden;
   position: relative;
+  max-height: 300px;
   border-bottom: 1px solid var(--border);
   /* Separator for AI button */
 }
@@ -374,6 +375,10 @@ main {
   opacity: 0.5;
   text-align: right;
   min-width: 35px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
 }
 
 .code-content {
@@ -595,29 +600,16 @@ main {
   border-radius: 3px;
 }
 
-.code-content {
-  margin: 0;
-  padding: 12px;
-  font-family: var(--font-code);
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--text-main);
-  overflow-y: auto;
-  overflow-x: hidden;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  flex: 1;
-}
-
-.code-content::-webkit-scrollbar {
+/* ---------- main 滚动条风格（与 code-content 保持一致） ---------- */
+main::-webkit-scrollbar {
   width: 6px;
 }
 
-.code-content::-webkit-scrollbar-thumb {
+main::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 3px;
 }
 
-.code-content::-webkit-scrollbar-track {
+main::-webkit-scrollbar-track {
   background: transparent;
 }
