@@ -1,71 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>PyAnalyzer SidePanel</title>
-  <link rel="stylesheet" href="styles.css" />
-  <!-- 使用 Google Fonts 增加美观度 -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <title>CodeMatrix Panel</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- 引入 JetBrains Mono 字体增加代码感 -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- 顶部导航 -->
+  <!-- 顶部导航栏 -->
   <header>
-    <div class="brand">
-      <span class="logo">🐍</span>
-      <span class="title">PyAgent</span>
+    <div class="logo-area">
+      <div class="status-dot ready" id="connection-dot"></div>
+      <span class="brand">PY_AGENT</span><span class="version">v2.0</span>
     </div>
-    <button id="openOptions" class="icon-btn" title="Settings">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    <button id="btn-settings" class="icon-btn" title="Configuration">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
     </button>
   </header>
 
   <main>
-    <!-- 初始状态 -->
-    <div id="start-view">
-      <div class="hero">
-        <p>Analyze Python repos with one click.</p>
+    <!-- 控制面板 -->
+    <section class="control-panel">
+      <div class="repo-info" id="repo-display">
+        <span class="label">TARGET:</span>
+        <span class="value">Waiting...</span>
       </div>
-      <button id="analyze" class="primary-btn">
-        <span>🚀 Start Analysis</span>
+      <button id="btn-analyze" class="cyber-btn">
+        <span class="btn-text">INITIALIZE_SCAN</span>
+        <span class="glitch-effect"></span>
       </button>
-    </div>
+    </section>
 
-    <!-- 运行状态与进度 -->
-    <div id="status-container" style="display:none;">
-      <div class="progress-steps">
-        <div class="step-line"></div>
-        <div class="step-msg" id="status-msg">Initializing...</div>
+    <!-- 终端日志区 (仿控制台) -->
+    <section class="terminal-container">
+      <div class="terminal-header">
+        <span class="term-title">SYSTEM_LOGS</span>
+        <div class="window-controls"><span></span><span></span><span></span></div>
       </div>
-    </div>
+      <div id="terminal-output" class="terminal-body">
+        <div class="log-line text-dim">System ready.</div>
+        <div class="log-line text-dim">Waiting for input...</div>
+      </div>
+    </section>
 
-    <!-- 结果区域 -->
-    <div id="results" style="display:none;">
-      <div class="tabs-header">
-        <button class="tab-btn active" data-target="req">requirements.txt</button>
-        <button class="tab-btn" data-target="dock">Dockerfile</button>
+    <!-- 结果展示区 (代码编辑器风格) -->
+    <section id="result-section" class="editor-container hidden">
+      <div class="editor-tabs">
+        <button class="tab active" data-target="req">requirements.txt</button>
+        <button class="tab" data-target="dock">Dockerfile</button>
+        <div class="spacer"></div>
+        <button id="btn-copy" class="action-sm">COPY</button>
       </div>
 
-      <div class="code-container">
-        <div class="code-actions">
-          <span class="lang-tag">TEXT</span>
-          <button id="copyBtn" class="copy-btn">
-            📋 Copy
-          </button>
+      <div class="editor-body">
+        <div class="line-numbers">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
         </div>
-        <pre id="output-req" class="code-block active">Loading...</pre>
-        <pre id="output-dock" class="code-block" style="display:none;">Loading...</pre>
+        <pre id="code-req" class="code-content active">Waiting for data...</pre>
+        <pre id="code-dock" class="code-content hidden">Waiting for data...</pre>
       </div>
 
-      <div class="explanation-box">
-        <h4>🤖 AI Insight</h4>
-        <p id="explanation">Waiting for analysis...</p>
+      <div class="ai-insight">
+        <div class="insight-title">ANALYSIS_SUMMARY</div>
+        <p id="ai-explanation">...</p>
       </div>
-    </div>
+    </section>
   </main>
 
-  <!-- Toast 提示 -->
-  <div id="toast" class="toast hidden">Copied to clipboard!</div>
+  <!-- 设置模态框 (覆盖层) -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>SYSTEM_CONFIG</h3>
+        <button id="close-settings" class="close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label>API Base URL</label>
+          <input type="text" id="cfg-url" placeholder="https://api.openai.com/v1" class="cyber-input">
+        </div>
+        <div class="input-group">
+          <label>API Key</label>
+          <input type="password" id="cfg-key" placeholder="sk-..." class="cyber-input">
+        </div>
+        <div class="input-group">
+          <label>Model Name</label>
+          <input type="text" id="cfg-model" placeholder="gpt-4o / deepseek-chat" class="cyber-input">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-settings" class="cyber-btn sm">SAVE_CONFIG</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="sidepanel.js"></script>
 </body>

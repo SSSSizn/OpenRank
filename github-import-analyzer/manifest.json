@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "GitHub Python Agent",
-  "version": "1.1",
-  "description": "Analyze Python dependencies using Static Analysis + LLM",
+  "name": "CodeMatrix: Python Agent",
+  "version": "2.0",
+  "description": "AI-Powered Python Dependency Analyzer",
   "permissions": [
     "activeTab",
     "scripting",
@@ -15,9 +15,6 @@
     "https://*.openai.com/*",
     "https://*.deepseek.com/*"
   ],
-  "action": {
-    "default_title": "Open Analysis Panel"
-  },
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -25,11 +22,7 @@
   "side_panel": {
     "default_path": "sidepanel.html"
   },
-  "options_page": "options.html",
-  "content_scripts": [
-    {
-      "matches": ["https://github.com/*"],
-      "js": ["content.js"]
-    }
-  ]
+  "action": {
+    "default_title": "Open Analysis Panel"
+  }
 }
