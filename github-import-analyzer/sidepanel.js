@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             url: document.getElementById("cfg-url"),
             key: document.getElementById("cfg-key"),
             model: document.getElementById("cfg-model"),
+            githubToken: document.getElementById("cfg-github-token"),
         }
     };
 
@@ -80,12 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 消息监听 ---
     chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.type === 'GITHUB_USER') {
+            const el = document.getElementById('github-user');
+
+            if (msg.user) {
+                el.innerHTML = `
+            <img src="${msg.user.avatar}" class="gh-avatar">
+            <span>${msg.user.login}</span>
+            `;
+                el.classList.add('ok');
+            } else {
+                el.textContent = 'GitHub: Anonymous';
+                el.classList.remove('ok');
+            }
+        }
+
         if (msg.type === "UPDATE_STATUS") {
             log(msg.text, msg.isError ? 'error' : 'info');
             if (msg.isError) {
                 elements.btnScan.disabled = false;
                 elements.btnScan.querySelector('.btn-text').textContent = 'RE-SCAN';
-                if(elements.btnAi) {
+                if (elements.btnAi) {
                     elements.btnAi.disabled = false;
                     elements.btnAi.querySelector('.btn-text').textContent = '✨ RETRY AI';
                 }
@@ -203,9 +219,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const config = {
             baseUrl: elements.inputs.url.value,
             apiKey: elements.inputs.key.value,
-            model: elements.inputs.model.value
+            model: elements.inputs.model.value,
+            githubToken: elements.inputs.githubToken.value.trim()
         };
-        chrome.storage.local.set({ llmConfig: config }, () => {
+        chrome.storage.local.set({
+            llmConfig: {
+                baseUrl: elements.inputs.url.value,
+                apiKey: elements.inputs.key.value,
+                model: elements.inputs.model.value
+            },
+            githubToken: elements.inputs.githubToken.value.trim()
+        }, () => {
             elements.modal.classList.add("hidden");
             log("Config saved.", 'success');
         });
@@ -238,12 +262,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadSettings() {
-        chrome.storage.local.get(['llmConfig'], (res) => {
+        chrome.storage.local.get(['llmConfig', 'githubToken'], (res) => {
             if (res.llmConfig) {
                 elements.inputs.url.value = res.llmConfig.baseUrl || "";
                 elements.inputs.key.value = res.llmConfig.apiKey || "";
                 elements.inputs.model.value = res.llmConfig.model || "";
             }
+            elements.inputs.githubToken.value = res.githubToken || "";
         });
     }
 });

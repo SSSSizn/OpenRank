@@ -1,6 +1,28 @@
 import { extractImports, normalize, pMap } from "./utils.js";
 import { pythonStdLib } from "./stdlib.js";
 
+async function githubFetch(url) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(['githubToken'], async ({ githubToken }) => {
+      const headers = {
+        'Accept': 'application/vnd.github+json'
+      };
+
+      if (githubToken) {
+        headers.Authorization = `Bearer ${githubToken}`;
+      }
+
+      try {
+        const res = await fetch(url, { headers });
+        resolve(res);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+}
+
+
 // 设置点击图标打开侧边栏
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
@@ -27,6 +49,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 // --- 阶段 1: 静态扫描逻辑 ---
 async function performScan() {
+  const ghUser = await fetchGitHubUser();
+
+  chrome.runtime.sendMessage({
+    type: 'GITHUB_USER',
+    user: ghUser
+      ? { login: ghUser.login, avatar: ghUser.avatar }
+      : null
+  });
+
   const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
   const tab = tabs[0];
   if (!tab || !tab.url) throw new Error("No active tab found.");
@@ -36,7 +67,7 @@ async function performScan() {
 
   try {
     await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content.js'] });
-  } catch (e) {}
+  } catch (e) { }
 
   const repoInfo = await chrome.tabs.sendMessage(tab.id, { type: "GET_REPO_INFO" });
   if (!repoInfo || !repoInfo.ok) throw new Error("Failed to get repo info.");
@@ -53,7 +84,7 @@ async function performScan() {
   const fileAnalyses = await pMap(targetFiles, async (file) => {
     const rawUrl = `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/${repoInfo.branch}/${file.path}`;
     try {
-      const res = await fetch(rawUrl);
+      const res = await githubFetch(rawUrl);
       if (!res.ok) return null;
       const code = await res.text();
       return { path: file.path, imports: extractImports(code) };
@@ -120,15 +151,73 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
 // --- Helpers ---
 async function fetchRepoTree({ owner, repo, branch }) {
   const repoApi = `https://api.github.com/repos/${owner}/${repo}`;
-  const repoRes = await fetch(repoApi);
-  if (!repoRes.ok) throw new Error("Repo inaccessible.");
+
+  const repoRes = await githubFetch(repoApi, {
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'py-agent-extension'
+    }
+  });
+
+  if (!repoRes.ok) {
+    const text = await repoRes.text();
+    if (repoRes.status === 403 && text.includes('rate limit')) {
+      throw new Error(
+        'GitHub API rate limit exceeded.\n' +
+        '👉 Please add a GitHub Token in Settings to continue.'
+      );
+    }
+    else {
+      throw new Error(
+        `Repo fetch failed:
+URL: ${repoApi}
+Status: ${repoRes.status} ${repoRes.statusText}
+Response: ${text}`
+      );
+    }
+  }
+
   const repoData = await repoRes.json();
-  const actualBranch = (branch && branch !== 'main') ? branch : repoData.default_branch;
+  const actualBranch =
+    branch && branch !== 'main'
+      ? branch
+      : repoData.default_branch;
+
+  if (!actualBranch) {
+    throw new Error(
+      `Cannot determine default branch for ${owner}/${repo}`
+    );
+  }
+
   const treeApi = `https://api.github.com/repos/${owner}/${repo}/git/trees/${actualBranch}?recursive=1`;
-  const res = await fetch(treeApi);
-  if (!res.ok) throw new Error("Tree fetch failed.");
-  const data = await res.json();
-  return data.tree || [];
+
+  const treeRes = await githubFetch(treeApi, {
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'py-agent-extension'
+    }
+  });
+
+  if (!treeRes.ok) {
+    const text = await treeRes.text();
+    throw new Error(
+      `Tree fetch failed:
+URL: ${treeApi}
+Status: ${treeRes.status} ${treeRes.statusText}
+Response: ${text}`
+    );
+  }
+
+  const data = await treeRes.json();
+
+  if (!Array.isArray(data.tree)) {
+    throw new Error(
+      `Unexpected tree response format:
+${JSON.stringify(data, null, 2)}`
+    );
+  }
+
+  return data.tree;
 }
 
 async function callLLM(config, userPrompt) {
@@ -157,5 +246,20 @@ async function callLLM(config, userPrompt) {
     return JSON.parse(content);
   } catch (e) {
     throw new Error("Failed to parse AI response JSON");
+  }
+}
+
+async function fetchGitHubUser() {
+  try {
+    const res = await githubFetch('https://api.github.com/user');
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return {
+      login: data.login,
+      avatar: data.avatar_url
+    };
+  } catch {
+    return null;
   }
 }
