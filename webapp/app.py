@@ -27,7 +27,6 @@ CACHE_LOCK = threading.Lock()
 def simple_tokenize(text):
     if not text:
         return []
-    # 简单的分词逻辑
     s = str(text).lower().replace('.', ' ').replace('/', ' ').replace('\\', ' ').replace('-', ' ').replace('_', ' ')
     return [t for t in s.split() if len(t) >= 3 and t.isalpha()]
 
@@ -68,7 +67,6 @@ def summary_dependency_overview(data):
                 for t in simple_tokenize(f):
                     token_counter[t] += 1
 
-            # 安全检查 is not None
             v = r.get('readme_env_ratio')
             if v is not None: ratios.append(v)
 
@@ -84,7 +82,6 @@ def summary_dependency_overview(data):
 
 def summary_dependency_staleness(data):
     rows = data if isinstance(data, list) else list(data.values())
-    # 安全检查 is not None
     days_repo = [r['max_staleness_vs_repo_days'] for r in rows if
                  isinstance(r, dict) and r.get('max_staleness_vs_repo_days') is not None]
     days_now = [r['max_staleness_vs_now_days'] for r in rows if
@@ -101,7 +98,6 @@ def summary_dependency_staleness(data):
 
 def summary_import_vs_requirements(data):
     rows = data if isinstance(data, list) else list(data.values())
-    # 修复潜在报错：检查 key 存在且不为 None
     missing = [r['missing_ratio'] for r in rows if isinstance(r, dict) and r.get('missing_ratio') is not None]
     redundant = [r['redundant_ratio'] for r in rows if isinstance(r, dict) and r.get('redundant_ratio') is not None]
 
@@ -123,7 +119,6 @@ def summary_import_vs_requirements(data):
 
 def summary_issue_env_stats(data):
     rows = data if isinstance(data, list) else list(data.values())
-    # 之前是 'env_issue_ratio' in r，现在加了 r.get(...) is not None
     ratios = [r['env_issue_ratio'] for r in rows if isinstance(r, dict) and r.get('env_issue_ratio') is not None]
 
     kw_counter = Counter()
@@ -246,7 +241,6 @@ def load_and_cache_data():
             REPO_INDEX = new_index
 
 
-# --- 初始化 ---
 load_and_cache_data()
 
 @app.route('/')
@@ -287,7 +281,7 @@ def api_search():
     count = 0
     for full_name, infos in REPO_INDEX.items():
         if q in full_name:
-            for info in infos:  # 遍历该仓库的所有文件
+            for info in infos:
                 results.append({
                     'file': info.get('file', '未知文件'),
                     'record': info.get('record', {}),
@@ -313,7 +307,7 @@ def api_repo():
     if full not in REPO_INDEX:
         return jsonify({'matches': [], 'visualizations': {}})
 
-    infos = REPO_INDEX[full]   # 多个统计文件
+    infos = REPO_INDEX[full]
     matches = []
     viz = {}
 
@@ -326,7 +320,6 @@ def api_repo():
             'record': rec
         })
 
-        # ===== 逐文件补全 visualization =====
         if 'dependency_overview' in fname:
             viz['dependency_overview'] = {
                 'has_dependency_file': rec.get('has_dependency_file', False),
@@ -369,40 +362,60 @@ def api_repo():
         'visualizations': viz
     })
 
-# ===== 硅基流动配置 =====
-# 删掉下划线
-SILICONFLOW_API_KEY = "sk-aikhxaddyhhvwodwvcdwwkrvvbqlwglkbigapjvwqjowdbah"
-SILICONFLOW_BASE_URL = "https://api.siliconflow.cn/v1"
-SILICONFLOW_MODEL = "deepseek-ai/DeepSeek-V3.2-Exp"
-
-client = OpenAI(
-    api_key=SILICONFLOW_API_KEY,
-    base_url=SILICONFLOW_BASE_URL
-)
-
+# ===== 修改后的AI接口 - 接收前端传来的配置 =====
 @app.route('/api/repo-ai', methods=['POST'])
 def repo_ai():
     data = request.json or {}
     summary = data.get('summary', [])
-    full_name = data.get('full_name', '')
+    full = data.get('full', '')
+    
+    # 从前端接收API配置
+    api_key = data.get('api_key', '')
+    base_url = data.get('base_url', '')
+    model = data.get('model', '')
+
+    # 验证必要参数
+    if not api_key or not base_url or not model:
+        return jsonify({
+            "error": "Missing API configuration",
+            "detail": "Please configure API Key, Base URL, and Model in settings"
+        }), 400
 
     prompt = (
-        "你是软件工程分析助手，请基于以下仓库统计结果，"
-        "用 5-8 句话分析环境依赖复杂度、新手友好程度，"
-        "并指出潜在问题与改进建议。\n\n"
-        f"仓库：{full_name}\n"
-        + "\n".join(summary)
-    )
+    "你是一名严谨、客观的软件工程分析助手，擅长基于仓库统计数据评估项目的工程成熟度。\n"
+    "请【严格按照指定结构】输出分析内容，语言中性、专业，不使用口语化表达。\n"
+    "全文共【5–8 句话】，每个部分 1–2 句话。\n\n"
+
+    "【输出结构（必须严格遵守）】\n"
+    "1. 依赖与环境复杂度：\n"
+    "   - 评估项目的环境复现难度、依赖数量与清晰程度。\n"
+    "2. 新贡献者友好程度：\n"
+    "   - 分析环境配置流程、文档完善性及可能的入门阻力。\n"
+    "3. 潜在工程风险与维护隐患：\n"
+    "   - 指出可能影响长期维护或扩展性的工程问题。\n"
+    "4. 改进建议：\n"
+    "   - 给出 1–2 条明确、可执行的工程改进建议。\n\n"
+
+    f"【仓库】{full}\n"
+    "【分析数据摘要】\n"
+    + "\n".join(summary)
+)
+
+
 
     try:
+        client = OpenAI(
+            api_key=api_key,
+            base_url=base_url
+        )
+        
         resp = client.chat.completions.create(
-            model=SILICONFLOW_MODEL,
+            model=model,
             messages=[
                 {"role": "system", "content": "你是严谨的软件工程研究分析助手"},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.7,
-            max_tokens=512
+            temperature=0.7
         )
 
         text = resp.choices[0].message.content
