@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "CodeMatrix: Python Agent",
-  "version": "2.0",
+  "name": "Github PyAnalyzer",
+  "version": "2.2",
   "description": "AI-Powered Python Dependency Analyzer",
   "permissions": [
     "activeTab",
@@ -10,6 +10,7 @@
     "sidePanel"
   ],
   "host_permissions": [
+    "https://github.com/*",
     "https://api.github.com/*",
     "https://raw.githubusercontent.com/*",
     "https://*.openai.com/*",
