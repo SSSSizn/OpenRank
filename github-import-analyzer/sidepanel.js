@@ -132,7 +132,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? "# [Draft] Generated from static import analysis:\n" + candidates.join('\n')
                 : "# No explicit imports detected.";
 
-            const dockDraft = `# [Draft] Basic Template\nFROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY . .\n\n# Install dependencies detected in scan\nRUN pip install --no-cache-dir ${candidates.join(' ')}\n\n# CMD ["python", "app.py"]`;
+            const dockDraft = `# ⚠️ Draft Dockerfile — NOT RUNNABLE
+# ----------------------------------
+# This file is generated from static import analysis only.
+# At this stage:
+#   - Dependency versions are UNKNOWN
+#   - Application entrypoint (CMD) is UNKNOWN
+#
+# ❌ Do NOT use this Dockerfile to build an image yet.
+#
+# 👉 Next step:
+# Run AI analysis to resolve:
+#   1. Exact dependency versions (requirements.txt)
+#   2. Correct startup command (CMD)
+#   3. Compatible Python base image
+#
+# After AI analysis, this draft will be replaced
+# with a runnable Dockerfile.
+
+FROM python:3.9-slim
+
+WORKDIR /app
+COPY . .
+
+# Detected imports (no versions yet)
+RUN pip install --no-cache-dir requests flask openai
+
+# CMD will be generated after AI analysis
+`;
 
             elements.codeReq.textContent = reqDraft;
             elements.codeDock.textContent = dockDraft;
@@ -272,3 +299,160 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// 在你的 sidepanel.js 中添加以下函数来同步行号
+
+/**
+ * 更新代码块的行号，使其与实际显示行数（包括换行）同步
+ * @param {HTMLElement} codeElement - 代码内容元素
+ * @param {HTMLElement} lineNumbersElement - 行号容器元素
+ */
+function updateLineNumbers(codeElement, lineNumbersElement) {
+  if (!codeElement || !lineNumbersElement) return;
+  
+  // 清空现有行号
+  lineNumbersElement.innerHTML = '';
+  
+  // 获取代码内容
+  const content = codeElement.textContent || '';
+  if (!content.trim()) {
+    lineNumbersElement.innerHTML = '<span>1</span>';
+    return;
+  }
+  
+  // 按换行符分割内容（这是实际的逻辑行数）
+  const lines = content.split('\n');
+  const totalLines = lines.length;
+  
+  // 生成行号
+  const fragment = document.createDocumentFragment();
+  for (let i = 1; i <= totalLines; i++) {
+    const span = document.createElement('span');
+    span.textContent = i;
+    fragment.appendChild(span);
+  }
+  
+  lineNumbersElement.appendChild(fragment);
+  
+  // 确保行号容器和代码内容滚动同步
+  syncScrollPositions(codeElement, lineNumbersElement);
+}
+
+/**
+ * 同步行号和代码内容的滚动位置
+ */
+function syncScrollPositions(codeElement, lineNumbersElement) {
+  // 移除旧的事件监听器（如果存在）
+  const oldHandler = codeElement._scrollHandler;
+  if (oldHandler) {
+    codeElement.removeEventListener('scroll', oldHandler);
+  }
+  
+  // 创建新的事件处理器
+  const newHandler = function() {
+    lineNumbersElement.scrollTop = codeElement.scrollTop;
+  };
+  
+  // 保存引用以便后续移除
+  codeElement._scrollHandler = newHandler;
+  
+  // 添加事件监听器
+  codeElement.addEventListener('scroll', newHandler);
+}
+
+/**
+ * 设置代码内容并更新行号
+ * @param {string} codeId - 代码块ID（'req' 或 'dock'）
+ * @param {string} content - 代码内容
+ */
+function setCodeContent(codeId, content) {
+  const codeElement = document.getElementById(`code-${codeId}`);
+  const lineNumbersElement = document.querySelector('.line-numbers');
+  
+  if (codeElement) {
+    codeElement.textContent = content;
+    
+    // 只有当前激活的代码块才更新行号
+    if (!codeElement.classList.contains('hidden')) {
+      // 使用 requestAnimationFrame 确保 DOM 已更新
+      requestAnimationFrame(() => {
+        updateLineNumbers(codeElement, lineNumbersElement);
+      });
+    }
+  }
+}
+
+/**
+ * 切换标签页并更新行号
+ */
+function setupTabSwitching() {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const target = this.dataset.target;
+      
+      // 切换标签激活状态
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      
+      // 切换代码内容显示
+      document.querySelectorAll('.code-content').forEach(c => c.classList.add('hidden'));
+      const activeCode = document.getElementById(`code-${target}`);
+      if (activeCode) {
+        activeCode.classList.remove('hidden');
+        
+        // 更新行号
+        const lineNumbersElement = document.querySelector('.line-numbers');
+        requestAnimationFrame(() => {
+          updateLineNumbers(activeCode, lineNumbersElement);
+        });
+      }
+    });
+  });
+}
+
+/**
+ * 监听窗口大小变化（虽然我们现在用逻辑行数，但保留以防万一）
+ */
+function setupResizeHandler() {
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const activeCode = document.querySelector('.code-content:not(.hidden)');
+      const lineNumbersElement = document.querySelector('.line-numbers');
+      if (activeCode && lineNumbersElement) {
+        updateLineNumbers(activeCode, lineNumbersElement);
+      }
+    }, 300);
+  });
+}
+
+/**
+ * 初始化所有功能
+ */
+function initLineNumbers() {
+  setupTabSwitching();
+  setupResizeHandler();
+  
+  // 初始更新行号
+  requestAnimationFrame(() => {
+    const activeCode = document.querySelector('.code-content:not(.hidden)');
+    const lineNumbersElement = document.querySelector('.line-numbers');
+    if (activeCode && lineNumbersElement) {
+      updateLineNumbers(activeCode, lineNumbersElement);
+    }
+  });
+}
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLineNumbers);
+} else {
+  initLineNumbers();
+}
+
+// 导出函数供外部使用
+window.pyAnalyzerUtils = {
+  updateLineNumbers,
+  setCodeContent
+};

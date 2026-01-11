@@ -570,3 +570,54 @@ main {
   height: 18px;
   border-radius: 50%;
 }
+
+.code-content {
+  margin: 0;
+  padding: 12px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-main);
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  flex: 1;
+  max-height: 300px;
+}
+
+.code-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.code-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.code-content {
+  margin: 0;
+  padding: 12px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-main);
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  flex: 1;
+}
+
+.code-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.code-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.code-content::-webkit-scrollbar-track {
+  background: transparent;
+}

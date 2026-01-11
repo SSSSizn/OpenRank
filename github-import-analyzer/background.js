@@ -122,21 +122,45 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "📡 Contacting AI Model..." });
 
   const prompt = `
-    Role: Python DevOps Expert.
-    Repo: ${repoInfo.owner}/${repoInfo.repo}
-    Detected Imports: ${JSON.stringify(candidates)}
-    
-    Task:
-    1. Generate a 'requirements.txt' with stable versions (Python 3.9+).
-    2. Generate a 'Dockerfile' (slim-buster).
-    3. Provide a very brief explanation.
-    
-    IMPORTANT: Return ONLY valid JSON with these specific keys:
-    {
-      "requirements": "string content...",
-      "dockerfile": "string content...",
-      "explanation": "string content..."
-    }
+Role: Senior Python DevOps Engineer.
+
+Repository:
+${repoInfo.owner}/${repoInfo.repo}
+
+Detected third-party imports (static analysis):
+${candidates.join(', ')}
+
+Your tasks:
+
+1. Generate a COMPLETE and FINAL requirements.txt
+   - Each dependency MUST include an explicit version (e.g. flask==2.3.3)
+   - Versions must be mutually compatible
+   - Do NOT include Python standard library modules
+   - Target Python >= 3.9, prefer using python:3.9-slim as the base image
+
+2. Generate a FINAL, RUNNABLE Dockerfile
+   - The Dockerfile MUST install dependencies ONLY via requirements.txt
+   - Do NOT inline "pip install package" commands
+   - You MUST use:
+     COPY requirements.txt .
+     RUN pip install --no-cache-dir -r requirements.txt
+   - Use a slim Python base image
+   - Set a reasonable WORKDIR
+   - If application entrypoint is unknown, leave CMD commented with explanation
+
+3. Provide a very brief explanation of your decisions.
+
+IMPORTANT:
+- The Dockerfile MUST be consistent with the generated requirements.txt
+- This Dockerfile is intended to be production-ready, not a draft
+
+Return ONLY valid JSON in the exact format below:
+
+{
+  "requirements": "requirements.txt content",
+  "dockerfile": "Dockerfile content",
+  "explanation": "short explanation"
+}
   `;
 
   const llmResult = await callLLM(llmConfig, prompt);
