@@ -168,7 +168,14 @@ Your tasks:
      RUN pip install --no-cache-dir -r requirements.txt
    - Use a slim Python base image
    - Set a reasonable WORKDIR
-   - If application entrypoint is unknown, leave CMD commented with explanation
+
+   - If the application entrypoint can be confidently inferred
+     (e.g. main.py, app.py, server.py, __main__.py,
+     FastAPI/Flask conventions, or console_scripts),
+     you SHOULD add an appropriate CMD instruction.
+
+   - If the entrypoint CANNOT be confidently inferred,
+     leave CMD commented out and EXPLAIN why.
 
 3. Provide a very brief explanation of your decisions.
 
