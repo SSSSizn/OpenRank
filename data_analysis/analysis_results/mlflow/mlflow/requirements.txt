@@ -1,0 +1,8 @@
+pydantic>=2.0.0
+skills>=0.1.0
+requests>=2.25.0
+claude_agent_sdk>=0.1.0
+tiktoken>=0.5.0
+clint>=0.5.1
+aiohttp>=3.8.0
+mlflow>=2.0.0

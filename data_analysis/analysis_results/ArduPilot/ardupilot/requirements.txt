@@ -1,0 +1,7 @@
+git+https://github.com/ArduPilot/pymavlink.git
+requests
+scipy
+matplotlib
+intelhex
+numpy
+monocypher

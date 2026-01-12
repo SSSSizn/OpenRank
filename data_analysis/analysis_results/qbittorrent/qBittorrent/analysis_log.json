@@ -1,0 +1,5 @@
+{
+  "requirements": "win_inet_pton==1.1.0",
+  "dockerfile": "FROM python:3.9-slim\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    gcc \\\n    && rm -rf /var/lib/apt/lists/*\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nWORKDIR /app\nCOPY . .\nCMD [\"python\", \"main.py\"]",
+  "explanation": "The requirements.txt includes only the detected import 'win_inet_pton' at version 1.1.0 for compatibility. The Dockerfile uses python:3.9-slim, installs gcc (required for win_inet_pton compilation on Linux), copies and installs requirements, sets /app as the working directory, and defaults to running main.py. Note: win_inet_pton is typically unnecessary on Linux, but included here per the detected imports."
+}

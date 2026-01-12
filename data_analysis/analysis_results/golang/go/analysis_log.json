@@ -1,0 +1,5 @@
+{
+  "requirements": "mercurial==6.5.2\ngdb==7.12",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends mercurial gdb && \\\n    rm -rf /var/lib/apt/lists/* && \\\n    pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "The requirements.txt includes the specified Python packages 'mercurial' and 'gdb' with their latest stable versions. The Dockerfile is based on python:3.9-slim and installs system dependencies (mercurial and gdb) via apt-get, then installs Python dependencies from requirements.txt. The working directory is set to /app, and the CMD assumes a Python script named 'your_script.py' will be the entrypoint (adjust as needed)."
+}

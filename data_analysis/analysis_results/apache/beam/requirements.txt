@@ -1,0 +1,15 @@
+apache-beam[gcp]==2.47.0
+google-cloud-bigquery==3.10.0
+protobuf==4.23.3
+tornado==6.3.3
+requests==2.31.0
+ruamel.yaml==0.17.32
+ddt==1.7.0
+grpcio==1.56.0
+backoff==2.2.1
+psycopg2-binary==2.9.6
+PyGithub==1.59.0
+aiohttp==3.8.5
+looker-sdk==22.20.0
+beautifulsoup4==4.12.2
+numpy==1.24.3

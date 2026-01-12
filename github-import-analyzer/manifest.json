@@ -25,5 +25,13 @@
   },
   "action": {
     "default_title": "Open Analysis Panel"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dependency_version_knowledge.json"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

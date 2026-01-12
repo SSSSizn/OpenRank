@@ -1,0 +1,8 @@
+milc
+hjson
+dotty_dict
+argcomplete
+pycparser
+pygments
+platformdirs
+qmk

@@ -1,0 +1,2 @@
+PIL==9.5.0
+platformio==6.1.11

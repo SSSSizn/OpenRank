@@ -1,0 +1,6 @@
+requests==2.31.0
+urllib3==1.26.18
+pyyaml==6.0.1
+click==8.1.7
+psutil==5.9.6
+wheel==0.42.0

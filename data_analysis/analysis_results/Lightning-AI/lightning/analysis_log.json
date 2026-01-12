@@ -1,0 +1,5 @@
+{
+  "requirements": "torch>=2.0.0\ntorchvision>=0.15.0\nlightning-utilities>=0.8.0\nrl>=0.0.1\nlearn2learn>=0.1.0\ntorchmetrics>=0.11.0\nlai-sphinx-theme>=0.0.1\njsonargparse>=4.20.0\npackaging>=21.0\nscikit-learn>=1.0.0\ntqdm>=4.60.0\ntomlkit>=0.11.0\ntorchao>=0.0.1\ngymnasium>=0.28.0\ncherry>=0.0.1\nlightning>=2.0.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"import lightning; print('Lightning installed successfully')\"]",
+  "explanation": "Generated requirements.txt with pinned minimum versions for all detected imports plus lightning>=2.0.0 as the base framework. Dockerfile uses python:3.9-slim base image, installs requirements, and includes a simple validation command. Used conservative version constraints to ensure compatibility while allowing updates."
+}

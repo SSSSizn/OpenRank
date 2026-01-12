@@ -1,0 +1,5 @@
+{
+  "requirements": "cryptography>=3.4.7\nclick>=8.0.1\nrequests>=2.25.1\nclick-option-group>=0.5.3\nsphinx>=4.0.2",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-m\", \"sphinx\", \"-b\", \"html\", \"docs/source\", \"docs/build\"]",
+  "explanation": "The requirements.txt includes pinned minimum versions for stability. The Dockerfile uses python:3.9-slim for a lightweight base, copies requirements first for layer caching efficiency, and sets a default Sphinx command since it's the only build tool detected. The working directory is /app and the source code is copied after dependency installation."
+}

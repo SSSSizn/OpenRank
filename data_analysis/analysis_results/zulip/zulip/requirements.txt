@@ -1,0 +1,4 @@
+analytics-python==1.4.0
+Django==4.2.7
+psycopg2-binary==2.9.7
+typing-extensions==4.8.0

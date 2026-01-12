@@ -1,0 +1,5 @@
+{
+  "requirements": "boto3==1.26.162\nbotocore==1.29.162",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]",
+  "explanation": "The requirements.txt specifies pinned versions of boto3 and botocore for stability. The Dockerfile uses python:3.9-slim as the base image, copies requirements, installs dependencies, copies the application code, and sets the default command to run app.py. This setup ensures a minimal, reproducible environment for AWS CDK projects using these imports."
+}

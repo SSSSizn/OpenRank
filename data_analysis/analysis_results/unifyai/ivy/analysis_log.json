@@ -1,0 +1,5 @@
+{
+  "requirements": "torch>=1.9.0\njax>=0.3.0\ntensorflow>=2.6.0\nnumpy>=1.19.0\npytest>=6.0.0\nblack>=21.0.0\nflake8>=3.9.0\nmypy>=0.910\npre-commit>=2.15.0\nsphinx>=4.0.0\nsphinx-rtd-theme>=1.0.0\nsphinx-autodoc-typehints>=1.12.0\npandas>=1.3.0\nscipy>=1.7.0\npillow>=8.3.0\nopencv-python>=4.5.0\nmatplotlib>=3.4.0\nseaborn>=0.11.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /ivy\n\nCOPY requirements.txt .\n\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    gcc \\\n    g++ \\\n    && rm -rf /var/lib/apt/lists/* \\\n    && pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nRUN python -m pytest tests/ -v --tb=short\n\nCMD [\"python\", \"-c\", \"import ivy; print('Ivy framework successfully imported')\"]",
+  "explanation": "Requirements include core ML frameworks (PyTorch, JAX, TensorFlow) for Ivy's backend abstraction, testing/formatting tools (pytest, black, flake8), documentation dependencies (Sphinx suite), and common data science libraries. Dockerfile uses slim Python image, installs build tools for compiling dependencies, runs tests after copying code, and includes a health check command."
+}

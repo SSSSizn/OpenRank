@@ -1,0 +1,5 @@
+{
+  "requirements": "azure-identity>=1.12.0\nazure-mgmt-resource>=20.0.0\nazure-mgmt-compute>=23.0.0\nazure-mgmt-network>=19.0.0\nazure-mgmt-storage>=19.0.0\nazure-mgmt-containerservice>=15.0.0\nrequests>=2.25.1\npython-dotenv>=0.19.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "The requirements.txt includes essential Azure SDK packages for interacting with Azure resources (identity, compute, network, storage, containers) which are commonly used with Terraform Azure provider. The Dockerfile uses python:3.9-slim as a base image for a lightweight container, installs the requirements, and sets up a working directory. Adjust 'your_script.py' to your entrypoint script."
+}

@@ -1,0 +1,11 @@
+google-api-python-client
+datadiff
+prometheus-client
+flask
+jwcrypto
+requests
+simplejson
+requests-mock
+PyYAML
+opentelemetry-api
+json2html

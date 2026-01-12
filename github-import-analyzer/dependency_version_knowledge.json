@@ -1,0 +1,1500 @@
+{
+  "package_versions": {
+    "click": {
+      "8.1.7": 5,
+      "8.1.3": 3
+    },
+    "pydash": {
+      "7.0.5": 1
+    },
+    "requests": {
+      "2.31.0": 15,
+      "2.28.1": 2,
+      "2.28.2": 1,
+      "2.27.1": 1
+    },
+    "rich": {
+      "13.4.2": 1
+    },
+    "requests_mock": {
+      "1.11.0": 1
+    },
+    "pytest": {
+      "7.4.0": 5,
+      "7.0.1": 3,
+      "6.2.5": 1,
+      "8.1.1": 1
+    },
+    "semver": {
+      "3.0.2": 1
+    },
+    "simpleeval": {
+      "0.9.13": 1
+    },
+    "jwt": {
+      "1.3.1": 1
+    },
+    "pandas": {
+      "2.0.3": 3,
+      "2.2.1": 1,
+      "1.5.3": 1
+    },
+    "oauth2client": {
+      "4.1.3": 1
+    },
+    "apiclient": {
+      "1.0.4": 1
+    },
+    "httplib2": {
+      "0.22.0": 1
+    },
+    "httplib": {
+      "0.0.1": 1
+    },
+    "apache-airflow": {
+      "2.7.1": 1
+    },
+    "psutil": {
+      "5.9.6": 2,
+      "5.9.5": 2,
+      "5.9.4": 1
+    },
+    "zhon": {
+      "1.1.5": 1
+    },
+    "pyyaml": {
+      "6.0": 6,
+      "6.0.1": 6
+    },
+    "boofuzz": {
+      "0.4.1": 1
+    },
+    "apache-beam[gcp]": {
+      "2.47.0": 1
+    },
+    "google-cloud-bigquery": {
+      "3.10.0": 1
+    },
+    "protobuf": {
+      "4.23.3": 1
+    },
+    "tornado": {
+      "6.3.3": 1
+    },
+    "ruamel.yaml": {
+      "0.17.32": 2
+    },
+    "ddt": {
+      "1.7.0": 1
+    },
+    "grpcio": {
+      "1.56.0": 1
+    },
+    "backoff": {
+      "2.2.1": 2
+    },
+    "psycopg2-binary": {
+      "2.9.6": 1,
+      "2.9.3": 1,
+      "2.9.7": 1
+    },
+    "pygithub": {
+      "1.59.0": 3,
+      "2.3.0": 1,
+      "1.55": 1
+    },
+    "aiohttp": {
+      "3.8.4": 6,
+      "3.8.5": 1
+    },
+    "looker-sdk": {
+      "22.20.0": 1
+    },
+    "beautifulsoup4": {
+      "4.12.2": 3,
+      "4.11.1": 1
+    },
+    "numpy": {
+      "1.24.3": 3,
+      "1.21.0": 1,
+      "1.23.5": 1
+    },
+    "setuptools": {
+      "68.2.2": 2
+    },
+    "pyflink": {
+      "1.18.1": 1
+    },
+    "py4j": {
+      "0.10.9.7": 1
+    },
+    "apache-pulsar-client": {
+      "3.0.0": 1
+    },
+    "flask": {
+      "2.3.3": 3
+    },
+    "flask_appbuilder": {
+      "4.3.7": 1
+    },
+    "flask_caching": {
+      "2.1.0": 1
+    },
+    "flask_migrate": {
+      "4.0.5": 1
+    },
+    "jinja2": {
+      "3.1.2": 5
+    },
+    "packaging": {
+      "23.1": 2,
+      "23.2": 1,
+      "24.0": 1
+    },
+    "sqlalchemy": {
+      "2.0.23": 1
+    },
+    "sqlglot": {
+      "19.3.0": 1
+    },
+    "celery": {
+      "5.3.4": 1
+    },
+    "python-dateutil": {
+      "2.8.2": 4
+    },
+    "progress": {
+      "1.6": 1
+    },
+    "boto3": {
+      "1.34.0": 2,
+      "1.26.162": 1,
+      "1.26.0": 1,
+      "1.26.9": 1
+    },
+    "botocore": {
+      "1.29.162": 1,
+      "1.34.0": 1
+    },
+    "urllib3": {
+      "1.26.9": 2,
+      "1.26.0": 1,
+      "2.2.1": 1,
+      "1.26.18": 1
+    },
+    "markdown2": {
+      "2.4.10": 1
+    },
+    "lief": {
+      "0.13.2": 2
+    },
+    "pytest-cov": {
+      "4.0.0": 1
+    },
+    "black": {
+      "22.10.0": 1,
+      "23.3.0": 1
+    },
+    "flake8": {
+      "5.0.4": 1
+    },
+    "mypy": {
+      "0.991": 1
+    },
+    "lxml": {
+      "4.9.3": 3,
+      "4.9.1": 1
+    },
+    "ccxt": {
+      "4.2.43": 1
+    },
+    "cryptography": {
+      "41.0.7": 1,
+      "41.0.3": 1
+    },
+    "aiosqlite": {
+      "0.19.0": 1
+    },
+    "aiofiles": {
+      "23.2.1": 1
+    },
+    "chia_rs": {
+      "1.0.0": 1
+    },
+    "biplist": {
+      "1.0.3": 1
+    },
+    "cldr_language_helpers": {
+      "0.1.0": 1
+    },
+    "string_extractor": {
+      "0.1.0": 1
+    },
+    "pyarrow": {
+      "13.0.0": 2
+    },
+    "praktika": {
+      "0.1.0": 1
+    },
+    "scipy": {
+      "1.7.0": 1
+    },
+    "cmake": {
+      "3.20.0": 1
+    },
+    "gitdb2": {
+      "4.0.9": 1
+    },
+    "django": {
+      "4.0.4": 1,
+      "4.2.7": 1
+    },
+    "docutils": {
+      "0.20.1": 4
+    },
+    "codeowners": {
+      "0.1.2": 1
+    },
+    "dda": {
+      "0.1.0": 1
+    },
+    "github": {
+      "1.54.1": 1
+    },
+    "lab": {
+      "0.1.0": 1
+    },
+    "blessings": {
+      "1.7": 1
+    },
+    "certifi": {
+      "2024.2.2": 1
+    },
+    "charset-normalizer": {
+      "3.3.2": 1
+    },
+    "demisto-sdk": {
+      "1.20.0": 1
+    },
+    "gitdb": {
+      "4.0.11": 1
+    },
+    "gitpython": {
+      "3.1.42": 1,
+      "3.1.41": 1,
+      "3.1.30": 1
+    },
+    "idna": {
+      "3.7": 1
+    },
+    "pytest-mock": {
+      "3.14.0": 1
+    },
+    "requests-mock": {
+      "1.12.0": 1
+    },
+    "sendgrid": {
+      "6.13.0": 1
+    },
+    "smmap": {
+      "5.0.1": 1
+    },
+    "tabulate": {
+      "0.9.0": 1
+    },
+    "qrcodegen": {
+      "1.6.0": 1
+    },
+    "datadog-api-client": {
+      "2.12.0": 1
+    },
+    "easygui": {
+      "0.98.3": 1
+    },
+    "deepdiff": {
+      "6.7.1": 1
+    },
+    "spacy": {
+      "3.7.4": 1
+    },
+    "locust": {
+      "2.20.0": 1
+    },
+    "more-itertools": {
+      "10.2.0": 1
+    },
+    "matplotlib": {
+      "3.8.2": 1,
+      "3.7.2": 1,
+      "3.7.1": 1
+    },
+    "cairosvg": {
+      "2.7.1": 1
+    },
+    "zstandard": {
+      "0.19.0": 6
+    },
+    "envoy": {
+      "1.0.0": 1
+    },
+    "kafka-python": {
+      "2.0.2": 1
+    },
+    "sphinx": {
+      "7.2.6": 3,
+      "7.0.1": 1
+    },
+    "sphinx-rtd-theme": {
+      "1.3.0": 1
+    },
+    "pygments": {
+      "2.16.1": 1
+    },
+    "termcolor": {
+      "2.1.1": 1
+    },
+    "fireciplugins": {
+      "0.0.1": 1
+    },
+    "fireci": {
+      "0.0.1": 1
+    },
+    "seaborn": {
+      "0.12.2": 1
+    },
+    "wheel": {
+      "0.42.0": 1
+    },
+    "orjson": {
+      "3.9.10": 1
+    },
+    "devenv": {
+      "0.1.0": 1
+    },
+    "openapi-core": {
+      "0.18.0": 1
+    },
+    "codeql": {
+      "2.12.4": 1
+    },
+    "mercurial": {
+      "6.5.2": 1
+    },
+    "gdb": {
+      "7.12": 1,
+      "13.2": 1
+    },
+    "prometheus-client": {
+      "0.17.0": 1
+    },
+    "msgpack": {
+      "1.0.5": 1
+    },
+    "cbor2": {
+      "5.4.6": 1
+    },
+    "pytz": {
+      "2023.3": 1
+    },
+    "google-api-python-client": {
+      "2.0.2": 1
+    },
+    "typeguard": {
+      "2.13.3": 1
+    },
+    "grpc-interceptor": {
+      "0.14.4": 1
+    },
+    "greenlet": {
+      "2.0.2": 1
+    },
+    "urllib2": {
+      "1.0.2": 1
+    },
+    "jmespath": {
+      "1.0.1": 1
+    },
+    "six": {
+      "1.16.0": 1
+    },
+    "junitparser": {
+      "2.10.0": 1
+    },
+    "lit": {
+      "18.1.3": 1
+    },
+    "pil": {
+      "9.5.0": 1
+    },
+    "platformio": {
+      "6.1.11": 1
+    },
+    "jupyter_server": {
+      "1.23.6": 1
+    },
+    "onnx": {
+      "1.14.0": 1
+    },
+    "onnxruntime": {
+      "1.15.1": 1
+    },
+    "skl2onnx": {
+      "1.14.1": 1
+    },
+    "scikit-learn": {
+      "1.3.0": 1
+    },
+    "jsoncfg": {
+      "1.2.8": 1
+    },
+    "python-magic": {
+      "0.4.27": 1
+    },
+    "simplejson": {
+      "3.17.6": 1
+    },
+    "gyp": {
+      "0.1": 1
+    },
+    "ly-test-tools": {
+      "1.0.0": 1
+    },
+    "editor-python-test-tools": {
+      "1.0.0": 1
+    },
+    "python-asset-builder": {
+      "1.0.0": 1
+    },
+    "odoo": {
+      "16.0": 1
+    },
+    "pyspark": {
+      "3.5.1": 1
+    },
+    "aura": {
+      "0.2.3": 1
+    },
+    "github_org_control": {
+      "1.0.0": 1
+    },
+    "ldap3": {
+      "2.9.1": 1
+    },
+    "jsonschema": {
+      "4.4.0": 1
+    },
+    "webapp2": {
+      "2.8.4": 1
+    },
+    "webtest": {
+      "3.0.0": 1
+    },
+    "core": {
+      "0.1.0": 1
+    },
+    "scripts": {
+      "0.1.0": 1
+    },
+    "win_inet_pton": {
+      "1.1.0": 1
+    },
+    "splunk-sdk": {
+      "1.7.2": 1
+    },
+    "pyobjc-core": {
+      "9.2": 1
+    },
+    "pyobjc-framework-cocoa": {
+      "9.2": 1
+    },
+    "pyobjc-framework-foundation": {
+      "9.2": 1
+    },
+    "lldb": {
+      "16.0.6": 2
+    },
+    "html5lib": {
+      "1.1": 1
+    },
+    "tomli": {
+      "2.0.1": 1
+    },
+    "pillow": {
+      "10.0.1": 1
+    },
+    "mysqlclient": {
+      "2.1.1": 1
+    },
+    "solana": {
+      "0.29.0": 1
+    },
+    "yaml": {
+      "6.0.1": 1
+    },
+    "pyqt6": {
+      "6.4.0": 1
+    },
+    "pynest2d": {
+      "4.12.0": 1
+    },
+    "cura": {
+      "0.0.0": 1
+    },
+    "um": {
+      "0.0.0": 1
+    },
+    "conan": {
+      "1.59.0": 1
+    },
+    "anytree": {
+      "2.8.0": 1
+    },
+    "invoke": {
+      "2.2.0": 1
+    },
+    "fabric": {
+      "3.1.0": 1
+    },
+    "pyelftools": {
+      "0.29": 1
+    },
+    "analytics-python": {
+      "1.4.0": 1
+    },
+    "typing-extensions": {
+      "4.8.0": 1
+    }
+  },
+  "version_cooccurrence": {
+    "pyyaml==6.0.1 || requests==2.31.0": 6,
+    "aiohttp==3.8.4 || zstandard==0.19.0": 6,
+    "pygithub==1.59.0 || requests==2.31.0": 3,
+    "click==8.1.7 || requests==2.31.0": 3,
+    "python-dateutil==2.8.2 || requests==2.31.0": 3,
+    "docutils==0.20.1 || sphinx==7.2.6": 3,
+    "backoff==2.2.1 || pygithub==1.59.0": 2,
+    "backoff==2.2.1 || requests==2.31.0": 2,
+    "beautifulsoup4==4.12.2 || requests==2.31.0": 2,
+    "click==8.1.7 || psutil==5.9.6": 2,
+    "click==8.1.7 || pygithub==1.59.0": 2,
+    "flask==2.3.3 || python-dateutil==2.8.2": 2,
+    "flask==2.3.3 || requests==2.31.0": 2,
+    "psutil==5.9.6 || requests==2.31.0": 2,
+    "python-dateutil==2.8.2 || pyyaml==6.0.1": 2,
+    "jinja2==3.1.2 || pyyaml==6.0": 2,
+    "click==8.1.3 || jwt==1.3.1": 1,
+    "click==8.1.3 || pandas==2.0.3": 1,
+    "click==8.1.3 || pydash==7.0.5": 1,
+    "click==8.1.3 || pytest==7.4.0": 1,
+    "click==8.1.3 || requests==2.31.0": 1,
+    "click==8.1.3 || requests_mock==1.11.0": 1,
+    "click==8.1.3 || rich==13.4.2": 1,
+    "click==8.1.3 || semver==3.0.2": 1,
+    "click==8.1.3 || simpleeval==0.9.13": 1,
+    "jwt==1.3.1 || pandas==2.0.3": 1,
+    "jwt==1.3.1 || pydash==7.0.5": 1,
+    "jwt==1.3.1 || pytest==7.4.0": 1,
+    "jwt==1.3.1 || requests==2.31.0": 1,
+    "jwt==1.3.1 || requests_mock==1.11.0": 1,
+    "jwt==1.3.1 || rich==13.4.2": 1,
+    "jwt==1.3.1 || semver==3.0.2": 1,
+    "jwt==1.3.1 || simpleeval==0.9.13": 1,
+    "pandas==2.0.3 || pydash==7.0.5": 1,
+    "pandas==2.0.3 || pytest==7.4.0": 1,
+    "pandas==2.0.3 || requests==2.31.0": 1,
+    "pandas==2.0.3 || requests_mock==1.11.0": 1,
+    "pandas==2.0.3 || rich==13.4.2": 1,
+    "pandas==2.0.3 || semver==3.0.2": 1,
+    "pandas==2.0.3 || simpleeval==0.9.13": 1,
+    "pydash==7.0.5 || pytest==7.4.0": 1,
+    "pydash==7.0.5 || requests==2.31.0": 1,
+    "pydash==7.0.5 || requests_mock==1.11.0": 1,
+    "pydash==7.0.5 || rich==13.4.2": 1,
+    "pydash==7.0.5 || semver==3.0.2": 1,
+    "pydash==7.0.5 || simpleeval==0.9.13": 1,
+    "pytest==7.4.0 || requests==2.31.0": 1,
+    "pytest==7.4.0 || requests_mock==1.11.0": 1,
+    "pytest==7.4.0 || rich==13.4.2": 1,
+    "pytest==7.4.0 || semver==3.0.2": 1,
+    "pytest==7.4.0 || simpleeval==0.9.13": 1,
+    "requests==2.31.0 || requests_mock==1.11.0": 1,
+    "requests==2.31.0 || rich==13.4.2": 1,
+    "requests==2.31.0 || semver==3.0.2": 1,
+    "requests==2.31.0 || simpleeval==0.9.13": 1,
+    "requests_mock==1.11.0 || rich==13.4.2": 1,
+    "requests_mock==1.11.0 || semver==3.0.2": 1,
+    "requests_mock==1.11.0 || simpleeval==0.9.13": 1,
+    "rich==13.4.2 || semver==3.0.2": 1,
+    "rich==13.4.2 || simpleeval==0.9.13": 1,
+    "semver==3.0.2 || simpleeval==0.9.13": 1,
+    "apiclient==1.0.4 || httplib2==0.22.0": 1,
+    "apiclient==1.0.4 || httplib==0.0.1": 1,
+    "apiclient==1.0.4 || oauth2client==4.1.3": 1,
+    "httplib2==0.22.0 || httplib==0.0.1": 1,
+    "httplib2==0.22.0 || oauth2client==4.1.3": 1,
+    "httplib==0.0.1 || oauth2client==4.1.3": 1,
+    "boofuzz==0.4.1 || psutil==5.9.4": 1,
+    "boofuzz==0.4.1 || pyyaml==6.0": 1,
+    "boofuzz==0.4.1 || zhon==1.1.5": 1,
+    "psutil==5.9.4 || pyyaml==6.0": 1,
+    "psutil==5.9.4 || zhon==1.1.5": 1,
+    "pyyaml==6.0 || zhon==1.1.5": 1,
+    "aiohttp==3.8.5 || apache-beam[gcp]==2.47.0": 1,
+    "aiohttp==3.8.5 || backoff==2.2.1": 1,
+    "aiohttp==3.8.5 || beautifulsoup4==4.12.2": 1,
+    "aiohttp==3.8.5 || ddt==1.7.0": 1,
+    "aiohttp==3.8.5 || google-cloud-bigquery==3.10.0": 1,
+    "aiohttp==3.8.5 || grpcio==1.56.0": 1,
+    "aiohttp==3.8.5 || looker-sdk==22.20.0": 1,
+    "aiohttp==3.8.5 || numpy==1.24.3": 1,
+    "aiohttp==3.8.5 || protobuf==4.23.3": 1,
+    "aiohttp==3.8.5 || psycopg2-binary==2.9.6": 1,
+    "aiohttp==3.8.5 || pygithub==1.59.0": 1,
+    "aiohttp==3.8.5 || requests==2.31.0": 1,
+    "aiohttp==3.8.5 || ruamel.yaml==0.17.32": 1,
+    "aiohttp==3.8.5 || tornado==6.3.3": 1,
+    "apache-beam[gcp]==2.47.0 || backoff==2.2.1": 1,
+    "apache-beam[gcp]==2.47.0 || beautifulsoup4==4.12.2": 1,
+    "apache-beam[gcp]==2.47.0 || ddt==1.7.0": 1,
+    "apache-beam[gcp]==2.47.0 || google-cloud-bigquery==3.10.0": 1,
+    "apache-beam[gcp]==2.47.0 || grpcio==1.56.0": 1,
+    "apache-beam[gcp]==2.47.0 || looker-sdk==22.20.0": 1,
+    "apache-beam[gcp]==2.47.0 || numpy==1.24.3": 1,
+    "apache-beam[gcp]==2.47.0 || protobuf==4.23.3": 1,
+    "apache-beam[gcp]==2.47.0 || psycopg2-binary==2.9.6": 1,
+    "apache-beam[gcp]==2.47.0 || pygithub==1.59.0": 1,
+    "apache-beam[gcp]==2.47.0 || requests==2.31.0": 1,
+    "apache-beam[gcp]==2.47.0 || ruamel.yaml==0.17.32": 1,
+    "apache-beam[gcp]==2.47.0 || tornado==6.3.3": 1,
+    "backoff==2.2.1 || beautifulsoup4==4.12.2": 1,
+    "backoff==2.2.1 || ddt==1.7.0": 1,
+    "backoff==2.2.1 || google-cloud-bigquery==3.10.0": 1,
+    "backoff==2.2.1 || grpcio==1.56.0": 1,
+    "backoff==2.2.1 || looker-sdk==22.20.0": 1,
+    "backoff==2.2.1 || numpy==1.24.3": 1,
+    "backoff==2.2.1 || protobuf==4.23.3": 1,
+    "backoff==2.2.1 || psycopg2-binary==2.9.6": 1,
+    "backoff==2.2.1 || ruamel.yaml==0.17.32": 1,
+    "backoff==2.2.1 || tornado==6.3.3": 1,
+    "beautifulsoup4==4.12.2 || ddt==1.7.0": 1,
+    "beautifulsoup4==4.12.2 || google-cloud-bigquery==3.10.0": 1,
+    "beautifulsoup4==4.12.2 || grpcio==1.56.0": 1,
+    "beautifulsoup4==4.12.2 || looker-sdk==22.20.0": 1,
+    "beautifulsoup4==4.12.2 || numpy==1.24.3": 1,
+    "beautifulsoup4==4.12.2 || protobuf==4.23.3": 1,
+    "beautifulsoup4==4.12.2 || psycopg2-binary==2.9.6": 1,
+    "beautifulsoup4==4.12.2 || pygithub==1.59.0": 1,
+    "beautifulsoup4==4.12.2 || ruamel.yaml==0.17.32": 1,
+    "beautifulsoup4==4.12.2 || tornado==6.3.3": 1,
+    "ddt==1.7.0 || google-cloud-bigquery==3.10.0": 1,
+    "ddt==1.7.0 || grpcio==1.56.0": 1,
+    "ddt==1.7.0 || looker-sdk==22.20.0": 1,
+    "ddt==1.7.0 || numpy==1.24.3": 1,
+    "ddt==1.7.0 || protobuf==4.23.3": 1,
+    "ddt==1.7.0 || psycopg2-binary==2.9.6": 1,
+    "ddt==1.7.0 || pygithub==1.59.0": 1,
+    "ddt==1.7.0 || requests==2.31.0": 1,
+    "ddt==1.7.0 || ruamel.yaml==0.17.32": 1,
+    "ddt==1.7.0 || tornado==6.3.3": 1,
+    "google-cloud-bigquery==3.10.0 || grpcio==1.56.0": 1,
+    "google-cloud-bigquery==3.10.0 || looker-sdk==22.20.0": 1,
+    "google-cloud-bigquery==3.10.0 || numpy==1.24.3": 1,
+    "google-cloud-bigquery==3.10.0 || protobuf==4.23.3": 1,
+    "google-cloud-bigquery==3.10.0 || psycopg2-binary==2.9.6": 1,
+    "google-cloud-bigquery==3.10.0 || pygithub==1.59.0": 1,
+    "google-cloud-bigquery==3.10.0 || requests==2.31.0": 1,
+    "google-cloud-bigquery==3.10.0 || ruamel.yaml==0.17.32": 1,
+    "google-cloud-bigquery==3.10.0 || tornado==6.3.3": 1,
+    "grpcio==1.56.0 || looker-sdk==22.20.0": 1,
+    "grpcio==1.56.0 || numpy==1.24.3": 1,
+    "grpcio==1.56.0 || protobuf==4.23.3": 1,
+    "grpcio==1.56.0 || psycopg2-binary==2.9.6": 1,
+    "grpcio==1.56.0 || pygithub==1.59.0": 1,
+    "grpcio==1.56.0 || requests==2.31.0": 1,
+    "grpcio==1.56.0 || ruamel.yaml==0.17.32": 1,
+    "grpcio==1.56.0 || tornado==6.3.3": 1,
+    "looker-sdk==22.20.0 || numpy==1.24.3": 1,
+    "looker-sdk==22.20.0 || protobuf==4.23.3": 1,
+    "looker-sdk==22.20.0 || psycopg2-binary==2.9.6": 1,
+    "looker-sdk==22.20.0 || pygithub==1.59.0": 1,
+    "looker-sdk==22.20.0 || requests==2.31.0": 1,
+    "looker-sdk==22.20.0 || ruamel.yaml==0.17.32": 1,
+    "looker-sdk==22.20.0 || tornado==6.3.3": 1,
+    "numpy==1.24.3 || protobuf==4.23.3": 1,
+    "numpy==1.24.3 || psycopg2-binary==2.9.6": 1,
+    "numpy==1.24.3 || pygithub==1.59.0": 1,
+    "numpy==1.24.3 || requests==2.31.0": 1,
+    "numpy==1.24.3 || ruamel.yaml==0.17.32": 1,
+    "numpy==1.24.3 || tornado==6.3.3": 1,
+    "protobuf==4.23.3 || psycopg2-binary==2.9.6": 1,
+    "protobuf==4.23.3 || pygithub==1.59.0": 1,
+    "protobuf==4.23.3 || requests==2.31.0": 1,
+    "protobuf==4.23.3 || ruamel.yaml==0.17.32": 1,
+    "protobuf==4.23.3 || tornado==6.3.3": 1,
+    "psycopg2-binary==2.9.6 || pygithub==1.59.0": 1,
+    "psycopg2-binary==2.9.6 || requests==2.31.0": 1,
+    "psycopg2-binary==2.9.6 || ruamel.yaml==0.17.32": 1,
+    "psycopg2-binary==2.9.6 || tornado==6.3.3": 1,
+    "pygithub==1.59.0 || ruamel.yaml==0.17.32": 1,
+    "pygithub==1.59.0 || tornado==6.3.3": 1,
+    "requests==2.31.0 || ruamel.yaml==0.17.32": 1,
+    "requests==2.31.0 || tornado==6.3.3": 1,
+    "ruamel.yaml==0.17.32 || tornado==6.3.3": 1,
+    "py4j==0.10.9.7 || pyflink==1.18.1": 1,
+    "py4j==0.10.9.7 || pytest==7.4.0": 1,
+    "py4j==0.10.9.7 || ruamel.yaml==0.17.32": 1,
+    "py4j==0.10.9.7 || setuptools==68.2.2": 1,
+    "pyflink==1.18.1 || pytest==7.4.0": 1,
+    "pyflink==1.18.1 || ruamel.yaml==0.17.32": 1,
+    "pyflink==1.18.1 || setuptools==68.2.2": 1,
+    "pytest==7.4.0 || ruamel.yaml==0.17.32": 1,
+    "pytest==7.4.0 || setuptools==68.2.2": 1,
+    "ruamel.yaml==0.17.32 || setuptools==68.2.2": 1,
+    "celery==5.3.4 || click==8.1.7": 1,
+    "celery==5.3.4 || flask==2.3.3": 1,
+    "celery==5.3.4 || flask_appbuilder==4.3.7": 1,
+    "celery==5.3.4 || flask_caching==2.1.0": 1,
+    "celery==5.3.4 || flask_migrate==4.0.5": 1,
+    "celery==5.3.4 || jinja2==3.1.2": 1,
+    "celery==5.3.4 || packaging==23.2": 1,
+    "celery==5.3.4 || progress==1.6": 1,
+    "celery==5.3.4 || psutil==5.9.6": 1,
+    "celery==5.3.4 || pygithub==1.59.0": 1,
+    "celery==5.3.4 || python-dateutil==2.8.2": 1,
+    "celery==5.3.4 || requests==2.31.0": 1,
+    "celery==5.3.4 || setuptools==68.2.2": 1,
+    "celery==5.3.4 || sqlalchemy==2.0.23": 1,
+    "celery==5.3.4 || sqlglot==19.3.0": 1,
+    "click==8.1.7 || flask==2.3.3": 1,
+    "click==8.1.7 || flask_appbuilder==4.3.7": 1,
+    "click==8.1.7 || flask_caching==2.1.0": 1,
+    "click==8.1.7 || flask_migrate==4.0.5": 1,
+    "click==8.1.7 || jinja2==3.1.2": 1,
+    "click==8.1.7 || packaging==23.2": 1,
+    "click==8.1.7 || progress==1.6": 1,
+    "click==8.1.7 || python-dateutil==2.8.2": 1,
+    "click==8.1.7 || setuptools==68.2.2": 1,
+    "click==8.1.7 || sqlalchemy==2.0.23": 1,
+    "click==8.1.7 || sqlglot==19.3.0": 1,
+    "flask==2.3.3 || flask_appbuilder==4.3.7": 1,
+    "flask==2.3.3 || flask_caching==2.1.0": 1,
+    "flask==2.3.3 || flask_migrate==4.0.5": 1,
+    "flask==2.3.3 || jinja2==3.1.2": 1,
+    "flask==2.3.3 || packaging==23.2": 1,
+    "flask==2.3.3 || progress==1.6": 1,
+    "flask==2.3.3 || psutil==5.9.6": 1,
+    "flask==2.3.3 || pygithub==1.59.0": 1,
+    "flask==2.3.3 || setuptools==68.2.2": 1,
+    "flask==2.3.3 || sqlalchemy==2.0.23": 1,
+    "flask==2.3.3 || sqlglot==19.3.0": 1,
+    "flask_appbuilder==4.3.7 || flask_caching==2.1.0": 1,
+    "flask_appbuilder==4.3.7 || flask_migrate==4.0.5": 1,
+    "flask_appbuilder==4.3.7 || jinja2==3.1.2": 1,
+    "flask_appbuilder==4.3.7 || packaging==23.2": 1,
+    "flask_appbuilder==4.3.7 || progress==1.6": 1,
+    "flask_appbuilder==4.3.7 || psutil==5.9.6": 1,
+    "flask_appbuilder==4.3.7 || pygithub==1.59.0": 1,
+    "flask_appbuilder==4.3.7 || python-dateutil==2.8.2": 1,
+    "flask_appbuilder==4.3.7 || requests==2.31.0": 1,
+    "flask_appbuilder==4.3.7 || setuptools==68.2.2": 1,
+    "flask_appbuilder==4.3.7 || sqlalchemy==2.0.23": 1,
+    "flask_appbuilder==4.3.7 || sqlglot==19.3.0": 1,
+    "flask_caching==2.1.0 || flask_migrate==4.0.5": 1,
+    "flask_caching==2.1.0 || jinja2==3.1.2": 1,
+    "flask_caching==2.1.0 || packaging==23.2": 1,
+    "flask_caching==2.1.0 || progress==1.6": 1,
+    "flask_caching==2.1.0 || psutil==5.9.6": 1,
+    "flask_caching==2.1.0 || pygithub==1.59.0": 1,
+    "flask_caching==2.1.0 || python-dateutil==2.8.2": 1,
+    "flask_caching==2.1.0 || requests==2.31.0": 1,
+    "flask_caching==2.1.0 || setuptools==68.2.2": 1,
+    "flask_caching==2.1.0 || sqlalchemy==2.0.23": 1,
+    "flask_caching==2.1.0 || sqlglot==19.3.0": 1,
+    "flask_migrate==4.0.5 || jinja2==3.1.2": 1,
+    "flask_migrate==4.0.5 || packaging==23.2": 1,
+    "flask_migrate==4.0.5 || progress==1.6": 1,
+    "flask_migrate==4.0.5 || psutil==5.9.6": 1,
+    "flask_migrate==4.0.5 || pygithub==1.59.0": 1,
+    "flask_migrate==4.0.5 || python-dateutil==2.8.2": 1,
+    "flask_migrate==4.0.5 || requests==2.31.0": 1,
+    "flask_migrate==4.0.5 || setuptools==68.2.2": 1,
+    "flask_migrate==4.0.5 || sqlalchemy==2.0.23": 1,
+    "flask_migrate==4.0.5 || sqlglot==19.3.0": 1,
+    "jinja2==3.1.2 || packaging==23.2": 1,
+    "jinja2==3.1.2 || progress==1.6": 1,
+    "jinja2==3.1.2 || psutil==5.9.6": 1,
+    "jinja2==3.1.2 || pygithub==1.59.0": 1,
+    "jinja2==3.1.2 || python-dateutil==2.8.2": 1,
+    "jinja2==3.1.2 || requests==2.31.0": 1,
+    "jinja2==3.1.2 || setuptools==68.2.2": 1,
+    "jinja2==3.1.2 || sqlalchemy==2.0.23": 1,
+    "jinja2==3.1.2 || sqlglot==19.3.0": 1,
+    "packaging==23.2 || progress==1.6": 1,
+    "packaging==23.2 || psutil==5.9.6": 1,
+    "packaging==23.2 || pygithub==1.59.0": 1,
+    "packaging==23.2 || python-dateutil==2.8.2": 1,
+    "packaging==23.2 || requests==2.31.0": 1,
+    "packaging==23.2 || setuptools==68.2.2": 1,
+    "packaging==23.2 || sqlalchemy==2.0.23": 1,
+    "packaging==23.2 || sqlglot==19.3.0": 1,
+    "progress==1.6 || psutil==5.9.6": 1,
+    "progress==1.6 || pygithub==1.59.0": 1,
+    "progress==1.6 || python-dateutil==2.8.2": 1,
+    "progress==1.6 || requests==2.31.0": 1,
+    "progress==1.6 || setuptools==68.2.2": 1,
+    "progress==1.6 || sqlalchemy==2.0.23": 1,
+    "progress==1.6 || sqlglot==19.3.0": 1,
+    "psutil==5.9.6 || pygithub==1.59.0": 1,
+    "psutil==5.9.6 || python-dateutil==2.8.2": 1,
+    "psutil==5.9.6 || setuptools==68.2.2": 1,
+    "psutil==5.9.6 || sqlalchemy==2.0.23": 1,
+    "psutil==5.9.6 || sqlglot==19.3.0": 1,
+    "pygithub==1.59.0 || python-dateutil==2.8.2": 1,
+    "pygithub==1.59.0 || setuptools==68.2.2": 1,
+    "pygithub==1.59.0 || sqlalchemy==2.0.23": 1,
+    "pygithub==1.59.0 || sqlglot==19.3.0": 1,
+    "python-dateutil==2.8.2 || setuptools==68.2.2": 1,
+    "python-dateutil==2.8.2 || sqlalchemy==2.0.23": 1,
+    "python-dateutil==2.8.2 || sqlglot==19.3.0": 1,
+    "requests==2.31.0 || setuptools==68.2.2": 1,
+    "requests==2.31.0 || sqlalchemy==2.0.23": 1,
+    "requests==2.31.0 || sqlglot==19.3.0": 1,
+    "setuptools==68.2.2 || sqlalchemy==2.0.23": 1,
+    "setuptools==68.2.2 || sqlglot==19.3.0": 1,
+    "sqlalchemy==2.0.23 || sqlglot==19.3.0": 1,
+    "boto3==1.26.162 || botocore==1.29.162": 1,
+    "boto3==1.26.0 || urllib3==1.26.0": 1,
+    "beautifulsoup4==4.12.2 || markdown2==2.4.10": 1,
+    "beautifulsoup4==4.12.2 || pyyaml==6.0.1": 1,
+    "markdown2==2.4.10 || pyyaml==6.0.1": 1,
+    "markdown2==2.4.10 || requests==2.31.0": 1,
+    "lief==0.13.2 || requests==2.31.0": 1,
+    "beautifulsoup4==4.11.1 || black==22.10.0": 1,
+    "beautifulsoup4==4.11.1 || flake8==5.0.4": 1,
+    "beautifulsoup4==4.11.1 || lxml==4.9.1": 1,
+    "beautifulsoup4==4.11.1 || mypy==0.991": 1,
+    "beautifulsoup4==4.11.1 || pytest-cov==4.0.0": 1,
+    "beautifulsoup4==4.11.1 || pytest==7.0.1": 1,
+    "beautifulsoup4==4.11.1 || requests==2.28.1": 1,
+    "black==22.10.0 || flake8==5.0.4": 1,
+    "black==22.10.0 || lxml==4.9.1": 1,
+    "black==22.10.0 || mypy==0.991": 1,
+    "black==22.10.0 || pytest-cov==4.0.0": 1,
+    "black==22.10.0 || pytest==7.0.1": 1,
+    "black==22.10.0 || requests==2.28.1": 1,
+    "flake8==5.0.4 || lxml==4.9.1": 1,
+    "flake8==5.0.4 || mypy==0.991": 1,
+    "flake8==5.0.4 || pytest-cov==4.0.0": 1,
+    "flake8==5.0.4 || pytest==7.0.1": 1,
+    "flake8==5.0.4 || requests==2.28.1": 1,
+    "lxml==4.9.1 || mypy==0.991": 1,
+    "lxml==4.9.1 || pytest-cov==4.0.0": 1,
+    "lxml==4.9.1 || pytest==7.0.1": 1,
+    "lxml==4.9.1 || requests==2.28.1": 1,
+    "mypy==0.991 || pytest-cov==4.0.0": 1,
+    "mypy==0.991 || pytest==7.0.1": 1,
+    "mypy==0.991 || requests==2.28.1": 1,
+    "pytest-cov==4.0.0 || pytest==7.0.1": 1,
+    "pytest-cov==4.0.0 || requests==2.28.1": 1,
+    "pytest==7.0.1 || requests==2.28.1": 1,
+    "ccxt==4.2.43 || cryptography==41.0.7": 1,
+    "ccxt==4.2.43 || requests==2.31.0": 1,
+    "cryptography==41.0.7 || requests==2.31.0": 1,
+    "aiofiles==23.2.1 || aiosqlite==0.19.0": 1,
+    "aiofiles==23.2.1 || chia_rs==1.0.0": 1,
+    "aiofiles==23.2.1 || click==8.1.3": 1,
+    "aiosqlite==0.19.0 || chia_rs==1.0.0": 1,
+    "aiosqlite==0.19.0 || click==8.1.3": 1,
+    "chia_rs==1.0.0 || click==8.1.3": 1,
+    "biplist==1.0.3 || cldr_language_helpers==0.1.0": 1,
+    "biplist==1.0.3 || string_extractor==0.1.0": 1,
+    "cldr_language_helpers==0.1.0 || string_extractor==0.1.0": 1,
+    "flask==2.3.3 || praktika==0.1.0": 1,
+    "flask==2.3.3 || pyarrow==13.0.0": 1,
+    "praktika==0.1.0 || pyarrow==13.0.0": 1,
+    "cmake==3.20.0 || numpy==1.21.0": 1,
+    "cmake==3.20.0 || pytest==6.2.5": 1,
+    "cmake==3.20.0 || pyyaml==6.0": 1,
+    "cmake==3.20.0 || scipy==1.7.0": 1,
+    "numpy==1.21.0 || pytest==6.2.5": 1,
+    "numpy==1.21.0 || pyyaml==6.0": 1,
+    "numpy==1.21.0 || scipy==1.7.0": 1,
+    "pytest==6.2.5 || pyyaml==6.0": 1,
+    "pytest==6.2.5 || scipy==1.7.0": 1,
+    "pyyaml==6.0 || scipy==1.7.0": 1,
+    "django==4.0.4 || gitdb2==4.0.9": 1,
+    "django==4.0.4 || psycopg2-binary==2.9.3": 1,
+    "django==4.0.4 || urllib3==1.26.9": 1,
+    "gitdb2==4.0.9 || psycopg2-binary==2.9.3": 1,
+    "gitdb2==4.0.9 || urllib3==1.26.9": 1,
+    "psycopg2-binary==2.9.3 || urllib3==1.26.9": 1,
+    "docutils==0.20.1 || flask==2.3.3": 1,
+    "docutils==0.20.1 || python-dateutil==2.8.2": 1,
+    "docutils==0.20.1 || pyyaml==6.0.1": 1,
+    "docutils==0.20.1 || requests==2.31.0": 1,
+    "flask==2.3.3 || pyyaml==6.0.1": 1,
+    "click==8.1.7 || codeowners==0.1.2": 1,
+    "click==8.1.7 || dda==0.1.0": 1,
+    "click==8.1.7 || github==1.54.1": 1,
+    "click==8.1.7 || lab==0.1.0": 1,
+    "click==8.1.7 || pyyaml==6.0": 1,
+    "codeowners==0.1.2 || dda==0.1.0": 1,
+    "codeowners==0.1.2 || github==1.54.1": 1,
+    "codeowners==0.1.2 || lab==0.1.0": 1,
+    "codeowners==0.1.2 || pyyaml==6.0": 1,
+    "dda==0.1.0 || github==1.54.1": 1,
+    "dda==0.1.0 || lab==0.1.0": 1,
+    "dda==0.1.0 || pyyaml==6.0": 1,
+    "github==1.54.1 || lab==0.1.0": 1,
+    "github==1.54.1 || pyyaml==6.0": 1,
+    "lab==0.1.0 || pyyaml==6.0": 1,
+    "blessings==1.7 || certifi==2024.2.2": 1,
+    "blessings==1.7 || charset-normalizer==3.3.2": 1,
+    "blessings==1.7 || demisto-sdk==1.20.0": 1,
+    "blessings==1.7 || gitdb==4.0.11": 1,
+    "blessings==1.7 || gitpython==3.1.42": 1,
+    "blessings==1.7 || idna==3.7": 1,
+    "blessings==1.7 || packaging==24.0": 1,
+    "blessings==1.7 || pygithub==2.3.0": 1,
+    "blessings==1.7 || pytest-mock==3.14.0": 1,
+    "blessings==1.7 || pytest==8.1.1": 1,
+    "blessings==1.7 || pyyaml==6.0.1": 1,
+    "blessings==1.7 || requests-mock==1.12.0": 1,
+    "blessings==1.7 || requests==2.31.0": 1,
+    "blessings==1.7 || sendgrid==6.13.0": 1,
+    "blessings==1.7 || smmap==5.0.1": 1,
+    "blessings==1.7 || tabulate==0.9.0": 1,
+    "blessings==1.7 || urllib3==2.2.1": 1,
+    "certifi==2024.2.2 || charset-normalizer==3.3.2": 1,
+    "certifi==2024.2.2 || demisto-sdk==1.20.0": 1,
+    "certifi==2024.2.2 || gitdb==4.0.11": 1,
+    "certifi==2024.2.2 || gitpython==3.1.42": 1,
+    "certifi==2024.2.2 || idna==3.7": 1,
+    "certifi==2024.2.2 || packaging==24.0": 1,
+    "certifi==2024.2.2 || pygithub==2.3.0": 1,
+    "certifi==2024.2.2 || pytest-mock==3.14.0": 1,
+    "certifi==2024.2.2 || pytest==8.1.1": 1,
+    "certifi==2024.2.2 || pyyaml==6.0.1": 1,
+    "certifi==2024.2.2 || requests-mock==1.12.0": 1,
+    "certifi==2024.2.2 || requests==2.31.0": 1,
+    "certifi==2024.2.2 || sendgrid==6.13.0": 1,
+    "certifi==2024.2.2 || smmap==5.0.1": 1,
+    "certifi==2024.2.2 || tabulate==0.9.0": 1,
+    "certifi==2024.2.2 || urllib3==2.2.1": 1,
+    "charset-normalizer==3.3.2 || demisto-sdk==1.20.0": 1,
+    "charset-normalizer==3.3.2 || gitdb==4.0.11": 1,
+    "charset-normalizer==3.3.2 || gitpython==3.1.42": 1,
+    "charset-normalizer==3.3.2 || idna==3.7": 1,
+    "charset-normalizer==3.3.2 || packaging==24.0": 1,
+    "charset-normalizer==3.3.2 || pygithub==2.3.0": 1,
+    "charset-normalizer==3.3.2 || pytest-mock==3.14.0": 1,
+    "charset-normalizer==3.3.2 || pytest==8.1.1": 1,
+    "charset-normalizer==3.3.2 || pyyaml==6.0.1": 1,
+    "charset-normalizer==3.3.2 || requests-mock==1.12.0": 1,
+    "charset-normalizer==3.3.2 || requests==2.31.0": 1,
+    "charset-normalizer==3.3.2 || sendgrid==6.13.0": 1,
+    "charset-normalizer==3.3.2 || smmap==5.0.1": 1,
+    "charset-normalizer==3.3.2 || tabulate==0.9.0": 1,
+    "charset-normalizer==3.3.2 || urllib3==2.2.1": 1,
+    "demisto-sdk==1.20.0 || gitdb==4.0.11": 1,
+    "demisto-sdk==1.20.0 || gitpython==3.1.42": 1,
+    "demisto-sdk==1.20.0 || idna==3.7": 1,
+    "demisto-sdk==1.20.0 || packaging==24.0": 1,
+    "demisto-sdk==1.20.0 || pygithub==2.3.0": 1,
+    "demisto-sdk==1.20.0 || pytest-mock==3.14.0": 1,
+    "demisto-sdk==1.20.0 || pytest==8.1.1": 1,
+    "demisto-sdk==1.20.0 || pyyaml==6.0.1": 1,
+    "demisto-sdk==1.20.0 || requests-mock==1.12.0": 1,
+    "demisto-sdk==1.20.0 || requests==2.31.0": 1,
+    "demisto-sdk==1.20.0 || sendgrid==6.13.0": 1,
+    "demisto-sdk==1.20.0 || smmap==5.0.1": 1,
+    "demisto-sdk==1.20.0 || tabulate==0.9.0": 1,
+    "demisto-sdk==1.20.0 || urllib3==2.2.1": 1,
+    "gitdb==4.0.11 || gitpython==3.1.42": 1,
+    "gitdb==4.0.11 || idna==3.7": 1,
+    "gitdb==4.0.11 || packaging==24.0": 1,
+    "gitdb==4.0.11 || pygithub==2.3.0": 1,
+    "gitdb==4.0.11 || pytest-mock==3.14.0": 1,
+    "gitdb==4.0.11 || pytest==8.1.1": 1,
+    "gitdb==4.0.11 || pyyaml==6.0.1": 1,
+    "gitdb==4.0.11 || requests-mock==1.12.0": 1,
+    "gitdb==4.0.11 || requests==2.31.0": 1,
+    "gitdb==4.0.11 || sendgrid==6.13.0": 1,
+    "gitdb==4.0.11 || smmap==5.0.1": 1,
+    "gitdb==4.0.11 || tabulate==0.9.0": 1,
+    "gitdb==4.0.11 || urllib3==2.2.1": 1,
+    "gitpython==3.1.42 || idna==3.7": 1,
+    "gitpython==3.1.42 || packaging==24.0": 1,
+    "gitpython==3.1.42 || pygithub==2.3.0": 1,
+    "gitpython==3.1.42 || pytest-mock==3.14.0": 1,
+    "gitpython==3.1.42 || pytest==8.1.1": 1,
+    "gitpython==3.1.42 || pyyaml==6.0.1": 1,
+    "gitpython==3.1.42 || requests-mock==1.12.0": 1,
+    "gitpython==3.1.42 || requests==2.31.0": 1,
+    "gitpython==3.1.42 || sendgrid==6.13.0": 1,
+    "gitpython==3.1.42 || smmap==5.0.1": 1,
+    "gitpython==3.1.42 || tabulate==0.9.0": 1,
+    "gitpython==3.1.42 || urllib3==2.2.1": 1,
+    "idna==3.7 || packaging==24.0": 1,
+    "idna==3.7 || pygithub==2.3.0": 1,
+    "idna==3.7 || pytest-mock==3.14.0": 1,
+    "idna==3.7 || pytest==8.1.1": 1,
+    "idna==3.7 || pyyaml==6.0.1": 1,
+    "idna==3.7 || requests-mock==1.12.0": 1,
+    "idna==3.7 || requests==2.31.0": 1,
+    "idna==3.7 || sendgrid==6.13.0": 1,
+    "idna==3.7 || smmap==5.0.1": 1,
+    "idna==3.7 || tabulate==0.9.0": 1,
+    "idna==3.7 || urllib3==2.2.1": 1,
+    "packaging==24.0 || pygithub==2.3.0": 1,
+    "packaging==24.0 || pytest-mock==3.14.0": 1,
+    "packaging==24.0 || pytest==8.1.1": 1,
+    "packaging==24.0 || pyyaml==6.0.1": 1,
+    "packaging==24.0 || requests-mock==1.12.0": 1,
+    "packaging==24.0 || requests==2.31.0": 1,
+    "packaging==24.0 || sendgrid==6.13.0": 1,
+    "packaging==24.0 || smmap==5.0.1": 1,
+    "packaging==24.0 || tabulate==0.9.0": 1,
+    "packaging==24.0 || urllib3==2.2.1": 1,
+    "pygithub==2.3.0 || pytest-mock==3.14.0": 1,
+    "pygithub==2.3.0 || pytest==8.1.1": 1,
+    "pygithub==2.3.0 || pyyaml==6.0.1": 1,
+    "pygithub==2.3.0 || requests-mock==1.12.0": 1,
+    "pygithub==2.3.0 || requests==2.31.0": 1,
+    "pygithub==2.3.0 || sendgrid==6.13.0": 1,
+    "pygithub==2.3.0 || smmap==5.0.1": 1,
+    "pygithub==2.3.0 || tabulate==0.9.0": 1,
+    "pygithub==2.3.0 || urllib3==2.2.1": 1,
+    "pytest-mock==3.14.0 || pytest==8.1.1": 1,
+    "pytest-mock==3.14.0 || pyyaml==6.0.1": 1,
+    "pytest-mock==3.14.0 || requests-mock==1.12.0": 1,
+    "pytest-mock==3.14.0 || requests==2.31.0": 1,
+    "pytest-mock==3.14.0 || sendgrid==6.13.0": 1,
+    "pytest-mock==3.14.0 || smmap==5.0.1": 1,
+    "pytest-mock==3.14.0 || tabulate==0.9.0": 1,
+    "pytest-mock==3.14.0 || urllib3==2.2.1": 1,
+    "pytest==8.1.1 || pyyaml==6.0.1": 1,
+    "pytest==8.1.1 || requests-mock==1.12.0": 1,
+    "pytest==8.1.1 || requests==2.31.0": 1,
+    "pytest==8.1.1 || sendgrid==6.13.0": 1,
+    "pytest==8.1.1 || smmap==5.0.1": 1,
+    "pytest==8.1.1 || tabulate==0.9.0": 1,
+    "pytest==8.1.1 || urllib3==2.2.1": 1,
+    "pyyaml==6.0.1 || requests-mock==1.12.0": 1,
+    "pyyaml==6.0.1 || sendgrid==6.13.0": 1,
+    "pyyaml==6.0.1 || smmap==5.0.1": 1,
+    "pyyaml==6.0.1 || tabulate==0.9.0": 1,
+    "pyyaml==6.0.1 || urllib3==2.2.1": 1,
+    "requests-mock==1.12.0 || requests==2.31.0": 1,
+    "requests-mock==1.12.0 || sendgrid==6.13.0": 1,
+    "requests-mock==1.12.0 || smmap==5.0.1": 1,
+    "requests-mock==1.12.0 || tabulate==0.9.0": 1,
+    "requests-mock==1.12.0 || urllib3==2.2.1": 1,
+    "requests==2.31.0 || sendgrid==6.13.0": 1,
+    "requests==2.31.0 || smmap==5.0.1": 1,
+    "requests==2.31.0 || tabulate==0.9.0": 1,
+    "requests==2.31.0 || urllib3==2.2.1": 1,
+    "sendgrid==6.13.0 || smmap==5.0.1": 1,
+    "sendgrid==6.13.0 || tabulate==0.9.0": 1,
+    "sendgrid==6.13.0 || urllib3==2.2.1": 1,
+    "smmap==5.0.1 || tabulate==0.9.0": 1,
+    "smmap==5.0.1 || urllib3==2.2.1": 1,
+    "tabulate==0.9.0 || urllib3==2.2.1": 1,
+    "boto3==1.34.0 || cairosvg==2.7.1": 1,
+    "boto3==1.34.0 || datadog-api-client==2.12.0": 1,
+    "boto3==1.34.0 || deepdiff==6.7.1": 1,
+    "boto3==1.34.0 || easygui==0.98.3": 1,
+    "boto3==1.34.0 || locust==2.20.0": 1,
+    "boto3==1.34.0 || matplotlib==3.8.2": 1,
+    "boto3==1.34.0 || more-itertools==10.2.0": 1,
+    "boto3==1.34.0 || pandas==2.2.1": 1,
+    "boto3==1.34.0 || python-dateutil==2.8.2": 1,
+    "boto3==1.34.0 || pyyaml==6.0.1": 1,
+    "boto3==1.34.0 || qrcodegen==1.6.0": 1,
+    "boto3==1.34.0 || requests==2.31.0": 1,
+    "boto3==1.34.0 || spacy==3.7.4": 1,
+    "cairosvg==2.7.1 || datadog-api-client==2.12.0": 1,
+    "cairosvg==2.7.1 || deepdiff==6.7.1": 1,
+    "cairosvg==2.7.1 || easygui==0.98.3": 1,
+    "cairosvg==2.7.1 || locust==2.20.0": 1,
+    "cairosvg==2.7.1 || matplotlib==3.8.2": 1,
+    "cairosvg==2.7.1 || more-itertools==10.2.0": 1,
+    "cairosvg==2.7.1 || pandas==2.2.1": 1,
+    "cairosvg==2.7.1 || python-dateutil==2.8.2": 1,
+    "cairosvg==2.7.1 || pyyaml==6.0.1": 1,
+    "cairosvg==2.7.1 || qrcodegen==1.6.0": 1,
+    "cairosvg==2.7.1 || requests==2.31.0": 1,
+    "cairosvg==2.7.1 || spacy==3.7.4": 1,
+    "datadog-api-client==2.12.0 || deepdiff==6.7.1": 1,
+    "datadog-api-client==2.12.0 || easygui==0.98.3": 1,
+    "datadog-api-client==2.12.0 || locust==2.20.0": 1,
+    "datadog-api-client==2.12.0 || matplotlib==3.8.2": 1,
+    "datadog-api-client==2.12.0 || more-itertools==10.2.0": 1,
+    "datadog-api-client==2.12.0 || pandas==2.2.1": 1,
+    "datadog-api-client==2.12.0 || python-dateutil==2.8.2": 1,
+    "datadog-api-client==2.12.0 || pyyaml==6.0.1": 1,
+    "datadog-api-client==2.12.0 || qrcodegen==1.6.0": 1,
+    "datadog-api-client==2.12.0 || requests==2.31.0": 1,
+    "datadog-api-client==2.12.0 || spacy==3.7.4": 1,
+    "deepdiff==6.7.1 || easygui==0.98.3": 1,
+    "deepdiff==6.7.1 || locust==2.20.0": 1,
+    "deepdiff==6.7.1 || matplotlib==3.8.2": 1,
+    "deepdiff==6.7.1 || more-itertools==10.2.0": 1,
+    "deepdiff==6.7.1 || pandas==2.2.1": 1,
+    "deepdiff==6.7.1 || python-dateutil==2.8.2": 1,
+    "deepdiff==6.7.1 || pyyaml==6.0.1": 1,
+    "deepdiff==6.7.1 || qrcodegen==1.6.0": 1,
+    "deepdiff==6.7.1 || requests==2.31.0": 1,
+    "deepdiff==6.7.1 || spacy==3.7.4": 1,
+    "easygui==0.98.3 || locust==2.20.0": 1,
+    "easygui==0.98.3 || matplotlib==3.8.2": 1,
+    "easygui==0.98.3 || more-itertools==10.2.0": 1,
+    "easygui==0.98.3 || pandas==2.2.1": 1,
+    "easygui==0.98.3 || python-dateutil==2.8.2": 1,
+    "easygui==0.98.3 || pyyaml==6.0.1": 1,
+    "easygui==0.98.3 || qrcodegen==1.6.0": 1,
+    "easygui==0.98.3 || requests==2.31.0": 1,
+    "easygui==0.98.3 || spacy==3.7.4": 1,
+    "locust==2.20.0 || matplotlib==3.8.2": 1,
+    "locust==2.20.0 || more-itertools==10.2.0": 1,
+    "locust==2.20.0 || pandas==2.2.1": 1,
+    "locust==2.20.0 || python-dateutil==2.8.2": 1,
+    "locust==2.20.0 || pyyaml==6.0.1": 1,
+    "locust==2.20.0 || qrcodegen==1.6.0": 1,
+    "locust==2.20.0 || requests==2.31.0": 1,
+    "locust==2.20.0 || spacy==3.7.4": 1,
+    "matplotlib==3.8.2 || more-itertools==10.2.0": 1,
+    "matplotlib==3.8.2 || pandas==2.2.1": 1,
+    "matplotlib==3.8.2 || python-dateutil==2.8.2": 1,
+    "matplotlib==3.8.2 || pyyaml==6.0.1": 1,
+    "matplotlib==3.8.2 || qrcodegen==1.6.0": 1,
+    "matplotlib==3.8.2 || requests==2.31.0": 1,
+    "matplotlib==3.8.2 || spacy==3.7.4": 1,
+    "more-itertools==10.2.0 || pandas==2.2.1": 1,
+    "more-itertools==10.2.0 || python-dateutil==2.8.2": 1,
+    "more-itertools==10.2.0 || pyyaml==6.0.1": 1,
+    "more-itertools==10.2.0 || qrcodegen==1.6.0": 1,
+    "more-itertools==10.2.0 || requests==2.31.0": 1,
+    "more-itertools==10.2.0 || spacy==3.7.4": 1,
+    "pandas==2.2.1 || python-dateutil==2.8.2": 1,
+    "pandas==2.2.1 || pyyaml==6.0.1": 1,
+    "pandas==2.2.1 || qrcodegen==1.6.0": 1,
+    "pandas==2.2.1 || requests==2.31.0": 1,
+    "pandas==2.2.1 || spacy==3.7.4": 1,
+    "python-dateutil==2.8.2 || qrcodegen==1.6.0": 1,
+    "python-dateutil==2.8.2 || spacy==3.7.4": 1,
+    "pyyaml==6.0.1 || qrcodegen==1.6.0": 1,
+    "pyyaml==6.0.1 || spacy==3.7.4": 1,
+    "qrcodegen==1.6.0 || requests==2.31.0": 1,
+    "qrcodegen==1.6.0 || spacy==3.7.4": 1,
+    "requests==2.31.0 || spacy==3.7.4": 1,
+    "docutils==0.20.1 || envoy==1.0.0": 1,
+    "docutils==0.20.1 || jinja2==3.1.2": 1,
+    "docutils==0.20.1 || kafka-python==2.0.2": 1,
+    "docutils==0.20.1 || pygments==2.16.1": 1,
+    "docutils==0.20.1 || pyyaml==6.0": 1,
+    "docutils==0.20.1 || sphinx-rtd-theme==1.3.0": 1,
+    "envoy==1.0.0 || jinja2==3.1.2": 1,
+    "envoy==1.0.0 || kafka-python==2.0.2": 1,
+    "envoy==1.0.0 || pygments==2.16.1": 1,
+    "envoy==1.0.0 || pyyaml==6.0": 1,
+    "envoy==1.0.0 || sphinx-rtd-theme==1.3.0": 1,
+    "envoy==1.0.0 || sphinx==7.2.6": 1,
+    "jinja2==3.1.2 || kafka-python==2.0.2": 1,
+    "jinja2==3.1.2 || pygments==2.16.1": 1,
+    "jinja2==3.1.2 || sphinx-rtd-theme==1.3.0": 1,
+    "jinja2==3.1.2 || sphinx==7.2.6": 1,
+    "kafka-python==2.0.2 || pygments==2.16.1": 1,
+    "kafka-python==2.0.2 || pyyaml==6.0": 1,
+    "kafka-python==2.0.2 || sphinx-rtd-theme==1.3.0": 1,
+    "kafka-python==2.0.2 || sphinx==7.2.6": 1,
+    "pygments==2.16.1 || pyyaml==6.0": 1,
+    "pygments==2.16.1 || sphinx-rtd-theme==1.3.0": 1,
+    "pygments==2.16.1 || sphinx==7.2.6": 1,
+    "pyyaml==6.0 || sphinx-rtd-theme==1.3.0": 1,
+    "pyyaml==6.0 || sphinx==7.2.6": 1,
+    "sphinx-rtd-theme==1.3.0 || sphinx==7.2.6": 1,
+    "click==8.1.3 || fireci==0.0.1": 1,
+    "click==8.1.3 || fireciplugins==0.0.1": 1,
+    "click==8.1.3 || pandas==1.5.3": 1,
+    "click==8.1.3 || requests==2.28.2": 1,
+    "click==8.1.3 || seaborn==0.12.2": 1,
+    "click==8.1.3 || termcolor==2.1.1": 1,
+    "fireci==0.0.1 || fireciplugins==0.0.1": 1,
+    "fireci==0.0.1 || pandas==1.5.3": 1,
+    "fireci==0.0.1 || requests==2.28.2": 1,
+    "fireci==0.0.1 || seaborn==0.12.2": 1,
+    "fireci==0.0.1 || termcolor==2.1.1": 1,
+    "fireciplugins==0.0.1 || pandas==1.5.3": 1,
+    "fireciplugins==0.0.1 || requests==2.28.2": 1,
+    "fireciplugins==0.0.1 || seaborn==0.12.2": 1,
+    "fireciplugins==0.0.1 || termcolor==2.1.1": 1,
+    "pandas==1.5.3 || requests==2.28.2": 1,
+    "pandas==1.5.3 || seaborn==0.12.2": 1,
+    "pandas==1.5.3 || termcolor==2.1.1": 1,
+    "requests==2.28.2 || seaborn==0.12.2": 1,
+    "requests==2.28.2 || termcolor==2.1.1": 1,
+    "seaborn==0.12.2 || termcolor==2.1.1": 1,
+    "click==8.1.7 || pyyaml==6.0.1": 1,
+    "click==8.1.7 || urllib3==1.26.18": 1,
+    "click==8.1.7 || wheel==0.42.0": 1,
+    "psutil==5.9.6 || pyyaml==6.0.1": 1,
+    "psutil==5.9.6 || urllib3==1.26.18": 1,
+    "psutil==5.9.6 || wheel==0.42.0": 1,
+    "pyyaml==6.0.1 || urllib3==1.26.18": 1,
+    "pyyaml==6.0.1 || wheel==0.42.0": 1,
+    "requests==2.31.0 || urllib3==1.26.18": 1,
+    "requests==2.31.0 || wheel==0.42.0": 1,
+    "urllib3==1.26.18 || wheel==0.42.0": 1,
+    "click==8.1.7 || devenv==0.1.0": 1,
+    "click==8.1.7 || openapi-core==0.18.0": 1,
+    "click==8.1.7 || orjson==3.9.10": 1,
+    "devenv==0.1.0 || openapi-core==0.18.0": 1,
+    "devenv==0.1.0 || orjson==3.9.10": 1,
+    "openapi-core==0.18.0 || orjson==3.9.10": 1,
+    "codeql==2.12.4 || pytest==7.0.1": 1,
+    "gdb==7.12 || mercurial==6.5.2": 1,
+    "cbor2==5.4.6 || msgpack==1.0.5": 1,
+    "cbor2==5.4.6 || prometheus-client==0.17.0": 1,
+    "cbor2==5.4.6 || pytz==2023.3": 1,
+    "msgpack==1.0.5 || prometheus-client==0.17.0": 1,
+    "msgpack==1.0.5 || pytz==2023.3": 1,
+    "prometheus-client==0.17.0 || pytz==2023.3": 1,
+    "google-api-python-client==2.0.2 || greenlet==2.0.2": 1,
+    "google-api-python-client==2.0.2 || grpc-interceptor==0.14.4": 1,
+    "google-api-python-client==2.0.2 || typeguard==2.13.3": 1,
+    "greenlet==2.0.2 || grpc-interceptor==0.14.4": 1,
+    "greenlet==2.0.2 || typeguard==2.13.3": 1,
+    "grpc-interceptor==0.14.4 || typeguard==2.13.3": 1,
+    "boto3==1.34.0 || botocore==1.34.0": 1,
+    "pandas==2.0.3 || pyarrow==13.0.0": 1,
+    "boto3==1.26.9 || jmespath==1.0.1": 1,
+    "boto3==1.26.9 || urllib3==1.26.9": 1,
+    "jmespath==1.0.1 || urllib3==1.26.9": 1,
+    "requests==2.31.0 || six==1.16.0": 1,
+    "junitparser==2.10.0 || lit==18.1.3": 1,
+    "junitparser==2.10.0 || requests==2.31.0": 1,
+    "lit==18.1.3 || requests==2.31.0": 1,
+    "pil==9.5.0 || platformio==6.1.11": 1,
+    "jinja2==3.1.2 || matplotlib==3.7.2": 1,
+    "jinja2==3.1.2 || numpy==1.24.3": 1,
+    "jinja2==3.1.2 || onnx==1.14.0": 1,
+    "jinja2==3.1.2 || onnxruntime==1.15.1": 1,
+    "jinja2==3.1.2 || pandas==2.0.3": 1,
+    "jinja2==3.1.2 || psutil==5.9.5": 1,
+    "jinja2==3.1.2 || scikit-learn==1.3.0": 1,
+    "jinja2==3.1.2 || skl2onnx==1.14.1": 1,
+    "jinja2==3.1.2 || sphinx==7.0.1": 1,
+    "matplotlib==3.7.2 || numpy==1.24.3": 1,
+    "matplotlib==3.7.2 || onnx==1.14.0": 1,
+    "matplotlib==3.7.2 || onnxruntime==1.15.1": 1,
+    "matplotlib==3.7.2 || pandas==2.0.3": 1,
+    "matplotlib==3.7.2 || psutil==5.9.5": 1,
+    "matplotlib==3.7.2 || scikit-learn==1.3.0": 1,
+    "matplotlib==3.7.2 || skl2onnx==1.14.1": 1,
+    "matplotlib==3.7.2 || sphinx==7.0.1": 1,
+    "numpy==1.24.3 || onnx==1.14.0": 1,
+    "numpy==1.24.3 || onnxruntime==1.15.1": 1,
+    "numpy==1.24.3 || pandas==2.0.3": 1,
+    "numpy==1.24.3 || psutil==5.9.5": 1,
+    "numpy==1.24.3 || scikit-learn==1.3.0": 1,
+    "numpy==1.24.3 || skl2onnx==1.14.1": 1,
+    "numpy==1.24.3 || sphinx==7.0.1": 1,
+    "onnx==1.14.0 || onnxruntime==1.15.1": 1,
+    "onnx==1.14.0 || pandas==2.0.3": 1,
+    "onnx==1.14.0 || psutil==5.9.5": 1,
+    "onnx==1.14.0 || scikit-learn==1.3.0": 1,
+    "onnx==1.14.0 || skl2onnx==1.14.1": 1,
+    "onnx==1.14.0 || sphinx==7.0.1": 1,
+    "onnxruntime==1.15.1 || pandas==2.0.3": 1,
+    "onnxruntime==1.15.1 || psutil==5.9.5": 1,
+    "onnxruntime==1.15.1 || scikit-learn==1.3.0": 1,
+    "onnxruntime==1.15.1 || skl2onnx==1.14.1": 1,
+    "onnxruntime==1.15.1 || sphinx==7.0.1": 1,
+    "pandas==2.0.3 || psutil==5.9.5": 1,
+    "pandas==2.0.3 || scikit-learn==1.3.0": 1,
+    "pandas==2.0.3 || skl2onnx==1.14.1": 1,
+    "pandas==2.0.3 || sphinx==7.0.1": 1,
+    "psutil==5.9.5 || scikit-learn==1.3.0": 1,
+    "psutil==5.9.5 || skl2onnx==1.14.1": 1,
+    "psutil==5.9.5 || sphinx==7.0.1": 1,
+    "scikit-learn==1.3.0 || skl2onnx==1.14.1": 1,
+    "scikit-learn==1.3.0 || sphinx==7.0.1": 1,
+    "skl2onnx==1.14.1 || sphinx==7.0.1": 1,
+    "backoff==2.2.1 || click==8.1.7": 1,
+    "backoff==2.2.1 || gitpython==3.1.41": 1,
+    "backoff==2.2.1 || jsoncfg==1.2.8": 1,
+    "backoff==2.2.1 || python-magic==0.4.27": 1,
+    "click==8.1.7 || gitpython==3.1.41": 1,
+    "click==8.1.7 || jsoncfg==1.2.8": 1,
+    "click==8.1.7 || python-magic==0.4.27": 1,
+    "gitpython==3.1.41 || jsoncfg==1.2.8": 1,
+    "gitpython==3.1.41 || pygithub==1.59.0": 1,
+    "gitpython==3.1.41 || python-magic==0.4.27": 1,
+    "gitpython==3.1.41 || requests==2.31.0": 1,
+    "jsoncfg==1.2.8 || pygithub==1.59.0": 1,
+    "jsoncfg==1.2.8 || python-magic==0.4.27": 1,
+    "jsoncfg==1.2.8 || requests==2.31.0": 1,
+    "pygithub==1.59.0 || python-magic==0.4.27": 1,
+    "python-magic==0.4.27 || requests==2.31.0": 1,
+    "cryptography==41.0.3 || gyp==0.1": 1,
+    "cryptography==41.0.3 || jinja2==3.1.2": 1,
+    "cryptography==41.0.3 || packaging==23.1": 1,
+    "cryptography==41.0.3 || pytest==7.4.0": 1,
+    "cryptography==41.0.3 || simplejson==3.17.6": 1,
+    "gyp==0.1 || jinja2==3.1.2": 1,
+    "gyp==0.1 || packaging==23.1": 1,
+    "gyp==0.1 || pytest==7.4.0": 1,
+    "gyp==0.1 || simplejson==3.17.6": 1,
+    "jinja2==3.1.2 || packaging==23.1": 1,
+    "jinja2==3.1.2 || pytest==7.4.0": 1,
+    "jinja2==3.1.2 || simplejson==3.17.6": 1,
+    "packaging==23.1 || pytest==7.4.0": 1,
+    "packaging==23.1 || simplejson==3.17.6": 1,
+    "pytest==7.4.0 || simplejson==3.17.6": 1,
+    "editor-python-test-tools==1.0.0 || ly-test-tools==1.0.0": 1,
+    "editor-python-test-tools==1.0.0 || psutil==5.9.5": 1,
+    "editor-python-test-tools==1.0.0 || pytest==7.4.0": 1,
+    "editor-python-test-tools==1.0.0 || python-asset-builder==1.0.0": 1,
+    "ly-test-tools==1.0.0 || psutil==5.9.5": 1,
+    "ly-test-tools==1.0.0 || pytest==7.4.0": 1,
+    "ly-test-tools==1.0.0 || python-asset-builder==1.0.0": 1,
+    "psutil==5.9.5 || pytest==7.4.0": 1,
+    "psutil==5.9.5 || python-asset-builder==1.0.0": 1,
+    "pytest==7.4.0 || python-asset-builder==1.0.0": 1,
+    "odoo==16.0 || python-dateutil==2.8.2": 1,
+    "aura==0.2.3 || lxml==4.9.3": 1,
+    "aura==0.2.3 || pyyaml==6.0.1": 1,
+    "aura==0.2.3 || requests==2.31.0": 1,
+    "lxml==4.9.3 || pyyaml==6.0.1": 1,
+    "lxml==4.9.3 || requests==2.31.0": 1,
+    "github_org_control==1.0.0 || jsonschema==4.4.0": 1,
+    "github_org_control==1.0.0 || ldap3==2.9.1": 1,
+    "github_org_control==1.0.0 || pygithub==1.55": 1,
+    "github_org_control==1.0.0 || pyyaml==6.0": 1,
+    "github_org_control==1.0.0 || requests==2.27.1": 1,
+    "jsonschema==4.4.0 || ldap3==2.9.1": 1,
+    "jsonschema==4.4.0 || pygithub==1.55": 1,
+    "jsonschema==4.4.0 || pyyaml==6.0": 1,
+    "jsonschema==4.4.0 || requests==2.27.1": 1,
+    "ldap3==2.9.1 || pygithub==1.55": 1,
+    "ldap3==2.9.1 || pyyaml==6.0": 1,
+    "ldap3==2.9.1 || requests==2.27.1": 1,
+    "pygithub==1.55 || pyyaml==6.0": 1,
+    "pygithub==1.55 || requests==2.27.1": 1,
+    "pyyaml==6.0 || requests==2.27.1": 1,
+    "core==0.1.0 || pytest==7.0.1": 1,
+    "core==0.1.0 || scripts==0.1.0": 1,
+    "core==0.1.0 || webapp2==2.8.4": 1,
+    "core==0.1.0 || webtest==3.0.0": 1,
+    "pytest==7.0.1 || scripts==0.1.0": 1,
+    "pytest==7.0.1 || webapp2==2.8.4": 1,
+    "pytest==7.0.1 || webtest==3.0.0": 1,
+    "scripts==0.1.0 || webapp2==2.8.4": 1,
+    "scripts==0.1.0 || webtest==3.0.0": 1,
+    "webapp2==2.8.4 || webtest==3.0.0": 1,
+    "lief==0.13.2 || pyobjc-core==9.2": 1,
+    "lief==0.13.2 || pyobjc-framework-cocoa==9.2": 1,
+    "lief==0.13.2 || pyobjc-framework-foundation==9.2": 1,
+    "lief==0.13.2 || splunk-sdk==1.7.2": 1,
+    "pyobjc-core==9.2 || pyobjc-framework-cocoa==9.2": 1,
+    "pyobjc-core==9.2 || pyobjc-framework-foundation==9.2": 1,
+    "pyobjc-core==9.2 || splunk-sdk==1.7.2": 1,
+    "pyobjc-framework-cocoa==9.2 || pyobjc-framework-foundation==9.2": 1,
+    "pyobjc-framework-cocoa==9.2 || splunk-sdk==1.7.2": 1,
+    "pyobjc-framework-foundation==9.2 || splunk-sdk==1.7.2": 1,
+    "lxml==4.9.3 || pytest==7.4.0": 1,
+    "beautifulsoup4==4.12.2 || html5lib==1.1": 1,
+    "beautifulsoup4==4.12.2 || lldb==16.0.6": 1,
+    "beautifulsoup4==4.12.2 || tomli==2.0.1": 1,
+    "html5lib==1.1 || lldb==16.0.6": 1,
+    "html5lib==1.1 || tomli==2.0.1": 1,
+    "lldb==16.0.6 || tomli==2.0.1": 1,
+    "mysqlclient==2.1.1 || pillow==10.0.1": 1,
+    "mysqlclient==2.1.1 || requests==2.31.0": 1,
+    "pillow==10.0.1 || requests==2.31.0": 1,
+    "matplotlib==3.7.1 || numpy==1.24.3": 1,
+    "matplotlib==3.7.1 || solana==0.29.0": 1,
+    "numpy==1.24.3 || solana==0.29.0": 1,
+    "docutils==0.20.1 || yaml==6.0.1": 1,
+    "sphinx==7.2.6 || yaml==6.0.1": 1,
+    "conan==1.59.0 || cura==0.0.0": 1,
+    "conan==1.59.0 || gitpython==3.1.30": 1,
+    "conan==1.59.0 || jinja2==3.1.2": 1,
+    "conan==1.59.0 || numpy==1.23.5": 1,
+    "conan==1.59.0 || pynest2d==4.12.0": 1,
+    "conan==1.59.0 || pyqt6==6.4.0": 1,
+    "conan==1.59.0 || pyyaml==6.0": 1,
+    "conan==1.59.0 || requests==2.28.1": 1,
+    "conan==1.59.0 || um==0.0.0": 1,
+    "cura==0.0.0 || gitpython==3.1.30": 1,
+    "cura==0.0.0 || jinja2==3.1.2": 1,
+    "cura==0.0.0 || numpy==1.23.5": 1,
+    "cura==0.0.0 || pynest2d==4.12.0": 1,
+    "cura==0.0.0 || pyqt6==6.4.0": 1,
+    "cura==0.0.0 || pyyaml==6.0": 1,
+    "cura==0.0.0 || requests==2.28.1": 1,
+    "cura==0.0.0 || um==0.0.0": 1,
+    "gitpython==3.1.30 || jinja2==3.1.2": 1,
+    "gitpython==3.1.30 || numpy==1.23.5": 1,
+    "gitpython==3.1.30 || pynest2d==4.12.0": 1,
+    "gitpython==3.1.30 || pyqt6==6.4.0": 1,
+    "gitpython==3.1.30 || pyyaml==6.0": 1,
+    "gitpython==3.1.30 || requests==2.28.1": 1,
+    "gitpython==3.1.30 || um==0.0.0": 1,
+    "jinja2==3.1.2 || numpy==1.23.5": 1,
+    "jinja2==3.1.2 || pynest2d==4.12.0": 1,
+    "jinja2==3.1.2 || pyqt6==6.4.0": 1,
+    "jinja2==3.1.2 || requests==2.28.1": 1,
+    "jinja2==3.1.2 || um==0.0.0": 1,
+    "numpy==1.23.5 || pynest2d==4.12.0": 1,
+    "numpy==1.23.5 || pyqt6==6.4.0": 1,
+    "numpy==1.23.5 || pyyaml==6.0": 1,
+    "numpy==1.23.5 || requests==2.28.1": 1,
+    "numpy==1.23.5 || um==0.0.0": 1,
+    "pynest2d==4.12.0 || pyqt6==6.4.0": 1,
+    "pynest2d==4.12.0 || pyyaml==6.0": 1,
+    "pynest2d==4.12.0 || requests==2.28.1": 1,
+    "pynest2d==4.12.0 || um==0.0.0": 1,
+    "pyqt6==6.4.0 || pyyaml==6.0": 1,
+    "pyqt6==6.4.0 || requests==2.28.1": 1,
+    "pyqt6==6.4.0 || um==0.0.0": 1,
+    "pyyaml==6.0 || requests==2.28.1": 1,
+    "pyyaml==6.0 || um==0.0.0": 1,
+    "requests==2.28.1 || um==0.0.0": 1,
+    "anytree==2.8.0 || docutils==0.20.1": 1,
+    "anytree==2.8.0 || fabric==3.1.0": 1,
+    "anytree==2.8.0 || invoke==2.2.0": 1,
+    "anytree==2.8.0 || lxml==4.9.3": 1,
+    "anytree==2.8.0 || packaging==23.1": 1,
+    "anytree==2.8.0 || pyelftools==0.29": 1,
+    "anytree==2.8.0 || sphinx==7.2.6": 1,
+    "docutils==0.20.1 || fabric==3.1.0": 1,
+    "docutils==0.20.1 || invoke==2.2.0": 1,
+    "docutils==0.20.1 || lxml==4.9.3": 1,
+    "docutils==0.20.1 || packaging==23.1": 1,
+    "docutils==0.20.1 || pyelftools==0.29": 1,
+    "fabric==3.1.0 || invoke==2.2.0": 1,
+    "fabric==3.1.0 || lxml==4.9.3": 1,
+    "fabric==3.1.0 || packaging==23.1": 1,
+    "fabric==3.1.0 || pyelftools==0.29": 1,
+    "fabric==3.1.0 || sphinx==7.2.6": 1,
+    "invoke==2.2.0 || lxml==4.9.3": 1,
+    "invoke==2.2.0 || packaging==23.1": 1,
+    "invoke==2.2.0 || pyelftools==0.29": 1,
+    "invoke==2.2.0 || sphinx==7.2.6": 1,
+    "lxml==4.9.3 || packaging==23.1": 1,
+    "lxml==4.9.3 || pyelftools==0.29": 1,
+    "lxml==4.9.3 || sphinx==7.2.6": 1,
+    "packaging==23.1 || pyelftools==0.29": 1,
+    "packaging==23.1 || sphinx==7.2.6": 1,
+    "pyelftools==0.29 || sphinx==7.2.6": 1,
+    "gdb==13.2 || lldb==16.0.6": 1,
+    "analytics-python==1.4.0 || django==4.2.7": 1,
+    "analytics-python==1.4.0 || psycopg2-binary==2.9.7": 1,
+    "analytics-python==1.4.0 || typing-extensions==4.8.0": 1,
+    "django==4.2.7 || psycopg2-binary==2.9.7": 1,
+    "django==4.2.7 || typing-extensions==4.8.0": 1,
+    "psycopg2-binary==2.9.7 || typing-extensions==4.8.0": 1
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "requirements": "analytics-python==1.4.0\nDjango==4.2.7\npsycopg2-binary==2.9.7\ntyping-extensions==4.8.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nEXPOSE 9991\n\nCMD [\"python\", \"manage.py\", \"runserver\", \"0.0.0.0:9991\"]",
+  "explanation": "Generated requirements.txt includes pinned versions for detected imports (analytics, django, psycopg2, typing_extensions) based on typical Zulip compatibility. Dockerfile uses python:3.9-slim base, installs dependencies, copies code, exposes Zulip's default port 9991, and runs the Django development server."
+}

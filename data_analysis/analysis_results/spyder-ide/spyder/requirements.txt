@@ -1,0 +1,13 @@
+autopep8
+rope
+jedi
+pycodestyle
+PyQt5
+flake8
+importlib_metadata
+ujson
+parso
+pytest
+docstring_to_markdown
+pylsp
+pluggy

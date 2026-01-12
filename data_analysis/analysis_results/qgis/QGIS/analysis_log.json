@@ -1,0 +1,5 @@
+{
+  "requirements": "PyQt5\\nrequests\\ntermcolor\\npexpect\\nPyQt6\\n",
+  "dockerfile": "FROM python:3.9-slim\\n\\nWORKDIR /app\\n\\nCOPY requirements.txt .\\nRUN pip install --no-cache-dir -r requirements.txt\\n\\nCOPY . .\\n\\nCMD [\"python\", \"-c\", \"print('QGIS environment ready')\"]",
+  "explanation": "Generated requirements.txt includes all detected imports except PyQt4 (deprecated), sipconfig, and sipbuild (build tools not needed in runtime). Dockerfile uses python:3.9-slim base, installs requirements, and sets up a minimal QGIS-compatible environment. PyQt6 is included for forward compatibility while prioritizing PyQt5."
+}

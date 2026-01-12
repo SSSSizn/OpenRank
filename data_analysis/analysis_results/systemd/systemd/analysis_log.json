@@ -1,0 +1,5 @@
+{
+  "requirements": "evdev\nycm_core\npyparsing\ncryptography\npytest\npefile\nPillow",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-c\", \"print('systemd Python environment ready')\"]",
+  "explanation": "Generated requirements.txt with detected imports (PIL mapped to Pillow). Dockerfile uses python:3.9-slim, installs dependencies, and includes a minimal startup command. Note: systemd is a C project - these Python dependencies are likely for auxiliary tooling/testing."
+}

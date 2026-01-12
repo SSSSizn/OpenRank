@@ -1,0 +1,5 @@
+{
+  "requirements": "apache-pulsar-client==3.0.0\nbookkeeper>=4.14.0\ngoogleapis-common-protos>=1.56.0\ngrpcio>=1.46.0\nkazoo>=2.8.0\nprometheus-client>=0.14.0\nPyYAML>=5.4.0\nratelimit>=2.2.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"print('Apache Pulsar Python application started')\"]",
+  "explanation": "Requirements.txt includes pinned versions for critical dependencies (apache-pulsar-client) and minimum versions for others to ensure compatibility. The Dockerfile uses python:3.9-slim for a lightweight base, copies requirements first for better layer caching, and includes a placeholder CMD since the specific entry point wasn't specified in the task."
+}

@@ -1,0 +1,5 @@
+{
+  "requirements": "lxml==4.9.3\nrequests==2.31.0\nPyYAML==6.0.1\naura==0.2.3",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"your_script_name.py\"]",
+  "explanation": "1. requirements.txt includes pinned versions of detected imports (lxml, requests, yaml/PyYAML, aura) for stability. 2. Dockerfile uses python:3.9-slim as base, sets /app as workdir, installs dependencies from requirements.txt, copies all files, and assumes a main script named 'your_script_name.py' (replace with actual entrypoint). Slim image reduces size while maintaining Python 3.9 compatibility."
+}

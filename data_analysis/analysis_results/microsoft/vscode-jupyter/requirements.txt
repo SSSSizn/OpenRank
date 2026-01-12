@@ -1,0 +1,21 @@
+# Core packages
+pytest
+setuptools
+packaging
+requests
+nose
+pandas
+wheel
+IPython
+numpy
+pip
+
+# Development dependencies for VS Code Jupyter extension
+jupyter
+jupyterlab
+ipykernel
+matplotlib
+seaborn
+scipy
+scikit-learn
+notebook

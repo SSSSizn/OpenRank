@@ -1,0 +1,5 @@
+{
+  "requirements": "github_org_control==1.0.0\ngit+https://github.com/fastai/ghapi.git@master\nldap3==2.9.1\njsonschema==4.4.0\nPyGithub==1.55\nPyYAML==6.0\nrequests==2.27.1",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"print('OpenVINO DevOps container ready')\"]",
+  "explanation": "Generated requirements.txt includes pinned versions for stability (requests, ldap3, jsonschema, PyGithub, PyYAML) and direct GitHub install for ghapi. Empty string import ignored. Dockerfile uses python:3.9-slim base, installs requirements, copies code, and sets a default startup message. Assumes DevOps scripts are in current directory."
+}

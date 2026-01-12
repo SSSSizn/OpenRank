@@ -1,0 +1,5 @@
+{
+  "requirements": "click==8.1.7\nflask==2.3.3\nflask_appbuilder==4.3.7\nflask_caching==2.1.0\nflask_migrate==4.0.5\njinja2==3.1.2\npackaging==23.2\npsutil==5.9.6\nrequests==2.31.0\nsqlalchemy==2.0.23\nsqlglot==19.3.0\ncelery==5.3.4\npython-dateutil==2.8.2\nsetuptools==68.2.2\nprogress==1.6\nPyGithub==1.59.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nEXPOSE 8088\n\nCMD [\"gunicorn\", \"-b\", \"0.0.0.0:8088\", \"-w\", \"4\", \"superset.app:create_app()\"]",
+  "explanation": "Requirements.txt includes pinned versions for stability based on common Superset dependencies. Dockerfile uses python:3.9-slim for minimal base, installs requirements efficiently, exposes Superset's default port 8088, and uses gunicorn as production WSGI server. The CMD assumes Superset's standard app factory pattern."
+}

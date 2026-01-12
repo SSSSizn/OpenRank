@@ -1,0 +1,7 @@
+ray[serve,tune,rllib]
+requests
+comet_ml
+pytest
+aws_requests_auth
+pyyaml
+boto3

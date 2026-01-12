@@ -1,0 +1,5 @@
+bamr
+requests
+conda_index
+tqdm
+pkg_resources

@@ -1,0 +1,5 @@
+{
+  "requirements": "json_source_map\nrequests\naiohttp\njsonschema\nh5py\nnumpy\nobspython",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "The requirements.txt includes all detected imports except 'keras' which is typically part of tensorflow installation and would require additional system dependencies. The Dockerfile uses python:3.9-slim base image, installs requirements, and sets up a simple execution environment. Note: 'obspython' is OBS Studio's Python scripting module which may require the full OBS Studio installation to function properly."
+}

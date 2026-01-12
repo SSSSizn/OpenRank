@@ -1,0 +1,3 @@
+misc
+SCons
+polib

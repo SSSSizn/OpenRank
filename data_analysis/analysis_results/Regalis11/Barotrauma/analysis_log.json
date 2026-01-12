@@ -1,0 +1,5 @@
+{
+  "requirements": "pycurl\nPillow\nscipy\nmatplotlib\nnumpy",
+  "dockerfile": "FROM python:3.9-slim\n\n# Install system dependencies required by pycurl, PIL, and other packages\nRUN apt-get update && apt-get install -y \\\n    libcurl4-openssl-dev \\\n    libssl-dev \\\n    libjpeg-dev \\\n    zlib1g-dev \\\n    libfreetype6-dev \\\n    libpng-dev \\\n    gcc \\\n    g++ \\\n    && rm -rf /var/lib/apt/lists/*\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "The requirements.txt uses 'Pillow' instead of 'PIL' as it's the modern fork. Additional system packages are installed in the Dockerfile to support pycurl (libcurl, ssl), PIL/Pillow (image libraries), and compilation tools for scipy/numpy. The slim Python image is used as requested, with unnecessary package caches cleaned to minimize image size."
+}

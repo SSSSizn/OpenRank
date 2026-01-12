@@ -1,0 +1,6 @@
+requests>=2.25.1
+attr>=21.2.0
+PyYAML>=5.4.1
+networkx>=2.5
+sage>=9.2
+mathlibtools>=1.0.0

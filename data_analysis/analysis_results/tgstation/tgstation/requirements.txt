@@ -1,0 +1,3 @@
+Pillow>=8.0.0
+requests>=2.25.0
+mysqlclient>=2.0.0

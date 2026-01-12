@@ -1,0 +1,5 @@
+{
+  "requirements": "tree-sitter>=0.20.0\npytest-embedded>=1.0.0\npytest>=6.0.0\npyyaml>=5.4.0\npython-can>=3.3.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-m\", \"pytest\"]",
+  "explanation": "Generated requirements.txt includes direct dependencies with version constraints for compatibility. The Dockerfile uses python:3.9-slim as base, installs requirements, and sets pytest as default command for ESP-IDF testing environment."
+}

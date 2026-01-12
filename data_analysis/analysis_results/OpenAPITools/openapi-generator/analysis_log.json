@@ -1,0 +1,5 @@
+{
+  "requirements": "pydantic>=2.0.0\nrequests>=2.28.0\npython-dateutil>=2.8.0\ntyping-extensions>=4.0.0\nurllib3>=1.26.0\nPyYAML>=6.0.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-m\", \"openapi_client\"]",
+  "explanation": "Requirements.txt includes pinned minimum versions for stability. Dockerfile uses slim Python image for minimal footprint, copies requirements first for better layer caching, and sets default command to run the openapi_client module."
+}

@@ -1,0 +1,4 @@
+sphinxawesome_theme
+gdb
+pygments
+sphinx

@@ -1,0 +1,10 @@
+frozendict
+conda-build
+conda
+conda-smithy
+boa
+requests
+conda-index
+PyGithub
+networkx
+ruamel.yaml

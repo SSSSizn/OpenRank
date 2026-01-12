@@ -1,0 +1,5 @@
+{
+  "requirements": "bcc",
+  "dockerfile": "FROM python:3.9-slim\nRUN apt-get update && apt-get install -y \\\n    build-essential \\\n    libbcc-dev \\\n    && rm -rf /var/lib/apt/lists/*\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "Generated a minimal requirements.txt with only the detected 'bcc' import. The Dockerfile uses python:3.9-slim and installs system dependencies required for bcc (BPF Compiler Collection) including build-essential and libbcc-dev. The final CMD assumes a main script named 'your_script.py' which should be adjusted based on actual project structure."
+}

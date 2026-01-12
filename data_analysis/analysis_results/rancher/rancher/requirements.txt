@@ -1,0 +1,10 @@
+# Rancher requirements.txt
+rancher
+kubernetes
+flask
+pytest
+urllib3
+werkzeug
+requests
+jinja2
+pyyaml

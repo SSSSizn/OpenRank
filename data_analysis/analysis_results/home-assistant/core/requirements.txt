@@ -1,0 +1,6 @@
+pyqrcode
+voluptuous
+pyotp
+attrs
+pyjwt
+propcache

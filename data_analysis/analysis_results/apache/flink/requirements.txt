@@ -1,0 +1,5 @@
+pytest==7.4.0
+setuptools==68.2.2
+pyflink==1.18.1
+ruamel.yaml==0.17.32
+py4j==0.10.9.7

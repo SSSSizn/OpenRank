@@ -1,0 +1,5 @@
+{
+  "requirements": "numpy==1.24.3\npandas==2.0.3\nonnx==1.14.0\nonnxruntime==1.15.1\nskl2onnx==1.14.1\nscikit-learn==1.3.0\npsutil==5.9.5\njinja2==3.1.2\nmatplotlib==3.7.2\nsphinx==7.0.1",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends gcc python3-dev && \\\n    rm -rf /var/lib/apt/lists/* && \\\n    pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"your_main_script.py\"]",
+  "explanation": "1. Requirements.txt includes pinned versions for stability with ONNX-related packages as core dependencies.\n2. Dockerfile uses python:3.9-slim as base, installs build essentials for compilation, and optimizes layer caching.\n3. The setup supports both ML inference (onnxruntime) and documentation (sphinx) needs from the detected imports.\n4. Slim image reduces size while gcc installation handles potential C-extensions in dependencies."
+}

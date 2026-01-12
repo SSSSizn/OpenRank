@@ -1,0 +1,6 @@
+requests
+urllib3
+simplejson
+Pillow
+pycryptodome
+websocket-client

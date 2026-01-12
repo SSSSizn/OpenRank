@@ -1,0 +1,5 @@
+{
+  "requirements": "torch>=1.13.1\ntorchvision>=0.14.1\nomegaconf>=2.2.3\npytorch_lightning>=1.7.7\ntqdm>=4.64.1\neinops>=0.4.1\ngradio>=3.23.0\nnumpy>=1.24.1\nsafetensors>=0.3.0\npackaging>=21.3\nPillow>=9.4.0\n",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\n# Install system dependencies\nRUN apt-get update && apt-get install -y \\\n    git \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Copy requirements and install Python packages\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Clone the repository\nRUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git .\n\n# Expose port for Gradio\nEXPOSE 7860\n\n# Set entrypoint\nCMD [\"python\", \"launch.py\", \"--listen\"]\n",
+  "explanation": "Generated requirements.txt includes all detected imports with compatible versions based on the repository's needs. The Dockerfile uses python:3.9-slim as base, installs system dependencies (git for cloning), copies requirements.txt, installs Python packages, clones the repository, exposes port 7860 for Gradio, and sets the launch command with --listen flag to allow external access."
+}

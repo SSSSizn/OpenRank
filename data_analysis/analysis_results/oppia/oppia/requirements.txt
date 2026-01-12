@@ -1,0 +1,5 @@
+pytest==7.0.1
+webapp2==2.8.4
+webtest==3.0.0
+core==0.1.0
+scripts==0.1.0

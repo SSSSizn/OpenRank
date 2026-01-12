@@ -1,0 +1,5 @@
+{
+  "requirements": "PIL==9.5.0\nplatformio==6.1.11",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"print('MarlinFirmware/Marlin Python environment ready')\"]",
+  "explanation": "This configuration provides a minimal Python 3.9 environment with PIL (Pillow) for image processing and PlatformIO for embedded development. The Dockerfile copies requirements first for better layer caching, uses a slim base image to reduce size, and includes a simple verification command. The specific versions ensure compatibility with Marlin's build system requirements."
+}

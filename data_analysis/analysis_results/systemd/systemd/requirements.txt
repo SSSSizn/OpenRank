@@ -1,0 +1,7 @@
+evdev
+ycm_core
+pyparsing
+cryptography
+pytest
+pefile
+Pillow

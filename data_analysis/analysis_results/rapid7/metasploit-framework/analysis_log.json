@@ -1,0 +1,5 @@
+{
+  "requirements": "lief==0.13.2\nsplunk-sdk==1.7.2\npyobjc-core==9.2\npyobjc-framework-Cocoa==9.2\npyobjc-framework-Foundation==9.2",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends gcc python3-dev && \\\n    pip install --no-cache-dir -r requirements.txt && \\\n    apt-get remove -y gcc python3-dev && \\\n    apt-get autoremove -y && \\\n    rm -rf /var/lib/apt/lists/*\n\nCOPY . .\n\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "1. Requirements:\n   - lief: Binary analysis library\n   - splunk-sdk: For Splunk integration\n   - pyobjc packages: For macOS Cocoa/Foundation/objc interop\n\n2. Dockerfile:\n   - Uses python:3.9-slim base\n   - Installs build dependencies for binary packages\n   - Cleanup to minimize image size\n   - Note: macOS-specific imports (Cocoa/Foundation) won't work in Linux containers"
+}

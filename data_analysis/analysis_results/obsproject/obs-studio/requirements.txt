@@ -1,0 +1,7 @@
+json_source_map
+requests
+aiohttp
+jsonschema
+h5py
+numpy
+obspython

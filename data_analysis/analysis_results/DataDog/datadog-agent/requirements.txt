@@ -1,0 +1,6 @@
+click==8.1.7
+codeowners==0.1.2
+dda==0.1.0
+github==1.54.1
+lab==0.1.0
+PyYAML==6.0

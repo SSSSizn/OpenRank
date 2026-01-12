@@ -1,0 +1,10 @@
+apache-airflow==2.7.1
+httpx
+flask
+packaging
+gevent
+argcomplete
+rich
+flask-appbuilder
+hatchling
+diagrams

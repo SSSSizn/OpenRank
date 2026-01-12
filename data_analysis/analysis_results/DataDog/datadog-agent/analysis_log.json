@@ -1,0 +1,5 @@
+{
+  "requirements": "click==8.1.7\ncodeowners==0.1.2\ndda==0.1.0\ngithub==1.54.1\nlab==0.1.0\nPyYAML==6.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-c\", \"print('DataDog Agent dependencies installed')\"]",
+  "explanation": "Generated requirements.txt with pinned versions for stability. Dockerfile uses python:3.9-slim base, installs dependencies, and includes a minimal placeholder CMD. Adjust CMD based on actual entrypoint script."
+}

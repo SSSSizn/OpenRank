@@ -1,0 +1,5 @@
+{
+  "requirements": "flask==2.3.3\npyarrow==13.0.0\npraktika==0.1.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"app.py\"]",
+  "explanation": "Generated requirements.txt with pinned versions for Flask, PyArrow, and praktika to ensure dependency stability. pip and ci are not included as they're environment tools. Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, and sets default command to run app.py."
+}

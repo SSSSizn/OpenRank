@@ -1,0 +1,5 @@
+{
+  "requirements": "pytest==7.0.1\nwebapp2==2.8.4\nwebtest==3.0.0\ncore==0.1.0\nscripts==0.1.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-m\", \"pytest\"]",
+  "explanation": "Generated requirements.txt with pinned versions for stability. The Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, copies the application code, and defaults to running pytest for testing."
+}

@@ -1,0 +1,11 @@
+numpydoc
+packaging
+mpl_sphinx_theme
+sphinxext
+docutils
+PyYAML
+matplotlib
+pydata-sphinx-theme
+sphinx
+numpy
+sphinx-gallery

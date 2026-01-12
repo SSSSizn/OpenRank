@@ -120,6 +120,26 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
   if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key.");
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "📡 Contacting AI Model..." });
+  const knowledge = await loadAndFilterKnowledge(candidates);
+
+  const knowledgeText = `
+Historical dependency version patterns from real-world Python projects:
+
+Most commonly used versions:
+${Object.entries(knowledge.package_versions)
+      .map(([pkg, vers]) =>
+        `- ${pkg}: ${Object.entries(vers)
+          .map(([v, c]) => `${v} (${c} projects)`)
+          .join(", ")}`
+      )
+      .join("\n")}
+
+Frequently observed compatible version pairs:
+${Object.entries(knowledge.version_cooccurrence)
+      .slice(0, 10)
+      .map(([pair, count]) => `- ${pair} (${count} projects)`)
+      .join("\n")}
+`;
 
   const prompt = `
 Role: Senior Python DevOps Engineer.
@@ -129,6 +149,8 @@ ${repoInfo.owner}/${repoInfo.repo}
 
 Detected third-party imports (static analysis):
 ${candidates.join(', ')}
+
+${knowledgeText}
 
 Your tasks:
 
@@ -286,4 +308,39 @@ async function fetchGitHubUser() {
   } catch {
     return null;
   }
+}
+
+async function loadAndFilterKnowledge(candidates) {
+  // candidates: ["requests", "fastapi", ...]
+  const res = await fetch(chrome.runtime.getURL("dependency_version_knowledge.json"));
+  const kb = await res.json();
+
+  const candidateSet = new Set(candidates.map(c => c.toLowerCase()));
+
+  const filtered = {
+    package_versions: {},
+    version_cooccurrence: {}
+  };
+
+  // 1. 单包版本
+  for (const [pkg, versions] of Object.entries(kb.package_versions || {})) {
+    if (candidateSet.has(pkg)) {
+      // 只保留 Top 3
+      filtered.package_versions[pkg] =
+        Object.fromEntries(Object.entries(versions).slice(0, 3));
+    }
+  }
+
+  // 2. 版本共现
+  for (const [pair, count] of Object.entries(kb.version_cooccurrence || {})) {
+    const involvedPkgs = pair
+      .split("||")
+      .map(s => s.trim().split("==")[0]);
+
+    if (involvedPkgs.some(p => candidateSet.has(p))) {
+      filtered.version_cooccurrence[pair] = count;
+    }
+  }
+
+  return filtered;
 }

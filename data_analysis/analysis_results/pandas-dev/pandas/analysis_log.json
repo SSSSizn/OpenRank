@@ -1,0 +1,5 @@
+{
+  "requirements": "pandas>=2.0.0\nnumpy>=1.20.0\npytest>=6.0.0\nblack>=22.0.0\nflake8>=4.0.0\nmypy>=0.900\npre-commit>=2.0.0",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"import pandas; import numpy; print('pandas and numpy imported successfully')\"]",
+  "explanation": "This configuration includes essential pandas development dependencies: pandas/numpy for core functionality, pytest for testing, black/flake8/mypy for code quality, and pre-commit for git hooks. The Dockerfile uses python:3.9-slim for a minimal base, installs requirements efficiently, and includes a simple validation command."
+}

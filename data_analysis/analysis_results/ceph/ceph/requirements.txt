@@ -1,0 +1,8 @@
+botocore>=1.29.0
+plantweb>=0.4.0
+docutils>=0.17.0
+boto3>=1.26.0
+jinja2>=3.0.0
+yaml>=6.0
+pcpp>=1.30
+sphinx>=5.0.0

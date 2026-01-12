@@ -1,0 +1,6 @@
+prompt_toolkit
+requests
+redis
+tqdm
+h5py
+numpy

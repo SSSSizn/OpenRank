@@ -1,0 +1,5 @@
+pycurl
+Pillow
+scipy
+matplotlib
+numpy

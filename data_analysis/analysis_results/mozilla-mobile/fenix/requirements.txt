@@ -1,0 +1,12 @@
+pytest
+mozversion
+taskgraph
+redo
+requests
+voluptuous
+mozrunner
+mozinstall
+mozprofile
+PyYAML
+mozilla_version
+mozdownload

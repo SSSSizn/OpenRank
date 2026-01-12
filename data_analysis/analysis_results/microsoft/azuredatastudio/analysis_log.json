@@ -1,0 +1,5 @@
+{
+  "requirements": "jupyter_server==1.23.6\n",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-m\", \"jupyter_server\"]\n",
+  "explanation": "The requirements.txt includes jupyter_server with a pinned version for stability. The Dockerfile uses python:3.9-slim as the base image, sets up the working directory, installs dependencies from requirements.txt, copies the application code, and sets the default command to run the jupyter_server module."
+}

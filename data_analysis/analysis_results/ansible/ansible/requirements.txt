@@ -1,0 +1,4 @@
+requests
+argcomplete
+ansible_test
+github

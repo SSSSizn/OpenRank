@@ -1,0 +1,7 @@
+github_org_control==1.0.0
+git+https://github.com/fastai/ghapi.git@master
+ldap3==2.9.1
+jsonschema==4.4.0
+PyGithub==1.55
+PyYAML==6.0
+requests==2.27.1

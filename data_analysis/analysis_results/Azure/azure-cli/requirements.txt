@@ -1,0 +1,7 @@
+msrest
+xmltodict
+requests
+docutils
+azure-cli
+azdev
+sphinx

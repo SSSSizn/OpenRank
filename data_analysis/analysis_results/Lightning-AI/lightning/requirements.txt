@@ -1,0 +1,16 @@
+torch>=2.0.0
+torchvision>=0.15.0
+lightning-utilities>=0.8.0
+rl>=0.0.1
+learn2learn>=0.1.0
+torchmetrics>=0.11.0
+lai-sphinx-theme>=0.0.1
+jsonargparse>=4.20.0
+packaging>=21.0
+scikit-learn>=1.0.0
+tqdm>=4.60.0
+tomlkit>=0.11.0
+torchao>=0.0.1
+gymnasium>=0.28.0
+cherry>=0.0.1
+lightning>=2.0.0

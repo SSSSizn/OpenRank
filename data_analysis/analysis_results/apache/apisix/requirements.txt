@@ -1,0 +1,4 @@
+psutil==5.9.4
+zhon==1.1.5
+PyYAML==6.0
+boofuzz==0.4.1

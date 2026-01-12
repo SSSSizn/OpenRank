@@ -1,0 +1,5 @@
+{
+  "requirements": "ccxt==4.2.43\nrequests==2.31.0\ncryptography==41.0.7",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "Requirements include the latest stable ccxt version (4.2.43) with core dependencies requests (for HTTP) and cryptography (for security). Dockerfile uses python:3.9-slim base, installs requirements efficiently, and sets a default command assuming a main script exists."
+}

@@ -1,0 +1,5 @@
+cryptography>=3.4.7
+click>=8.0.1
+requests>=2.25.1
+click-option-group>=0.5.3
+sphinx>=4.0.2

@@ -1,0 +1,5 @@
+{
+  "requirements": "sphinx_rtd_theme\nazure\npkg_resources\npip",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-c\", \"print('Container ready for Azure SDK Python development')\"]",
+  "explanation": "Generated requirements.txt includes detected imports for Sphinx documentation, Azure SDK packages, and packaging utilities. Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, and sets a default command indicating readiness for Azure SDK Python development workflows."
+}

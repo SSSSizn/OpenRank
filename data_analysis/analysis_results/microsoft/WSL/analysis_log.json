@@ -1,0 +1,5 @@
+{
+  "requirements": "click==8.1.7\nbackoff==2.2.1\nrequests==2.31.0\nPyGithub==1.59.0\njsoncfg==1.2.8\npython-magic==0.4.27\nGitPython==3.1.41",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"print('WSL DevOps container ready')\"]",
+  "explanation": "Generated requirements.txt with pinned versions for stability. Dockerfile uses python:3.9-slim base image, installs dependencies from requirements.txt, and sets a default command. GitPython is included for git import compatibility."
+}

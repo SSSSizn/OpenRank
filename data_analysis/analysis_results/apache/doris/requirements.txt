@@ -1,0 +1,12 @@
+mysql-connector-python
+filelock
+dateutil
+pyspark
+prettytable
+jsonpickle
+pyarrow
+pymysql
+dbt-core
+docker
+pyorc
+PyYAML

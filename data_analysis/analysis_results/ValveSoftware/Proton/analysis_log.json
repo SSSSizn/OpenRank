@@ -1,0 +1,5 @@
+{
+  "requirements": "fontTools>=4.28.0\nclang>=14.0.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"--version\"]",
+  "explanation": "Requirements.txt includes fontTools and clang with recent stable versions. Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, copies code, and defaults to showing Python version. Adjust CMD as needed for Proton-specific entry point."
+}

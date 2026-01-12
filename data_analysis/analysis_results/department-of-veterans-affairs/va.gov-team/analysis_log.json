@@ -1,0 +1,5 @@
+{
+  "requirements": "qrcodegen==1.6.0\ndatadog-api-client==2.12.0\nrequests==2.31.0\npython-dateutil==2.8.2\neasygui==0.98.3\ndeepdiff==6.7.1\nspacy==3.7.4\nlocust==2.20.0\nmore-itertools==10.2.0\nboto3==1.34.0\nPyYAML==6.0.1\npandas==2.2.1\nmatplotlib==3.8.2\ncairosvg==2.7.1",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\n\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    gcc \\\n    g++ \\\n    libcairo2-dev \\\n    pkg-config \\\n    && pip install --no-cache-dir -r requirements.txt \\\n    && apt-get purge -y --auto-remove gcc g++ \\\n    && rm -rf /var/lib/apt/lists/*\n\nCOPY . .\n\nCMD [\"python\", \"your_main_script.py\"]",
+  "explanation": "Generated requirements.txt with pinned versions for stability in the VA.gov environment. Dockerfile uses python:3.9-slim with Cairo dependencies for cairosvg, build tools for compiling native dependencies, and cleanup to minimize image size. Replace 'your_main_script.py' with actual entrypoint."
+}

@@ -1,0 +1,5 @@
+{
+  "requirements": "# Core packages\npytest\nsetuptools\npackaging\nrequests\nnose\npandas\nwheel\nIPython\nnumpy\npip\n\n# Development dependencies for VS Code Jupyter extension\njupyter\njupyterlab\nipykernel\nmatplotlib\nseaborn\nscipy\nscikit-learn\nnotebook\n",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\n# Copy requirements and install dependencies\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Copy application code\nCOPY . .\n\n# Set environment variables\nENV PYTHONPATH=/app\nENV PYTHONUNBUFFERED=1\n\n# Default command (can be overridden)\nCMD [\"python\", \"-m\", \"pytest\"]",
+  "explanation": "Generated requirements.txt includes all detected imports plus common Jupyter ecosystem packages needed for VS Code Jupyter extension development. The Dockerfile uses python:3.9-slim base image, installs dependencies from requirements.txt, sets up proper environment variables, and defaults to running pytest for testing. The slim image reduces size while maintaining Python functionality."
+}

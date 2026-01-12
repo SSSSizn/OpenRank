@@ -1,0 +1,5 @@
+pytest==7.4.0
+psutil==5.9.5
+ly-test-tools==1.0.0
+editor-python-test-tools==1.0.0
+python-asset-builder==1.0.0

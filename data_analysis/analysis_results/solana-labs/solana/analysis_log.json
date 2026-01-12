@@ -1,0 +1,5 @@
+{
+  "requirements": "matplotlib==3.7.1\nnumpy==1.24.3\nsolana==0.29.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"your_script.py\"]",
+  "explanation": "Generated requirements.txt includes matplotlib (from detected imports) with pinned version for stability, numpy as it's a common matplotlib dependency, and solana Python SDK since the repo is Solana-related. Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, and assumes a main script named 'your_script.py' - this should be adjusted to match the actual entrypoint."
+}

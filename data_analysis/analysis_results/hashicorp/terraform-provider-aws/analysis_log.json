@@ -1,0 +1,5 @@
+{
+  "requirements": "boto3==1.34.0\nbotocore==1.34.0",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-c\", \"print('Terraform AWS Provider Python Environment Ready')\"]",
+  "explanation": "Requirements include boto3 and botocore pinned to compatible versions for AWS API stability. Dockerfile uses python:3.9-slim for minimal footprint, copies requirements first for layer caching efficiency, and includes a placeholder CMD since actual execution depends on Terraform's Go binary calling Python components."
+}

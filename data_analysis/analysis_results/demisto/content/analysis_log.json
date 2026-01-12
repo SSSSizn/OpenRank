@@ -1,0 +1,5 @@
+{
+  "requirements": "blessings==1.7\ncertifi==2024.2.2\ncharset-normalizer==3.3.2\ndemisto-sdk==1.20.0\ngitdb==4.0.11\ngitpython==3.1.42\nidna==3.7\npackaging==24.0\npygithub==2.3.0\npytest==8.1.1\npytest-mock==3.14.0\nrequests==2.31.0\nrequests-mock==1.12.0\nsendgrid==6.13.0\nsmmap==5.0.1\ntabulate==0.9.0\nurllib3==2.2.1\npyyaml==6.0.1",
+  "dockerfile": "FROM python:3.9-slim\n\nWORKDIR /app\n\n# Install git for GitPython dependency\nRUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD [\"python\", \"-c\", \"print('Container ready for demisto/content workflows')\"]",
+  "explanation": "Generated requirements.txt with pinned versions for stability based on detected imports. Dockerfile uses python:3.9-slim base, installs system dependencies (git for GitPython), copies requirements first for layer caching, and sets a default command. All packages are production-ready versions that support the detected import stack."
+}

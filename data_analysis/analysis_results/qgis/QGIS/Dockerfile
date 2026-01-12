@@ -1,0 +1,1 @@
+FROM python:3.9-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY . .\n\nCMD ["python", "-c", "print('QGIS environment ready')"]

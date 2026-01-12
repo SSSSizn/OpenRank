@@ -1,0 +1,5 @@
+{
+  "requirements": "homeassistant\nvoluptuous",
+  "dockerfile": "FROM python:3.9-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY . .\nCMD [\"python\", \"-m\", \"your_main_module\"]",
+  "explanation": "Generated requirements.txt includes only the detected imports (homeassistant and voluptuous) since empty string is invalid. Dockerfile uses python:3.9-slim base, installs dependencies from requirements.txt, and assumes a main module entrypoint (replace 'your_main_module' with actual module name)."
+}

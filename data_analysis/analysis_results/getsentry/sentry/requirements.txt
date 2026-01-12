@@ -1,0 +1,4 @@
+click==8.1.7
+orjson==3.9.10
+devenv==0.1.0
+openapi-core==0.18.0
