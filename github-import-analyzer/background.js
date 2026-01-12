@@ -120,26 +120,21 @@ async function performLLMAnalysis({ candidates, repoInfo }) {
   if (!llmConfig || !llmConfig.apiKey) throw new Error("Missing API Key.");
 
   chrome.runtime.sendMessage({ type: "UPDATE_STATUS", text: "📡 Contacting AI Model..." });
-  const knowledge = await loadAndFilterKnowledge(candidates);
+  const knowledge = await loadAndResolveKnowledge(candidates);
 
   const knowledgeText = `
-Historical dependency version patterns from real-world Python projects:
+Resolved dependency knowledge:
 
-Most commonly used versions:
-${Object.entries(knowledge.package_versions)
-      .map(([pkg, vers]) =>
-        `- ${pkg}: ${Object.entries(vers)
-          .map(([v, c]) => `${v} (${c} projects)`)
-          .join(", ")}`
-      )
-      .join("\n")}
-
-Frequently observed compatible version pairs:
-${Object.entries(knowledge.version_cooccurrence)
-      .slice(0, 10)
-      .map(([pair, count]) => `- ${pair} (${count} projects)`)
+${Object.entries(knowledge.details)
+      .filter(([_, info]) => info && info.selected_version)
+      .map(([pkg, info]) => `
+- ${pkg}==${info.selected_version}
+  source: ${info.source}
+  confidence_score: ${info.confidence}
+`)
       .join("\n")}
 `;
+
 
   const prompt = `
 Role: Senior Python DevOps Engineer.
@@ -168,14 +163,7 @@ Your tasks:
      RUN pip install --no-cache-dir -r requirements.txt
    - Use a slim Python base image
    - Set a reasonable WORKDIR
-
-   - If the application entrypoint can be confidently inferred
-     (e.g. main.py, app.py, server.py, __main__.py,
-     FastAPI/Flask conventions, or console_scripts),
-     you SHOULD add an appropriate CMD instruction.
-
-   - If the entrypoint CANNOT be confidently inferred,
-     leave CMD commented out and EXPLAIN why.
+   - If application entrypoint is unknown, leave CMD commented with explanation
 
 3. Provide a very brief explanation of your decisions.
 
@@ -183,12 +171,48 @@ IMPORTANT:
 - The Dockerfile MUST be consistent with the generated requirements.txt
 - This Dockerfile is intended to be production-ready, not a draft
 
+For each dependency you choose:
+- Explicitly state the information source:
+  (local knowledge base / libraries.io / PyPI)
+- Assign a confidence_score between 0 and 1
+- Higher confidence means:
+  - Frequently observed in real-world projects
+  - Strong ecosystem compatibility
+  - Clear dependency metadata
+
+Explanation formatting requirements (STRICT):
+
+For EACH dependency, output a SEPARATE block using the EXACT format below.
+Do NOT merge multiple packages into a single paragraph.
+Do NOT use inline sentences.
+The explanation field MUST contain ONLY the formatted dependency blocks.
+Do NOT include Dockerfile or Python version explanations there.
+The explanation field is NOT prose.
+DO NOT inline fields on a single line.
+DO NOT place multiple packages in one paragraph.
+If formatting rules are violated, the output is INVALID.
+
+Format:
+Line breaks and indentation are semantically significant and MUST be preserved.
+<package_name>==<version>
+  source: <local | libraries.io | pypi>
+  confidence_score: <float between 0 and 1>
+  reasoning:
+    - <short bullet point>
+    - <short bullet point (optional)>
+
+Rules:
+- Each package MUST start on a new line.
+- Use indentation exactly as shown.
+- Keep reasoning concise (1–2 bullet points max).
+- Do NOT include any additional commentary outside these blocks.
+
 Return ONLY valid JSON in the exact format below:
 
 {
   "requirements": "requirements.txt content",
   "dockerfile": "Dockerfile content",
-  "explanation": "short explanation"
+  "explanation": "MULTI-LINE structured explanation following the format rules above"
 }
   `;
 
@@ -350,4 +374,93 @@ async function loadAndFilterKnowledge(candidates) {
   }
 
   return filtered;
+}
+async function resolvePackageKnowledge(pkg, localKB) {
+  const name = pkg.toLowerCase();
+
+  // ---------- ① 本地知识库 ----------
+  if (localKB.package_versions?.[name]) {
+    const versions = localKB.package_versions[name];
+    const [topVersion, count] = Object.entries(versions)[0];
+
+    return {
+      package: name,
+      selected_version: topVersion,
+      source: "local",
+      confidence: Math.min(0.9, 0.5 + count / 50),
+      evidence: { local: versions }
+    };
+  }
+
+  // ---------- ② libraries.io ----------
+  try {
+    const lib = await fetchFromLibraries(name);
+    if (lib?.latest_release_number) {
+      return {
+        package: name,
+        selected_version: lib.latest_release_number,
+        source: "libraries",
+        confidence: 0.75,
+        evidence: { libraries: lib }
+      };
+    }
+  } catch { }
+
+  // ---------- ③ PyPI JSON ----------
+  const pypi = await fetchFromPyPI(name);
+  if (pypi?.info?.version) {
+    return {
+      package: name,
+      selected_version: pypi.info.version,
+      source: "pypi",
+      confidence: 0.6,
+      evidence: {
+        requires_python: pypi.info.requires_python,
+        requires_dist: pypi.info.requires_dist
+      }
+    };
+  }
+
+  // ---------- 最差情况 ----------
+  return {
+    package: name,
+    selected_version: "UNKNOWN",
+    source: "unknown",
+    confidence: 0.1,
+    evidence: {}
+  };
+}
+
+async function loadAndResolveKnowledge(candidates) {
+  const localKB = await fetch(
+    chrome.runtime.getURL("dependency_version_knowledge.json")
+  ).then(r => r.json());
+
+  const resolved = {};
+  const details = {};
+
+  await pMap(candidates, async (pkg) => {
+    const info = await resolvePackageKnowledge(pkg, localKB);
+    resolved[pkg] = info.selected_version;
+    details[pkg] = info;
+  }, 4);
+
+  return { resolved, details };
+}
+
+const LIBRARIES_API_KEY = "437eac74c0839297e980e94e21809dfb";
+
+async function fetchFromLibraries(pkg) {
+  const url = `https://libraries.io/api/pypi/${pkg}?api_key=${LIBRARIES_API_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  return await res.json();
+}
+
+
+async function fetchFromPyPI(pkg) {
+  const url = `https://pypi.org/pypi/${pkg}/json`;
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  return await res.json();
 }
