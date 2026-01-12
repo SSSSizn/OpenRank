@@ -1,0 +1,3 @@
+requests>=2.25.0
+tqdm>=4.62.0
+tomli>=1.2.0; python_version < "3.11"
