@@ -1,4 +1,4 @@
-# 🌐 OpenRank Web 可视化仪表板
+# 🌐 Web 可视化仪表板
 
 基于 Flask 的交互式 Web 应用，用于可视化展示 OpenRank 数据分析的结果，提供直观的图表、搜索和详细的项目分析视图。
 
@@ -30,14 +30,14 @@
 
 ```
 webapp/
-├── [app.py](app.py)                 # Flask 应用主文件
-├── [requirements.txt](requirements.txt)       # Python 依赖列表
-├── [README.md](README.md)              # 项目文档
-├── [static/](static/)                # 静态资源
+├── `app.py`                 # Flask 应用主文件
+├── `requirements.txt`       # Python 依赖列表
+├── `README.md`              # 项目文档
+├── `static/`                # 静态资源
 │   ├── css/
 │   ├── js/
 │   └── images/
-└── [templates/](templates/)            # HTML 模板
+└── `templates/`            # HTML 模板
     ├── index.html         # 首页模板
     ├── base.html          # 基础模板
     └── components/        # 组件模板
@@ -67,12 +67,12 @@ webapp/
 
 3. **📥 安装依赖**
    ```bash
-   pip install -r [requirements.txt](requirements.txt)
+   pip install -r requirements.txt
    ```
 
 4. **🌐 启动应用**
    ```bash
-   python [app.py](app.py)
+   python app.py
    ```
 
 5. **👀 访问应用**
@@ -177,7 +177,7 @@ json                # Python 内置 JSON 处理
 ### 💻 本地开发
 ```bash
 export FLASK_ENV=development
-python [app.py](app.py)
+python app.py
 ```
 
 ### 🐳 Docker 部署
@@ -232,7 +232,7 @@ CMD ["python", "app.py"]
 
 ## 📄 许可证
 
-[MIT License](../LICENSE)
+MIT License
 
 ## 🤝 贡献
 
@@ -242,8 +242,8 @@ CMD ["python", "app.py"]
 ```bash
 git clone <repo>
 cd webapp
-pip install -r [requirements.txt](requirements.txt)
-python [app.py](app.py)
+pip install -r requirements.txt
+python app.py
 ```
 
 ### 📏 代码规范

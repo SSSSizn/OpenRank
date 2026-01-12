@@ -15,19 +15,19 @@
 
 ```
 github-import-analyzer/
-├── [manifest.json](manifest.json)           # 扩展清单配置
-├── [background.js](background.js)           # 后台服务脚本
-├── [content.js](content.js)              # 页面内容脚本
-├── [popup.js](popup.js)                # 弹出页面逻辑
-├── [options.js](options.js)              # 设置页面逻辑
-├── [sidepanel.js](sidepanel.js)            # 侧边面板逻辑
-├── [utils.js](utils.js)                # 工具函数
-├── [dependency_version_knowledge.json](dependency_version_knowledge.json)  # 版本知识库
-├── [popup.html](popup.html)              # 弹出页面
-├── [options.html](options.html)            # 设置页面
-├── [sidepanel.html](sidepanel.html)          # 侧边面板
-├── [style.css](style.css)               # 样式文件
-└── [stdlib.js](stdlib.js)               # Python 标准库定义
+├── `manifest.json`           # 扩展清单配置
+├── `background.js`           # 后台服务脚本
+├── `content.js`              # 页面内容脚本
+├── `popup.js`                # 弹出页面逻辑
+├── `options.js`              # 设置页面逻辑
+├── `sidepanel.js`            # 侧边面板逻辑
+├── `utils.js`                # 工具函数
+├── `dependency_version_knowledge.json`  # 版本知识库
+├── `popup.html`              # 弹出页面
+├── `options.html`            # 设置页面
+├── `sidepanel.html`          # 侧边面板
+├── `style.css`               # 样式文件
+└── `stdlib.js`               # Python 标准库定义
 ```
 
 ## 📥 安装方法
@@ -90,7 +90,7 @@ github-import-analyzer/
 
 ### 🔧 核心组件
 
-#### [manifest.json](manifest.json)
+#### `manifest.json`
 扩展配置清单，定义权限和资源:
 ```json
 {
@@ -101,19 +101,19 @@ github-import-analyzer/
 }
 ```
 
-#### [content.js](content.js)
+#### `content.js`
 页面内容脚本，负责:
 - 检测 GitHub Python 项目页面
 - 提取代码文件列表
 - 扫描 Python 代码获取 import
 
-#### [background.js](background.js)
+#### `background.js`
 后台服务，负责:
 - 处理扩展生命周期
 - 管理 API 请求
 - 协调各组件通信
 
-#### [popup.js](popup.js)/[options.js](options.js)
+#### `popup.js`/`options.js`
 用户界面逻辑:
 - API 配置管理
 - 分析结果展示
@@ -130,7 +130,7 @@ github-import-analyzer/
 
 ### 📚 版本知识库
 
-`[dependency_version_knowledge.json](dependency_version_knowledge.json)` 包含:
+`dependency_version_knowledge.json` 包含:
 - **📈 包版本频率**: 各包的版本使用统计
 - **🔗 版本共现**: 包之间的版本兼容关系
 - **💡 推荐策略**: 基于统计的版本选择建议
@@ -178,7 +178,7 @@ github-import-analyzer/
 
 ### ❓ 扩展无法加载
 - 确保文件夹完整，包含所有必需文件
-- 检查 [manifest.json](manifest.json) 格式是否正确
+- 检查 `manifest.json` 格式是否正确
 - 尝试重新加载扩展
 
 ### ❓ API 配置无效
@@ -215,7 +215,7 @@ github-import-analyzer/
 
 ## 📄 许可证
 
-[MIT License](../LICENSE)
+MIT License
 
 ## 🔗 相关链接
 

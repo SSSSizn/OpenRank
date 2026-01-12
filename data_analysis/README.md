@@ -1,4 +1,4 @@
-# 📊 OpenRank 数据分析模块
+# 📊 数据分析模块
 
 本模块专注于对 Python 开源项目的环境依赖进行系统性分析，通过多维度数据收集和分析，帮助评估项目的工程健康度和社区友好度。
 
@@ -6,35 +6,35 @@
 
 ```
 data_analysis/
-├── [build_version_knowledge.py](build_version_knowledge.py)    # 构建版本知识库
-├── [github_spider.py](github_spider.py)         # GitHub 仓库采样爬虫
-├── [github_token.txt](github_token.txt)         # GitHub API Token 配置
-├── [step1_repo_dependency_overview.py](step1_repo_dependency_overview.py)     # 依赖文件存在性分析
-├── [step2_repo_import_vs_requirements.py](step2_repo_import_vs_requirements.py)  # 导入 vs 依赖一致性分析
-├── [step3_repo_dependency_staleness.py](step3_repo_dependency_staleness.py)    # 依赖维护滞后分析
-├── [step4_issue_env_analysis.py](step4_issue_env_analysis.py)          # Issue 环境问题分析
-├── [step5_onboarding_analysis.py](step5_onboarding_analysis.py)         # 新贡献者入门分析
-├── [top_300_analysis.py](top_300_analysis.py)      # Top 300 仓库批量分析
-├── [操作指南.md](操作指南.md)              # 详细操作和分析说明
-├── [进度.md](进度.md)                 # 项目开发进度记录
-├── [data/](data/)                   # 分析结果数据存储
-│   ├── [sampled_repos_buckets.json](data/sampled_repos_buckets.json)/[csv](data/sampled_repos_buckets.csv)    # 采样仓库列表
-│   ├── [sampled_repo_dependency_overview.json](data/sampled_repo_dependency_overview.json)  # 依赖概览结果
-│   ├── [sampled_repo_import_vs_requirements.json](data/sampled_repo_import_vs_requirements.json)  # 一致性分析结果
-│   ├── [sampled_repo_dependency_staleness.json](data/sampled_repo_dependency_staleness.json)   # 滞后分析结果
-│   ├── [sampled_repo_issue_env_stats.json](data/sampled_repo_issue_env_stats.json)       # Issue 分析结果
-│   ├── [sampled_repo_onboarding_stats.json](data/sampled_repo_onboarding_stats.json)      # 入门分析结果
-│   ├── [base_env.yaml](data/base_env.yaml)         # 基准环境配置
-│   ├── [top-pypi-packages.min.json](data/top-pypi-packages.min.json)  # PyPI 包排行
-│   ├── [total_python_count.csv](data/total_python_count.csv)      # Stack Overflow 数据
-│   └── [env_relate.csv](data/env_relate.csv)       # 环境相关问题数据
-└── [data_opendigger/](data_opendigger/)         # OpenDigger 数据集
+├── `build_version_knowledge.py`    # 构建版本知识库
+├── `github_spider.py`         # GitHub 仓库采样爬虫
+├── `github_token.txt`         # GitHub API Token 配置
+├── `step1_repo_dependency_overview.py`     # 依赖文件存在性分析
+├── `step2_repo_import_vs_requirements.py`  # 导入 vs 依赖一致性分析
+├── `step3_repo_dependency_staleness.py`    # 依赖维护滞后分析
+├── `step4_issue_env_analysis.py`          # Issue 环境问题分析
+├── `step5_onboarding_analysis.py`         # 新贡献者入门分析
+├── `top_300_analysis.py`      # Top 300 仓库批量分析
+├── `操作指南.md`              # 详细操作和分析说明
+├── `进度.md`                 # 项目开发进度记录
+├── `data/`                   # 分析结果数据存储
+│   ├── `sampled_repos_buckets.json/csv`    # 采样仓库列表
+│   ├── `sampled_repo_dependency_overview.json`  # 依赖概览结果
+│   ├── `sampled_repo_import_vs_requirements.json`  # 一致性分析结果
+│   ├── `sampled_repo_dependency_staleness.json`   # 滞后分析结果
+│   ├── `sampled_repo_issue_env_stats.json`       # Issue 分析结果
+│   ├── `sampled_repo_onboarding_stats.json`      # 入门分析结果
+│   ├── `base_env.yaml`         # 基准环境配置
+│   ├── `top-pypi-packages.min.json`  # PyPI 包排行
+│   ├── `total_python_count.csv`      # Stack Overflow 数据
+│   └── `env_relate.csv`       # 环境相关问题数据
+└── `data_opendigger/`         # OpenDigger 数据集
     └── [组织名]/[仓库名]/   # 各仓库分析结果
 ```
 
 ## 🔧 核心脚本说明
 
-### 🕷️ [github_spider.py](github_spider.py) - 仓库采样
+### 🕷️ `github_spider.py` - 仓库采样
 **功能**: 从 GitHub 搜索 Python 项目，按 star 数分桶随机采样
 
 **配置参数**:
@@ -44,12 +44,12 @@ data_analysis/
 
 **使用方法**:
 ```bash
-python [github_spider.py](github_spider.py)
+python github_spider.py
 ```
 
-**输出**: `[sampled_repos_buckets.json](data/sampled_repos_buckets.json)/[csv](data/sampled_repos_buckets.csv)`
+**输出**: `sampled_repos_buckets.json/csv`
 
-### 📋 [step1_repo_dependency_overview.py](step1_repo_dependency_overview.py) - 依赖文件概览
+### 📋 `step1_repo_dependency_overview.py` - 依赖文件概览
 **功能**: 检查仓库是否包含标准依赖文件，分析 README 中的环境配置比例
 
 **检查的文件**:
@@ -61,12 +61,12 @@ python [github_spider.py](github_spider.py)
 
 **使用方法**:
 ```bash
-python [step1_repo_dependency_overview.py](step1_repo_dependency_overview.py)
+python step1_repo_dependency_overview.py
 ```
 
-**输出**: `[sampled_repo_dependency_overview.json](data/sampled_repo_dependency_overview.json)`
+**输出**: `sampled_repo_dependency_overview.json`
 
-### 🔗 [step2_repo_import_vs_requirements.py](step2_repo_import_vs_requirements.py) - 导入一致性分析
+### 🔗 `step2_repo_import_vs_requirements.py` - 导入一致性分析
 **功能**: 分析代码导入的包是否在依赖声明中，计算缺失和冗余比例
 
 **分析方法**:
@@ -76,12 +76,12 @@ python [step1_repo_dependency_overview.py](step1_repo_dependency_overview.py)
 
 **使用方法**:
 ```bash
-python [step2_repo_import_vs_requirements.py](step2_repo_import_vs_requirements.py)
+python step2_repo_import_vs_requirements.py
 ```
 
-**输出**: `[sampled_repo_import_vs_requirements.json](data/sampled_repo_import_vs_requirements.json)`
+**输出**: `sampled_repo_import_vs_requirements.json`
 
-### ⏰ [step3_repo_dependency_staleness.py](step3_repo_dependency_staleness.py) - 依赖维护滞后
+### ⏰ `step3_repo_dependency_staleness.py` - 依赖维护滞后
 **功能**: 计算依赖文件的最后修改时间与仓库活跃度的差距
 
 **指标**:
@@ -90,12 +90,12 @@ python [step2_repo_import_vs_requirements.py](step2_repo_import_vs_requirements.
 
 **使用方法**:
 ```bash
-python [step3_repo_dependency_staleness.py](step3_repo_dependency_staleness.py)
+python step3_repo_dependency_staleness.py
 ```
 
-**输出**: `[sampled_repo_dependency_staleness.json](data/sampled_repo_dependency_staleness.json)`
+**输出**: `sampled_repo_dependency_staleness.json`
 
-### 🐛 [step4_issue_env_analysis.py](step4_issue_env_analysis.py) - Issue 环境问题分析
+### 🐛 `step4_issue_env_analysis.py` - Issue 环境问题分析
 **功能**: 分析仓库 Issue 中与环境/依赖相关的问题
 
 **关键词体系**:
@@ -104,12 +104,12 @@ python [step3_repo_dependency_staleness.py](step3_repo_dependency_staleness.py)
 
 **使用方法**:
 ```bash
-python [step4_issue_env_analysis.py](step4_issue_env_analysis.py)
+python step4_issue_env_analysis.py
 ```
 
-**输出**: `[sampled_repo_issue_env_stats.json](data/sampled_repo_issue_env_stats.json)`
+**输出**: `sampled_repo_issue_env_stats.json`
 
-### 👥 [step5_onboarding_analysis.py](step5_onboarding_analysis.py) - 新贡献者入门分析
+### 👥 `step5_onboarding_analysis.py` - 新贡献者入门分析
 **功能**: 分析新贡献者在项目初期的环境配置体验
 
 **分析维度**:
@@ -119,31 +119,31 @@ python [step4_issue_env_analysis.py](step4_issue_env_analysis.py)
 
 **使用方法**:
 ```bash
-python [step5_onboarding_analysis.py](step5_onboarding_analysis.py)
+python step5_onboarding_analysis.py
 ```
 
-**输出**: `[sampled_repo_onboarding_stats.json](data/sampled_repo_onboarding_stats.json)`
+**输出**: `sampled_repo_onboarding_stats.json`
 
-### 📚 [build_version_knowledge.py](build_version_knowledge.py) - 版本知识库构建
+### 📚 `build_version_knowledge.py` - 版本知识库构建
 **功能**: 从分析结果中提取包版本统计和共现关系
 
-**输出**: `[dependency_version_knowledge.json](../github-import-analyzer/dependency_version_knowledge.json)`
+**输出**: `dependency_version_knowledge.json` (用于浏览器扩展)
 
-### 🏆 [top_300_analysis.py](top_300_analysis.py) - Top 300 仓库分析
+### 🏆 `top_300_analysis.py` - Top 300 仓库分析
 **功能**: 对 OpenDigger Top 300 Python 仓库进行批量依赖分析
 
 **使用方法**:
 ```bash
-python [top_300_analysis.py](top_300_analysis.py)
+python top_300_analysis.py
 ```
 
-**输出**: `[data_opendigger/](data_opendigger/)` 目录下的各仓库分析结果
+**输出**: `data_opendigger/` 目录下的各仓库分析结果
 
 ## 📊 数据文件说明
 
 ### 🎯 采样数据
-- **[sampled_repos_buckets.json](data/sampled_repos_buckets.json)**: 采样仓库的详细信息
-- **[sampled_repos_buckets.csv](data/sampled_repos_buckets.csv)**: CSV 格式的采样数据
+- `sampled_repos_buckets.json`: 采样仓库的详细信息
+- `sampled_repos_buckets.csv`: CSV 格式的采样数据
 
 ### 📈 分析结果
 - **dependency_overview**: 依赖文件存在性和 README 环境比例
@@ -153,10 +153,10 @@ python [top_300_analysis.py](top_300_analysis.py)
 - **onboarding_stats**: 新贡献者入门分析
 
 ### 🛠️ 辅助数据
-- **[base_env.yaml](data/base_env.yaml)**: 推荐的基准 Python 环境配置
-- **[top-pypi-packages.min.json](data/top-pypi-packages.min.json)**: PyPI 包下载量排行
-- **[total_python_count.csv](data/total_python_count.csv)**: Stack Overflow Python 问题数量统计
-- **[env_relate.csv](data/env_relate.csv)**: 环境相关问题统计
+- `base_env.yaml`: 推荐的基准 Python 环境配置
+- `top-pypi-packages.min.json`: PyPI 包下载量排行
+- `total_python_count.csv`: Stack Overflow Python 问题数量统计
+- `env_relate.csv`: 环境相关问题统计
 
 ## 🚀 使用流程
 
@@ -167,28 +167,28 @@ python [top_300_analysis.py](top_300_analysis.py)
    # 或 pip install requests tqdm  # Python >= 3.11
 
    # 配置 GitHub Token
-   echo "your_token" > [github_token.txt](github_token.txt)
+   echo "your_token" > github_token.txt
    ```
 
 2. **🔬 执行分析**
    ```bash
    # 1. 采样仓库
-   python [github_spider.py](github_spider.py)
+   python github_spider.py
 
    # 2. 依次执行分析步骤
-   python [step1_repo_dependency_overview.py](step1_repo_dependency_overview.py)
-   python [step2_repo_import_vs_requirements.py](step2_repo_import_vs_requirements.py)
-   python [step3_repo_dependency_staleness.py](step3_repo_dependency_staleness.py)
-   python [step4_issue_env_analysis.py](step4_issue_env_analysis.py)
-   python [step5_onboarding_analysis.py](step5_onboarding_analysis.py)
+   python step1_repo_dependency_overview.py
+   python step2_repo_import_vs_requirements.py
+   python step3_repo_dependency_staleness.py
+   python step4_issue_env_analysis.py
+   python step5_onboarding_analysis.py
 
    # 3. 构建知识库
-   python [build_version_knowledge.py](build_version_knowledge.py)
+   python build_version_knowledge.py
    ```
 
 3. **📊 查看结果**
-   - 结果 JSON 文件存储在 `[data/](data/)` 目录
-   - 可通过 [webapp/](../webapp/) 可视化查看
+   - 结果 JSON 文件存储在 `data/` 目录
+   - 可通过 webapp/ 可视化查看
 
 ## ⚙️ 配置要求
 
@@ -234,5 +234,5 @@ python [top_300_analysis.py](top_300_analysis.py)
 
 模块设计支持扩展新的分析维度:
 1. 在 `step*.py` 中实现分析逻辑
-2. 更新 `[操作指南.md](操作指南.md)` 文档
+2. 更新 `操作指南.md` 文档
 3. 添加相应的数据结构和可视化支持
