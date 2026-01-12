@@ -9,7 +9,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # ==========================================
-# ⚙️ 配置区域 (Configuration) - 修改这里即可
+#  配置区域 (Configuration) - 修改这里即可
 # ==========================================
 CONFIG = {
     # Token 文件路径
@@ -39,7 +39,7 @@ CONFIG = {
 
 
 # ==========================================
-# 🛠️ 核心逻辑
+# ️ 核心逻辑
 # ==========================================
 
 def create_session() -> requests.Session:
@@ -66,7 +66,7 @@ def load_github_token(path: str) -> str:
             raise ValueError("Token file is empty")
         return token
     except FileNotFoundError:
-        print(f"❌ Error: {path} not found. Please create it with your GitHub token.")
+        print(f" Error: {path} not found. Please create it with your GitHub token.")
         exit(1)
 
 
@@ -136,14 +136,14 @@ def sample_from_bucket(
         f"fork:false"  # 通常采样不包含 fork 项目，如需要可改为 true
     )
 
-    print(f"\n🔍 Processing Bucket [{bucket_label}] | Target: {target_size} repos")
+    print(f"\n Processing Bucket [{bucket_label}] | Target: {target_size} repos")
 
     # 1. 先查第一页，获取总数
     first_page = search_repositories_page(query, per_page=100, page=1)
     total_count = first_page.get("total_count", 0)
 
     if total_count == 0:
-        print(f"   ⚠️ No repositories found in this bucket.")
+        print(f"    No repositories found in this bucket.")
         return []
 
     # GitHub API 限制只能访问前 1000 个结果
@@ -193,11 +193,11 @@ def sample_from_bucket(
 
     # 3. 从候选池中随机抽取最终样本
     if len(candidate_repos) < target_size:
-        print(f"   ⚠️ Warning: Only found {len(candidate_repos)} candidates, less than target {target_size}.")
+        print(f"    Warning: Only found {len(candidate_repos)} candidates, less than target {target_size}.")
         return candidate_repos  # 全部返回
 
     final_sample = random.sample(candidate_repos, target_size)
-    print(f"   ✅ Successfully sampled {len(final_sample)} repos from bucket.")
+    print(f"    Successfully sampled {len(final_sample)} repos from bucket.")
     return final_sample
 
 
@@ -219,12 +219,12 @@ def save_data(repos: List[Dict]):
         writer = csv.DictWriter(f, fieldnames=keys)
         writer.writeheader()
         writer.writerows(filtered_repos)
-    print(f"📄 Saved CSV to {CONFIG['OUTPUT_CSV']}")
+    print(f" Saved CSV to {CONFIG['OUTPUT_CSV']}")
 
     # JSON
     with open(CONFIG["OUTPUT_JSON"], "w", encoding="utf-8") as f:
         json.dump(repos, f, indent=2, ensure_ascii=False)
-    print(f"📄 Saved JSON to {CONFIG['OUTPUT_JSON']}")
+    print(f" Saved JSON to {CONFIG['OUTPUT_JSON']}")
 
 
 def main():
@@ -243,7 +243,7 @@ def main():
         all_sampled_repos.extend(repos)
         time.sleep(1)  # 桶之间稍微休息一下
 
-    print(f"\n🎉 Total sampled: {len(all_sampled_repos)}")
+    print(f"\n Total sampled: {len(all_sampled_repos)}")
 
     # 按 Star 数简单排个序，方便查看
     all_sampled_repos.sort(key=lambda x: x["stars"], reverse=True)
@@ -253,7 +253,7 @@ def main():
     # 打印简报
     print("\n--- Top 10 Sampled Repos ---")
     for i, r in enumerate(all_sampled_repos[:10]):
-        print(f"{i + 1}. [{r['bucket_label']}] {r['full_name']} (★ {r['stars']})")
+        print(f"{i + 1}. [{r['bucket_label']}] {r['full_name']} ( {r['stars']})")
 
 
 if __name__ == "__main__":

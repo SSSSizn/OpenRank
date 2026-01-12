@@ -80,7 +80,7 @@ def search_repositories(
             BASE_URL,
             headers=HEADERS,
             params=params,
-            timeout=10  # ★ 非常重要
+            timeout=10  #  非常重要
         )
     except requests.exceptions.RequestException as e:
         print(f"[WARN] Network error: {e}, retrying...")

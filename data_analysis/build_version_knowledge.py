@@ -59,4 +59,4 @@ output = {
 with open("dependency_version_knowledge.json", "w", encoding="utf-8") as f:
     json.dump(output, f, indent=2, ensure_ascii=False)
 
-print("✅ 已生成版本频率 + 共现知识库")
+print(" 已生成版本频率 + 共现知识库")

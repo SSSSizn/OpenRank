@@ -64,7 +64,7 @@ def get_repo_info(owner, repo):
         elif res.status_code == 404:
             return None, "Not Found"
         elif res.status_code == 401:
-            return None, "❌ 401 Unauthorized (Token无效)"
+            return None, " 401 Unauthorized (Token无效)"
         else:
             return None, f"Status {res.status_code}"
     except Exception as e:
@@ -145,12 +145,12 @@ def process_repo(author, project):
 
     # 如果已经跑过了，直接跳过
     if os.path.exists(os.path.join(result_path, "requirements.txt")):
-        return f"⏭️ Skipped {project} (Already done)"
+        return f"️ Skipped {project} (Already done)"
 
     # 1. 检查 GitHub
     info, status = get_repo_info(author, project)
     if not info:
-        return f"⏩ Skipped {project}: {status}"
+        return f" Skipped {project}: {status}"
 
     # 2. 获取文件
     branch = info['default_branch']
@@ -158,7 +158,7 @@ def process_repo(author, project):
     py_files = [f['path'] for f in tree if f['path'].endswith('.py')]
 
     if not py_files:
-        return f"⏩ Skipped {project}: No Python files"
+        return f" Skipped {project}: No Python files"
 
     # 3. 下载代码
     target_files = py_files[:MAX_FILE_FETCH]
@@ -173,12 +173,12 @@ def process_repo(author, project):
             all_imports.update(extract_imports(code))
 
     if downloaded == 0:
-        return f"❌ Error {project}: Download failed"
+        return f" Error {project}: Download failed"
 
     # 4. 过滤
     candidates = [i for i in all_imports if i not in STD_LIB and i not in local_modules]
     if not candidates:
-        return f"⏩ Skipped {project}: No dependencies"
+        return f" Skipped {project}: No dependencies"
 
     # 5. LLM 分析与保存
     try:
@@ -204,10 +204,10 @@ def process_repo(author, project):
 
         # ========================================================
 
-        return f"✅ Success {project}: Saved results!"
+        return f" Success {project}: Saved results!"
 
     except Exception as e:
-        return f"❌ LLM Error {project}: {e}"
+        return f" LLM Error {project}: {e}"
 
 
 def main():

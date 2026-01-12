@@ -30,7 +30,7 @@ def load_token(path: str) -> str:
         with open(path, "r", encoding="utf-8") as f:
             return f.read().strip()
     except FileNotFoundError:
-        print(f"❌ 找不到 Token 文件: {path}")
+        print(f" 找不到 Token 文件: {path}")
         exit(1)
 
 
@@ -50,18 +50,18 @@ def get_repo_zip(full_name: str, branch: str) -> Optional[zipfile.ZipFile]:
     url = f"https://api.github.com/repos/{owner}/{repo}/zipball/{branch}"
 
     try:
-        print(f"   ⬇️ Downloading zip for {full_name}...")
+        print(f"    Downloading zip for {full_name}...")
         resp = requests.get(url, headers=HEADERS, stream=True, timeout=60)
 
         if resp.status_code != 200:
-            print(f"   ⚠️ Failed to download zip: {resp.status_code}")
+            print(f"    Failed to download zip: {resp.status_code}")
             return None
 
         # 将下载的二进制数据加载到内存中
         file_bytes = io.BytesIO(resp.content)
         return zipfile.ZipFile(file_bytes)
     except Exception as e:
-        print(f"   ❌ Network/Zip error: {e}")
+        print(f"    Network/Zip error: {e}")
         return None
 
 
@@ -228,7 +228,7 @@ def main():
     results = []
     total = len(repos)
 
-    print(f"🚀 Starting analysis for {total} repositories...")
+    print(f" Starting analysis for {total} repositories...")
 
     for i, repo in enumerate(repos):
         print(f"\n[{i + 1}/{total}] Analyzing {repo['full_name']}...")
