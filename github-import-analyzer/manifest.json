@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Github PyAnalyzer",
-  "version": "4.0",
+  "version": "4.1",
   "description": "AI-Powered Python Dependency Analyzer",
   "permissions": [
     "activeTab",

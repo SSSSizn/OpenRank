@@ -36,11 +36,11 @@ for json_file in ROOT.rglob("analysis_log.json"):
 
     deps = parse_requirements(reqs)
 
-    # 1️⃣ 单包版本频率
+    #  单包版本频率
     for pkg, ver in deps:
         pkg_version_stats[pkg][ver] += 1
 
-    # 2️⃣ 版本共现（两两）
+    #  版本共现（两两）
     # 使用 set 防止同一文件重复统计
     dep_versions = sorted(set(f"{p}=={v}" for p, v in deps))
     for a, b in combinations(dep_versions, 2):

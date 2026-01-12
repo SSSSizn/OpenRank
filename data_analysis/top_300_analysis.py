@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 # ================= 配置区域 =================
 DATA_DIR = "top_300_metrics"
-OUTPUT_DIR = "analysis_results"
+OUTPUT_DIR = "data_opendigger"
 
 # 1. 确保输出目录存在
 os.makedirs(OUTPUT_DIR, exist_ok=True)
