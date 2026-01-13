@@ -164,25 +164,6 @@ openai
 - GitHub API (需要 Token)
 - LLM API (OpenAI/DeepSeek 等)
 
-### 参考文献与相关工作
-
-本项目在设计与实现过程中，参考的文献如下：
-
-1. **Zhu, H.-N., & Rubio-González, C.** (2023).  
-   *On the Reproducibility of Software Defect Datasets*.  
-   In *Proceedings of the 45th International Conference on Software Engineering (ICSE 2023)*, pp. 2324–2335. IEEE Press.  
-   DOI: 10.1109/ICSE48619.2023.00195
-
-2. **Sharma, A., Baudry, B., & Monperrus, M.** (2026).  
-   *Causes and Canonicalization of Unreproducible Builds in Java*.  
-   *IEEE Transactions on Software Engineering*, 52(1), 54–69.  
-   DOI: 10.1109/TSE.2025.3627891
-
-3. **Hassan, Z., Treude, C., Norrish, M., Williams, G., & Potanin, A.** (2025).  
-   *Characterising Reproducibility Debt in Scientific Software: A Systematic Literature Review*.  
-   *Journal of Systems and Software*, 222, Article 112327.  
-   DOI: 10.1016/j.jss.2024.112327
-
 ## 📄 许可证
 
 MIT License
@@ -194,3 +175,41 @@ MIT License
 ## 📞 联系
 
 如有问题请通过 GitHub Issues 联系。
+
+## 👥 项目成员
+
+#### 🧑‍💻 郭一心@SSSSizn：架构设计、AI 逻辑、 Web 后端与集成规范
+
+1.  **数据分析架构设计与基本实现**
+    *   收集整理相关开源数据与背景，设计构建开源项目环境依赖问题的数据分析流程。
+    *   制定 OpenDigger 数据（Top 300）在项目中的应用策略与筛选标准。
+    
+2.  **Web 仪表板与后端开发**
+    *   **Web后端开发**：搭建 Flask 后端框架与基础功能实现，实现前后端数据交互。
+    *   设计并实现 REST API 接口，处理跨域与认证问题。
+
+3.  **AI 智能分析与提示词工程**
+    *   **Dockerfile 生成逻辑**：负责 LLM 的 Prompt Engineering，优化提示词以确保生成的 Dockerfile 可用性，并设计验证逻辑。
+    *   **后端代理服务**：解决前端直接调用 AI API 被封禁的问题，搭建后端转发服务，统一管理 API Key。
+    *   **知识库检索链路**：设计“本地分析结果 -> Libraries.io API -> PyPI JSON API”的三级兜底检索策略，确保依赖数据的准确性。
+
+4.  **系统集成与规范化**
+    *   项目文件结构的重构与命名规范化。
+    *   编写项目文档及录制演示视频。
+
+---
+
+#### 🧑‍💻 成员 高嘉泽@AM-SuSh：算法优化、插件开发与Web 前端
+
+1.  **数据采集与性能优化**
+    *   优化数据采集分析实现算法，实现基于 Star 数的分桶采样策略，解决单一维度采样偏差问题。
+    *   分析算法加速，重构仓库分析逻辑，显著降低网络请求耗时。
+
+2.  **浏览器插件开发与Web前端优化**
+    *   **UI/UX 交互设计**：实现插件的侧边栏布局、功能迁移与优化，提升用户体验。
+    *   **配置管理与逻辑流实现**：优化插件设置，实现 LLM API 配置的本地存储与安全读取，设计“草稿版快速分析 -> AI 深度优化”的两阶段分析逻辑。
+    *   **Web前端设计**：修正词云生成算法与前端展示的排版 Bug，优化集成可视化图表显示逻辑，设计前端页面。
+
+3.  **数据整合与分析**
+    *   编写分析 OpenDigger 数据处理，辅助知识库构建。
+    *   编写项目文档及PPT制作。
