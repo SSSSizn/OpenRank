@@ -164,6 +164,25 @@ openai
 - GitHub API (需要 Token)
 - LLM API (OpenAI/DeepSeek 等)
 
+### 参考文献与相关工作
+
+本项目在设计与实现过程中，参考的文献如下：
+
+1. **Zhu, H.-N., & Rubio-González, C.** (2023).  
+   *On the Reproducibility of Software Defect Datasets*.  
+   In *Proceedings of the 45th International Conference on Software Engineering (ICSE 2023)*, pp. 2324–2335. IEEE Press.  
+   DOI: 10.1109/ICSE48619.2023.00195
+
+2. **Sharma, A., Baudry, B., & Monperrus, M.** (2026).  
+   *Causes and Canonicalization of Unreproducible Builds in Java*.  
+   *IEEE Transactions on Software Engineering*, 52(1), 54–69.  
+   DOI: 10.1109/TSE.2025.3627891
+
+3. **Hassan, Z., Treude, C., Norrish, M., Williams, G., & Potanin, A.** (2025).  
+   *Characterising Reproducibility Debt in Scientific Software: A Systematic Literature Review*.  
+   *Journal of Systems and Software*, 222, Article 112327.  
+   DOI: 10.1016/j.jss.2024.112327
+
 ## 📄 许可证
 
 MIT License
