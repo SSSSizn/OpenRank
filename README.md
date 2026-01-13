@@ -164,17 +164,6 @@ openai
 - GitHub API (需要 Token)
 - LLM API (OpenAI/DeepSeek 等)
 
-## 📄 许可证
-
-MIT License
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📞 联系
-
-如有问题请通过 GitHub Issues 联系。
 
 ## 👥 项目成员
 
@@ -199,7 +188,7 @@ MIT License
 
 
 
-#### 🧑‍💻 成员 高嘉泽@AM-SuSh：算法优化、插件开发与Web 前端
+#### 🧑‍💻 高嘉泽@AM-SuSh：算法优化、插件开发与Web 前端
 
 1.  **数据采集与性能优化**
     *   优化数据采集分析实现算法，实现基于 Star 数的分桶采样策略，解决单一维度采样偏差问题。
@@ -214,3 +203,15 @@ MIT License
     *   编写分析 OpenDigger 数据处理，辅助知识库构建。
     *   编写项目文档及PPT制作。
 
+
+## 📄 许可证
+
+MIT License
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📞 联系
+
+如有问题请通过 GitHub Issues 联系。
