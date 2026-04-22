@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Github PyAnalyzer",
-  "version": "4.2",
-  "description": "AI-Powered Python Dependency Analyzer",
+  "name": "Github PyAnalyzer (Agent)",
+  "version": "5.0",
+  "description": "Agent-based Python dependency analyzer with RAG, evidence-ranked resolver, and anti-hallucination verifier.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -13,6 +13,8 @@
     "https://github.com/*",
     "https://api.github.com/*",
     "https://raw.githubusercontent.com/*",
+    "https://pypi.org/*",
+    "https://libraries.io/*",
     "https://*.openai.com/*",
     "https://*.deepseek.com/*"
   ],
