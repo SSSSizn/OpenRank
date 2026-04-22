@@ -1,3 +1,5 @@
+# 仓库采样
+
 import time
 import random
 import requests
