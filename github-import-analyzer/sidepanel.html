@@ -70,10 +70,13 @@
       <div id="pc-extra" class="percep-extra"></div>
     </section>
 
-    <section class="terminal-container">
+    <section id="terminal-section" class="terminal-container">
       <div class="terminal-header">
         <span class="term-title">SYSTEM_LOGS</span>
-        <div class="window-controls"><span></span><span></span><span></span></div>
+        <button type="button" id="btn-terminal-expand" class="terminal-expand-btn" aria-expanded="false"
+          aria-controls="terminal-output" title="展开日志区域以便查看完整报错">
+          EXPAND
+        </button>
       </div>
       <div id="terminal-output" class="terminal-body">
         <div class="log-line text-dim">System initialized.</div>

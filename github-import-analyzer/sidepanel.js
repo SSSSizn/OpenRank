@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     codeDock: document.getElementById("code-dock"),
     lineNumbers: document.querySelector(".line-numbers"),
     terminal: document.getElementById("terminal-output"),
+    terminalSection: document.getElementById("terminal-section"),
+    btnTerminalExpand: document.getElementById("btn-terminal-expand"),
 
     aiInsightBox: document.getElementById("ai-insight-box"),
     aiExplanation: document.getElementById("ai-explanation"),
@@ -49,8 +51,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let scanData = null;
 
+  const TERMINAL_EXPAND_KEY = "pyAnalyzer_terminal_log_expanded";
+
+  function applyTerminalExpanded(expanded) {
+    if (!el.terminalSection || !el.btnTerminalExpand) return;
+    el.terminalSection.classList.toggle("terminal-expanded", expanded);
+    el.btnTerminalExpand.setAttribute("aria-expanded", expanded ? "true" : "false");
+    el.btnTerminalExpand.textContent = expanded ? "COLLAPSE" : "EXPAND";
+    el.btnTerminalExpand.title = expanded ? "收起日志区域" : "展开日志区域以便查看完整报错";
+    try {
+      localStorage.setItem(TERMINAL_EXPAND_KEY, expanded ? "1" : "0");
+    } catch (_) {
+      /* ignore */
+    }
+    if (el.terminal) {
+      el.terminal.scrollTop = el.terminal.scrollHeight;
+    }
+  }
+
+  function initTerminalExpandToggle() {
+    if (!el.btnTerminalExpand || !el.terminalSection) return;
+    let expanded = false;
+    try {
+      expanded = localStorage.getItem(TERMINAL_EXPAND_KEY) === "1";
+    } catch (_) {
+      /* ignore */
+    }
+    applyTerminalExpanded(expanded);
+    el.btnTerminalExpand.addEventListener("click", () => {
+      applyTerminalExpanded(!el.terminalSection.classList.contains("terminal-expanded"));
+    });
+  }
+
   loadSettings();
   initLineNumbers();
+  initTerminalExpandToggle();
 
   // ---------- 行号同步 ----------
   function updateLineNumbers(text) {

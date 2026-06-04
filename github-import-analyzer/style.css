@@ -213,28 +213,34 @@ main {
   text-transform: uppercase;
 }
 
-.window-controls {
-  display: flex;
-  gap: 6px;
+.terminal-expand-btn {
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  color: var(--neon-blue);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 4px 10px;
+  font-family: var(--font-code);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
 }
 
-.window-controls span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #30363d;
+.terminal-expand-btn:hover {
+  background: rgba(88, 166, 255, 0.15);
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 8px rgba(88, 166, 255, 0.25);
 }
 
-.window-controls span:nth-child(1) {
-  background: #ff5f56;
+.terminal-expand-btn:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
 }
 
-.window-controls span:nth-child(2) {
-  background: #ffbd2e;
-}
-
-.window-controls span:nth-child(3) {
-  background: #27c93f;
+.terminal-container.terminal-expanded .terminal-body {
+  max-height: min(72vh, 560px);
 }
 
 .terminal-body {
